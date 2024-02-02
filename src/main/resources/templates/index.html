@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenStreetMap - St Andrews, UK</title>
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Include Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+      <!-- Set the height of the map container and panel -->
+      <style>
+          body {
+              margin: 0;
+              padding: 0;
+              display: flex;
+              height: 100vh;
+          }
+		  
+		  
+
+          #map {
+              flex: 2; /* Two-thirds of the screen */
+              height: 50%;
+          }
+
+          #panel {
+              flex: 1; /* One-third of the screen */
+              height: 50%;
+              overflow: auto; /* Allow scrolling if content exceeds the panel height */
+              padding: 10px;
+              background-color: #f0f0f0;
+          }
+		  /* Footer panel with fixed height of one-third of the visible screen */
+		      #bottomPanel  {
+		        height: 48vh; /* One-third of the viewport height */
+			    position: absolute; 
+			      bottom: 0; 
+				  overflow: auto; /* Allow scrolling if content exceeds the panel height */
+          
+	              padding: 10px;
+	              background-color: #E1E06D;
+				  width: 30%;
+			    
+			    
+		      }
+		      
+		      #provenancePanel  {
+		        height: 48vh; /* One-third of the viewport height */
+			    position: absolute; 
+			      bottom: 0; 
+				left: 30%;
+	              padding: 10px;
+	             /* background-color: #AFAE26;*/
+				  width: 70%;
+			      overflow: auto; /* Allow scrolling if content exceeds the panel height */
+          
+			    
+		      }
+		  
+      </style>
+	  
+	  
+	  <script>
+	  
+	  var graphLD=[];
+	  
+	  var baseIRI = "http://example.com/agriViewer/";
+	  
+	  
+	  
+		  function estimateFertiliserQuantity (waterQauntity, fertiliserPercentage) {
+		  	
+			  let result = waterQauntity * fertiliserPercentage; 
+			   
+			  return result;
+		  }	 
+		  
+		  function estimateWaterQuantity (tunnelJson, start, finish) {
+		  	
+		
+
+	
+			  let flow = 2000; 
+			 //To DO link to liv etriplestore with sensor data
+			 
+			 let observation = createObservation("https://www.wikidata.org/entity/Q167676", "Observe the flow rate for one growing table", "Irrigation", "tunnel 45", "https://www.wikidata.org/entity/Q145", graphLD)
+             let volumePerTableEntity = createObservationResult("Water Used (single table)", flow, "http://www.wikidata.org/entity/Q11582", "http://www.wikidata.org/entity/Q39297", graphLD, "")
+             linkResultToObservation(volumePerTableEntity, observation, graphLD)
+			 
+			 //look up number of tables per tunnel 
+			 let numbTables = 4; 	
+			 let observation2 = createObservation("https://www.wikidata.org/entity/Q5", "Observe the number of growing tables in a polytunnel", "Strawberry Production Tunnel 45", "tunnel 45", "https://www.wikidata.org/entity/Q145", graphLD)
+             let numberOfTables = createObservationResult("Number of Tables in Polytunnel", numbTables, "http://www.wikidata.org/entity/Q2360918", "http://www.wikidata.org/entity/Q107715", graphLD, "")
+             linkResultToObservation(numberOfTables, observation2, graphLD)
+			 
+					  
+			 let volumePerTunnel = createCalculationActivity(baseIRI, "Estimate Water Use Per Tunnel", graphLD)
+             linkInputEntityToActivity(volumePerTableEntity, volumePerTunnel, graphLD)
+	         linkInputEntityToActivity(numberOfTables, volumePerTunnel, graphLD)
+			
+			
+			 let result = flow*numbTables; 
+			 
+			 let resultEntity = createCalculationEntity("Water Used (tunnel)", result, "http://www.wikidata.org/entity/Q11582", "http://www.wikidata.org/entity/Q39297", graphLD, "")
+             linkOutputEntityToActivity(resultEntity, volumePerTunnel, graphLD)
+			   
+			  return {value:result, prov:resultEntity};
+		  }	 
+		  
+		  
+		  function estimateElectricity (tunnelJson, waterUsed) {
+		     //itterate trough the machines connected to the strawbery production activity
+			 
+			 //To DO calculate how much kWh/l from max push and max electricity use per hour
+		//	  let wattConsumption = createCalculationEntity("Watt Consumption", state.gpus[gpu].watt, "http://www.wikidata.org/entity/Q25236", "http://www.wikidata.org/entity/Q1053879", graphLD, "")
+
+			 
+			  //irrigation rig 
+			  let irrigationRigCoeficient = 0.00028; 			  
+			  
+			  let result = irrigationRigCoeficient*waterUsed; 
+			   
+			  return result;
+		  }
+		  
+		  
+	  </script>	  
+	  
+	  
+	  
+  </head>
+  <body>
+
+  <!-- Map container -->
+  <div id="map"></div>
+
+  <!-- Panel container -->
+  <div id="panel"></div>
+  
+  <!-- Panel container -->
+  <div id="bottomPanel"> 
+	
+	 <h3>  Carbon Footprint Information </h3>
+
+	  <p> 
+ 
+  <span id="carbonFootprint"> 
+	  
+	
+  
+  </span>
+	  </p>
+	</div>  
+	
+	
+	 <!-- Panel container -->
+  <div id="provenancePanel"> 
+	
+	 <h3>  Provenance Information </h3>
+
+	  <p> 
+ <i class="fa fa-download" aria-hidden="true"></i> <a href="#" onclick="downloadProvenanceTrace('provenance_trace')"> Download trace (.jsonld)</a>
+		             	 <br><br>
+		             	 
+<div class="accordion" id="accordionExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+       Emissions Calculation Steps
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>Calculation Steps</strong> Table below summarises all the emissions calculation steps, their inputs and outputs. Please review if the calculation assumptions are valid.
+     <table class="table table-striped">
+   <thead>
+    <tr>
+						  <td>Calculation Step</td><td>Input</td><td>Output</td>
+						  </tr>
+                                   </thead>
+                                   <tbody id="data_transformations_table_body">
+   
+                                   </tbody>
+                                   </table> 
+     
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Conversion Factors
+      </button>
+    </h2>
+    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        Warnings
+      </button>
+    </h2>
+    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+      </div>
+    </div>
+  </div>
+</div>		             	 
+		             	 
+		             	 
+ 
+	  
+	
+ 
+  
+  
+	  </p>
+	</div>    
+
+  <script>
+      // Initialize the map
+      var map = L.map('map').setView([56.34977, -2.75445], 7); // Centered at a point within the polygon
+
+      // Add the OpenStreetMap tile layer
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '&copy; Esri',maxNativeZoom:19,
+        maxZoom:25
+      }).addTo(map);
+
+    // Function to fetch JSON-LD data from a URL
+    function fetchJsonLd(url, callback) {
+        fetch(url)
+            .then(response => response.json())
+            .then(json => callback(json))
+            .catch(error => console.error('Error fetching JSON-LD:', error));
+    }
+	
+    function generateKeyValuePairs(obj) {
+          var html = '';
+          for (var key in obj) {
+              if (obj.hasOwnProperty(key)) {
+                  var value = obj[key];
+                  if (typeof value !== 'object' && !Array.isArray(value)) {
+                      // Display key-value pair as HTML
+                      html += '<p><strong>' + key + ':</strong> ' + value + '</p>';
+                  } else {
+                      // Recursively process nested objects or arrays
+                      html += '<p><strong>' + key + ':</strong></p>';
+                      html += '<div style="margin-left: 20px;">' + generateKeyValuePairs(value) + '</div>';
+                  }
+              }
+          }
+          return html;
+      }
+	
+	  function drawDeviceMarkers(devices) {
+	          devices.forEach(function (device) {
+	              var coordinates = device.hasGeometry.asWKT.match(/-?\d+\.\d+/g).map(Number);
+	              var deviceMarker = L.circleMarker(coordinates, {
+	                  radius: 8,
+	                  color: 'blue',
+	                  fillColor: 'red',
+	                  fillOpacity: 0.8
+	              }).addTo(map);
+
+	              // Add a popup with device information
+	              deviceMarker.bindPopup('<strong>' + device.name + '</strong><br>Device ID: ' + device['@id']);
+				  
+		  	 // Add an event listener to the polygon for the click event
+		  	    deviceMarker.on('click', function () {
+		  	        // Get the panel element
+		  	        var panel = document.getElementById('panel');
+
+		  	        // Populate the panel with information
+		  	        panel.innerHTML = '<h2>'+device.name+'</h2>' +
+		  			generateKeyValuePairs(device);
+		  	    });
+	          });
+	      }
+
+	     
+
+    // URL to the JSON-LD description
+    var jsonLdUrl = 'http://localhost:3060/test.json'; // Replace with your actual JSON-LD URL
+
+    // Fetch JSON-LD data and add a clickable polygon to the map
+    fetchJsonLd(jsonLdUrl, function (jsonLdData) {
+        // Extract coordinates from the JSON-LD data (assuming GeoJSON-like structure)
+		console.log (jsonLdData)
+		
+      // Draw markers for devices
+      drawDeviceMarkers(jsonLdData.hasDevice);
+		
+		
+		let i = 0;
+		
+        var polygonCoordinates = jsonLdData.hasAgriParcel[i].hasGeometry.asWKT
+            .replace('POLYGON (', '')
+            .replace(')', '')
+            .split(', ')
+            .map(coord => coord.split(' ').map(parseFloat));
+			
+		console.log (polygonCoordinates)
+			console.log (map)
+			
+	   
+
+			// Reverse the order of coordinates to comply with Leaflet's counter-clockwise order
+			polygonCoordinates.reverse();
+        // Create a Leaflet polygon and add it to the map
+        var polygon = new L.polygon(polygonCoordinates);
+		
+		map.addLayer(polygon);
+
+        // Bind a popup to the polygon for a click event
+        polygon.bindPopup(jsonLdData.hasAgriParcel[i].name);
+		
+	 // Add an event listener to the polygon for the click event
+	    polygon.on('click', function () {
+	        // Get the panel element
+	        var panel = document.getElementById('panel');
+
+	        // Populate the panel with information
+	        panel.innerHTML = '<h2>'+jsonLdData.hasAgriParcel[i].name+'</h2>' +
+			generateKeyValuePairs(jsonLdData.hasAgriParcel[i]);
+			
+			
+			let carbonFootprintPanel = document.getElementById('carbonFootprint');
+			
+			
+			//Calculate Footprint  
+			
+			
+			
+			let waterQuantity = estimateWaterQuantity(); 
+			let fertiliserQuantitiy = estimateFertiliserQuantity(waterQuantity.value, 0.01); 
+			let electricity = estimateElectricity ({}, waterQuantity.value); 
+			
+			fetch('/cf_info_all?region=United Kingdom')
+		.then((response) =>
+			response.json()
+		)
+		.then((CF_data) => {
+			console.log(CF_data)
+			if (!CF_data[0].value) {
+				alert ("Sorry we could not retrieve Conversion Factor matching this location.")
+				
+			}
+			
+			
+			const electricity_cf = removeLiteralType(CF_data[0].value);
+			console.log(electricity_cf);
+			
+			//Calculate End 
+			
+			carbonFootprintPanel.innerHTML  = `
+			
+	<strong>Estimated Water Quantitiy: </strong>${waterQuantity.value} liters <br><br>
+  
+    <strong>Estimated Fertaliser Quantitiy: </strong>${fertiliserQuantitiy} liters ( 1000 CO2e ) <br><br>
+	
+	<strong>Estimated Energy Use:</strong> ${electricity} kWh ( ${electricity*electricity_cf} kg CO2e ) <br><br>
+	
+	<hr>
+	
+	<strong>Total Carbon Footprint:</strong> 1233 CO2e  <br><br>
+			`;
+			
+			
+			});
+			
+			
+					// PRINT TRANSFORMATIONS TABLE
+			fetch('/getDataTransformations', {
+				method: 'POST',
+				mode: "cors", // no-cors, *cors, same-origin
+				body: generateJsonLDstring(graphLD)
+				,
+				headers: {
+					'Content-type': 'application/json; charset=UTF-8',
+					'Access-Control-Allow-Origin': '*'
+				},
+			})
+				.then((response) =>
+					response.json()
+				)
+				.then((data) => {
+
+					console.log(data)
+
+					let list = {};
+
+					for (i = 0; i < data.length; i++) {
+						list[data[i].activityLabel] = {};
+						list[data[i].activityLabel]["input"] = []
+						list[data[i].activityLabel]["output"] = []
+					}
+
+					for (var prop in list) {
+						for (i = 0; i < data.length; i++) {
+							if (data[i].activityLabel == prop) {
+								let input = data[i].inputLabel + " - " + removeLiteralType(data[i].inputValue) + "" + removeLiteralType(data[i].inputUnitLabel) + " [" + removeLiteralType(data[i].inputQuantityKindL) + "]<hr>"
+								list[prop]["input"].push(input);
+
+								let output = data[i].outputLabel + " - " + removeLiteralType(data[i].outputValue) + "" + removeLiteralType(data[i].outputUnitLabel) + " [" + removeLiteralType(data[i].outputQuantityKindL) + "]<hr>"
+								if (!list[prop]["output"].includes(output)) {
+
+									list[prop]["output"].push(output);
+								}
+
+							}
+						}
+					}
+
+					let html_string = "";
+					for (var prop in list) {
+
+						html_string = html_string + "<tr>"
+
+
+						html_string = html_string + "<td>" + prop + "</td>"
+						html_string = html_string + "<td>";
+						for (i = 0; i < list[prop]["input"].length; i++) {
+							html_string = html_string + list[prop]["input"][i]
+						}
+						html_string = html_string + "</td>";
+
+						html_string = html_string + "<td>";
+						for (i = 0; i < list[prop]["output"].length; i++) {
+							html_string = html_string + list[prop]["output"][i]
+						}
+						html_string = html_string + "</td>";
+
+
+						html_string = html_string + "</tr>"
+
+
+
+					}
+					console.log(html_string)
+					let table_body = document.getElementById('data_transformations_table_body');
+					table_body.innerHTML = html_string;
+				}
+				)
+						 .catch(function(error) {                        // catch
+     alert ("The calcualtor could not retrieve the calculation provenance trace. ");
+  });
+			
+			
+	    });
+
+        // Optionally, zoom the map to fit the polygon
+        map.fitBounds(polygon.getBounds());
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<script src="js/tec-context.js"></script>
+<script src="js/tec-lib.js"></script>
+</body>
+</html>
