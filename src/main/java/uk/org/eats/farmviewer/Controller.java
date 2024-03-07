@@ -38,6 +38,20 @@ public class Controller {
 		
 	}
 
+	
+	
+	@PostMapping("/getLinksToEmissionSources")
+	@ResponseBody
+	public String getLinksToEmissionSources(@RequestBody String payload) {
+
+		semModel.read(Constants.WIKIDATA_LABELS,"Turtle");
+
+		ArrayList<Double[][]> result = SPARQLQueries.getLinksToEmissionSources(payload, semModel);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
 	@PostMapping("/evaluateTrace")
 	@ResponseBody
 	public String evaluateTrace(@RequestBody String payload, Model model) {

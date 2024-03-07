@@ -319,4 +319,12 @@ public class SPARQLQueries {
 		return list;
 	}
 
+	public static ArrayList<Double[][]> getLinksToEmissionSources(String payload, OntModel semModel) {
+		ArrayList<Double[][]> list = new ArrayList <Double[][]> ();
+		
+		Double[][] coordinates = {{56.249568, -2.655600},{56.249124, -2.652966} };
+		list.add(coordinates);
+		return list;
+	}
+
 }

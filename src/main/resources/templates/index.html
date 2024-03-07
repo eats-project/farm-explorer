@@ -227,6 +227,10 @@
   <script>
       // Initialize the map
       var map = L.map('map').setView([56.34977, -2.75445], 7); // Centered at a point within the polygon
+      	// Create a layer group for lines
+        var lineLayer = L.layerGroup();
+        // Add the line layer to the map
+        lineLayer.addTo(map);
 
       // Add the OpenStreetMap tile layer
       L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -366,7 +370,7 @@
   
     <strong>Estimated Fertaliser Quantitiy: </strong>${fertiliserQuantitiy} liters ( 1000 CO2e ) <br><br>
 	
-	<strong>Estimated Energy Use:</strong> ${electricity} kWh ( ${electricity*electricity_cf} kg CO2e ) <br><br>
+	<strong>Estimated Energy Use:</strong> ${roundTwoDecimal(electricity)} kWh ( ${roundTwoDecimal(electricity*electricity_cf)} kg CO2e ) <br><br>
 	
 	<hr>
 	
@@ -376,6 +380,8 @@
 			
 			});
 			
+		
+			linkObservationFoI (lineLayer, generateJsonLDstring(graphLD))
 			
 					// PRINT TRANSFORMATIONS TABLE
 			fetch('/getDataTransformations', {
@@ -464,5 +470,6 @@
 
 <script src="js/tec-context.js"></script>
 <script src="js/tec-lib.js"></script>
+<script src="js/functions.js"></script>
 </body>
 </html>
