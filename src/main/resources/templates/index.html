@@ -38,9 +38,9 @@
 			    position: absolute; 
 			      bottom: 0; 
 				  overflow: auto; /* Allow scrolling if content exceeds the panel height */
-          
+                  min-width:250px;
 	              padding: 10px;
-	              background-color: #E1E06D;
+	              background-color: #B1E6A1;
 				  width: 30%;
 			    
 			    
@@ -118,7 +118,8 @@
 
 			 
 			  //irrigation rig 
-			  let irrigationRigCoeficient = 0.00028; 			  
+			 // let irrigationRigCoeficient = 0.00028; 
+			  let irrigationRigCoeficient = 0.00108; 			  
 			  
 			  let result = irrigationRigCoeficient*waterUsed; 
 			   
@@ -137,12 +138,12 @@
   <div id="map"></div>
 
   <!-- Panel container -->
-  <div id="panel"></div>
+  <!-- <div id="panel"></div>-->
   
   <!-- Panel container -->
   <div id="bottomPanel"> 
 	
-	 <h3>  Carbon Footprint Information </h3>
+	 <h3>  Carbon Footprint </h3>
 
 	  <p> 
  
@@ -158,7 +159,7 @@
 	 <!-- Panel container -->
   <div id="provenancePanel"> 
 	
-	 <h3>  Provenance Information </h3>
+	 <h3>  Provenance of Carbon Footprint Calculation </h3>
 
 	  <p> 
  <i class="fa fa-download" aria-hidden="true"></i> <a href="#" onclick="downloadProvenanceTrace('provenance_trace')"> Download trace (.jsonld)</a>
@@ -222,11 +223,13 @@
   
   
 	  </p>
+	  
+	  <small><span> <a href="https://www.flaticon.com/">Icons attribution</a></span></small>
 	</div>    
 
   <script>
       // Initialize the map
-      var map = L.map('map').setView([56.34977, -2.75445], 7); // Centered at a point within the polygon
+      var map = L.map('map').setView([56.249324, -2.654500], 19); // Centered at a point within the polygon
       	// Create a layer group for lines
         var lineLayer = L.layerGroup();
         // Add the line layer to the map
@@ -264,47 +267,25 @@
           return html;
       }
 	
-	  function drawDeviceMarkers(devices) {
-	          devices.forEach(function (device) {
-	              var coordinates = device.hasGeometry.asWKT.match(/-?\d+\.\d+/g).map(Number);
-	              var deviceMarker = L.circleMarker(coordinates, {
-	                  radius: 8,
-	                  color: 'blue',
-	                  fillColor: 'red',
-	                  fillOpacity: 0.8
-	              }).addTo(map);
-
-	              // Add a popup with device information
-	              deviceMarker.bindPopup('<strong>' + device.name + '</strong><br>Device ID: ' + device['@id']);
-				  
-		  	 // Add an event listener to the polygon for the click event
-		  	    deviceMarker.on('click', function () {
-		  	        // Get the panel element
-		  	        var panel = document.getElementById('panel');
-
-		  	        // Populate the panel with information
-		  	        panel.innerHTML = '<h2>'+device.name+'</h2>' +
-		  			generateKeyValuePairs(device);
-		  	    });
-	          });
-	      }
-
+	 
 	     
 
     // URL to the JSON-LD description
-    var jsonLdUrl = 'http://localhost:3060/test.json'; // Replace with your actual JSON-LD URL
-
+    var jsonLdUrl = 'http://localhost:3060/test_points_only.json'; // Replace with your actual JSON-LD URL
+console.log("here");
     // Fetch JSON-LD data and add a clickable polygon to the map
     fetchJsonLd(jsonLdUrl, function (jsonLdData) {
         // Extract coordinates from the JSON-LD data (assuming GeoJSON-like structure)
 		console.log (jsonLdData)
 		
       // Draw markers for devices
-      drawDeviceMarkers(jsonLdData.hasDevice);
-		
+      drawItemMarkers(jsonLdData.hasDevice);
+      drawItemMarkers(jsonLdData.hasAgriParcel);
+			
+		/*
 		
 		let i = 0;
-		
+	
         var polygonCoordinates = jsonLdData.hasAgriParcel[i].hasGeometry.asWKT
             .replace('POLYGON (', '')
             .replace(')', '')
@@ -327,144 +308,8 @@
         polygon.bindPopup(jsonLdData.hasAgriParcel[i].name);
 		
 	 // Add an event listener to the polygon for the click event
-	    polygon.on('click', function () {
-	        // Get the panel element
-	        var panel = document.getElementById('panel');
-
-	        // Populate the panel with information
-	        panel.innerHTML = '<h2>'+jsonLdData.hasAgriParcel[i].name+'</h2>' +
-			generateKeyValuePairs(jsonLdData.hasAgriParcel[i]);
-			
-			
-			let carbonFootprintPanel = document.getElementById('carbonFootprint');
-			
-			
-			//Calculate Footprint  
-			
-			
-			
-			let waterQuantity = estimateWaterQuantity(); 
-			let fertiliserQuantitiy = estimateFertiliserQuantity(waterQuantity.value, 0.01); 
-			let electricity = estimateElectricity ({}, waterQuantity.value); 
-			
-			fetch('/cf_info_all?region=United Kingdom')
-		.then((response) =>
-			response.json()
-		)
-		.then((CF_data) => {
-			console.log(CF_data)
-			if (!CF_data[0].value) {
-				alert ("Sorry we could not retrieve Conversion Factor matching this location.")
-				
-			}
-			
-			
-			const electricity_cf = removeLiteralType(CF_data[0].value);
-			console.log(electricity_cf);
-			
-			//Calculate End 
-			
-			carbonFootprintPanel.innerHTML  = `
-			
-	<strong>Estimated Water Quantitiy: </strong>${waterQuantity.value} liters <br><br>
-  
-    <strong>Estimated Fertaliser Quantitiy: </strong>${fertiliserQuantitiy} liters ( 1000 CO2e ) <br><br>
-	
-	<strong>Estimated Energy Use:</strong> ${roundTwoDecimal(electricity)} kWh ( ${roundTwoDecimal(electricity*electricity_cf)} kg CO2e ) <br><br>
-	
-	<hr>
-	
-	<strong>Total Carbon Footprint:</strong> 1233 CO2e  <br><br>
-			`;
-			
-			
-			});
-			
-		
-			linkObservationFoI (lineLayer, generateJsonLDstring(graphLD))
-			
-					// PRINT TRANSFORMATIONS TABLE
-			fetch('/getDataTransformations', {
-				method: 'POST',
-				mode: "cors", // no-cors, *cors, same-origin
-				body: generateJsonLDstring(graphLD)
-				,
-				headers: {
-					'Content-type': 'application/json; charset=UTF-8',
-					'Access-Control-Allow-Origin': '*'
-				},
-			})
-				.then((response) =>
-					response.json()
-				)
-				.then((data) => {
-
-					console.log(data)
-
-					let list = {};
-
-					for (i = 0; i < data.length; i++) {
-						list[data[i].activityLabel] = {};
-						list[data[i].activityLabel]["input"] = []
-						list[data[i].activityLabel]["output"] = []
-					}
-
-					for (var prop in list) {
-						for (i = 0; i < data.length; i++) {
-							if (data[i].activityLabel == prop) {
-								let input = data[i].inputLabel + " - " + removeLiteralType(data[i].inputValue) + "" + removeLiteralType(data[i].inputUnitLabel) + " [" + removeLiteralType(data[i].inputQuantityKindL) + "]<hr>"
-								list[prop]["input"].push(input);
-
-								let output = data[i].outputLabel + " - " + removeLiteralType(data[i].outputValue) + "" + removeLiteralType(data[i].outputUnitLabel) + " [" + removeLiteralType(data[i].outputQuantityKindL) + "]<hr>"
-								if (!list[prop]["output"].includes(output)) {
-
-									list[prop]["output"].push(output);
-								}
-
-							}
-						}
-					}
-
-					let html_string = "";
-					for (var prop in list) {
-
-						html_string = html_string + "<tr>"
-
-
-						html_string = html_string + "<td>" + prop + "</td>"
-						html_string = html_string + "<td>";
-						for (i = 0; i < list[prop]["input"].length; i++) {
-							html_string = html_string + list[prop]["input"][i]
-						}
-						html_string = html_string + "</td>";
-
-						html_string = html_string + "<td>";
-						for (i = 0; i < list[prop]["output"].length; i++) {
-							html_string = html_string + list[prop]["output"][i]
-						}
-						html_string = html_string + "</td>";
-
-
-						html_string = html_string + "</tr>"
-
-
-
-					}
-					console.log(html_string)
-					let table_body = document.getElementById('data_transformations_table_body');
-					table_body.innerHTML = html_string;
-				}
-				)
-						 .catch(function(error) {                        // catch
-     alert ("The calcualtor could not retrieve the calculation provenance trace. ");
-  });
-			
-			
-	    });
-
-        // Optionally, zoom the map to fit the polygon
-        map.fitBounds(polygon.getBounds());
-    });
+	 */
+	});  
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
