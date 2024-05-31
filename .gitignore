@@ -1,4 +1,5 @@
 src/main/resources/static/test.json
+src/main/resources/static/test_points_only.json
 target/
 pom.xml.tag
 pom.xml.releaseBackup

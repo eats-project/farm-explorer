@@ -28,6 +28,11 @@
     <artifactId>jaxb-api</artifactId>
     <version>2.3.1</version> <!-- or the version compatible with your project -->
 </dependency>
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-csv</artifactId>
+    <version>1.9.0</version>
+</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -43,6 +48,12 @@
     <artifactId>rest-assured</artifactId>
     <version>5.3.2</version>
     <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.eclipse.rdf4j</groupId>
+  <artifactId>rdf4j-storage</artifactId>
+   <version>3.2.1</version>
+  <type>pom</type>
 </dependency>
 
 		<dependency>

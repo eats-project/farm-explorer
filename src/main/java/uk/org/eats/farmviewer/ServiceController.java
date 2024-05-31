@@ -1,10 +1,18 @@
 package uk.org.eats.farmviewer;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.eclipse.rdf4j.repository.Repository;
 import  org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -16,13 +24,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.google.gson.Gson;
 
 @org.springframework.stereotype.Controller
 
 @RestController
-public class Controller {
+public class ServiceController {
 
+	public static Repository repository;
 	OntModel semModel;
 
 	@Autowired
@@ -34,10 +45,29 @@ public class Controller {
 		// read some ontologies so we have the labels for units, etc.
 		semModel.read(Constants.QUDT_UNITS);
 		semModel.read(Constants.ECFO);
-		semModel.read(Constants.PECO);
-		
+		semModel.read(Constants.PECO);		
 	}
 
+	
+	@PostMapping("/upload")
+    public String handleFileUpload(@RequestParam("file") MultipartFile file,
+                                 @RequestParam("dataType") String dataType) {
+        try {
+            BufferedReader fileReader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+            CSVParser parser = new CSVParser(fileReader, CSVFormat.DEFAULT.withFirstRecordAsHeader());
+            List<String> headers = parser.getHeaderNames();
+
+            System.out.println("Data Type: " + dataType);
+            System.out.println("CSV Headers: " + headers);
+            parser.close();
+            fileReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "{\"result\":\"error uploading data\"}";
+        }
+        
+        return "{\"result\":\"data recieved\"}";
+    }
 	
 	
 	@PostMapping("/getLinksToEmissionSources")
