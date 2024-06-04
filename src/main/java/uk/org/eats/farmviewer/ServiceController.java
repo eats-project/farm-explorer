@@ -117,9 +117,49 @@ public class ServiceController {
 	@ResponseBody
 	public String addNewAsset(@RequestBody String payload) {
 
-		ArrayList<Double[][]> result = GraphDBUtils.addJsonLD(payload, ConstantsDB.ASSETS_NAMED_GRAPH_IRI);
+		String result = GraphDBUtils.addJsonLD(payload, ConstantsDB.ASSETS_NAMED_GRAPH_IRI);
 		Gson gson = new Gson();
 		return gson.toJson(result);
+
+	}
+	
+	@GetMapping("/deleteAssets")
+	@ResponseBody
+	public String deleteAssets() {
+
+		String repsonse = GraphDBUtils.clearNamedGraph(ConstantsDB.ASSETS_NAMED_GRAPH_IRI);
+		
+		
+		return repsonse;
+
+	}
+	
+	@GetMapping("/deleteObservations")
+	@ResponseBody
+	public String deleteObservations() {
+
+		String repsonse = GraphDBUtils.clearNamedGraph(ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI);
+		
+		
+		return repsonse;
+
+	}
+	
+	
+	@GetMapping("/getFarms")
+	@ResponseBody
+	public String getFarms() {
+
+		HashMap<String, String> result = SPARQLQueries.getFarms();
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
+	@GetMapping("/getAssetsGraph")
+	@ResponseBody
+	public String getAssetsGraph() throws Exception {
+		return GraphDBUtils.dumpGraphAsJsonLd (ConstantsDB.ASSETS_NAMED_GRAPH_IRI);
 
 	}
 	

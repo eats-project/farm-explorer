@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Upload</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #nav-bar {
+            display: flex;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+        }
+        .nav-item {
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .nav-icon {
+            margin-right: 5px;
+        }
+        #drop-area, #assetType, #polytunnelForm, #assets, #farms , #farmForm{
+            display: none; /* Initially hidden */
+            width: 300px;
+            margin-top: 20px;
+            border: 2px dashed #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        #drop-area.hover {
+            background-color: #f0f0f0;
+        }
+        select, input[type="text"], button {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .coordinates-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .coordinates-group input {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="nav-bar">
+        
+        <div class="nav-item">
+            <i class="fas fa-tree nav-icon"></i>
+            <span><a style="color:white" href="/index.html">Explore Farm</a></span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-plus-square nav-icon"></i>
+            <span><a style="color:white" href="/addData.html">Add Data</a></span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-rotate-right nav-icon"></i>
+            <span><a style="color:white" href="/deleteData.html">Reset Demo</a></span>
+        </div>
+    </div>
+    
+       <button onclick="deleteAssets()">Delete Assets</button>
+          
+        <button onclick="deleteObservations()">Delete Observations</button>
+    
+   
+    
+
+    <script>
+       
+        
+
+     
+
+function deleteAssets() {
+           
+const response =  fetch('/deleteAssets', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json; charset=utf-8'
+  }
+});
+
+console.log('status:', response.status)
+ }
+ 
+ function deleteObservations() {
+           
+const response =  fetch('/deleteObservations', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json; charset=utf-8'
+  }
+});
+
+console.log('status:', response.status)
+ }
+        
+          
+        
+    </script>
+</body>
+</html>

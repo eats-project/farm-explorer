@@ -166,13 +166,18 @@
   </head>
   <body>
 <div id="nav-bar">
-        <div class="nav-item">
-            <i class="fas fa-plus-square nav-icon"></i>
-            <span><a style="color:white" href="/addData.html">Add Data</a></span>
-        </div>
+       
         <div class="nav-item">
             <i class="fas fa-tree nav-icon"></i>
             <span><a style="color:white" href="/index.html">Explore Farm</a></span>
+        </div>
+         <div class="nav-item">
+            <i class="fas fa-plus-square nav-icon"></i>
+            <span><a style="color:white" href="/addData.html">Add Data</a></span>
+        </div>
+         <div class="nav-item">
+            <i class="fas fa-rotate-right nav-icon"></i>
+            <span><a style="color:white" href="/deleteData.html">Reset Demo</a></span>
         </div>
     </div>
   <!-- Map container -->
@@ -358,16 +363,22 @@
 	     
 
     // URL to the JSON-LD description
-    var jsonLdUrl = 'http://localhost:3060/test_points_only.json'; // Replace with your actual JSON-LD URL
+   // var jsonLdUrl = 'http://localhost:3060/test_points_only.json'; // Replace with your actual JSON-LD URL
+   
+   var jsonLdUrl = '/getAssetsGraph'; // Replace with your actual JSON-LD URL
+   
+   
 console.log("here");
     // Fetch JSON-LD data and add a clickable polygon to the map
     fetchJsonLd(jsonLdUrl, function (jsonLdData) {
         // Extract coordinates from the JSON-LD data (assuming GeoJSON-like structure)
 		console.log (jsonLdData)
 		
+		console.log (jsonLdData['https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel'])
+		
       // Draw markers for devices
-      drawItemMarkers(jsonLdData.hasDevice);
-      drawItemMarkers(jsonLdData.hasAgriParcel);
+   //   drawItemMarkers(jsonLdData.hasDevice);
+      drawItemMarkers(jsonLdData);
 			
 		/*
 		

@@ -5,7 +5,9 @@ function roundTwoDecimal (num) {
 
  function drawItemMarkers(items ) {
 	          items.forEach(function (item) {
-	              var coordinates = item.hasGeometry.asWKT.match(/-?\d+\.\d+/g).map(Number);
+		
+		          //TO DO add handling for multiple agri parcels on farm (currently only the first is selected) update code for handling look up of details 
+ 	              var coordinates = item['https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel'][0]['http://www.opengis.net/ont/geosparql#hasGeometry'][0]['http://www.opengis.net/ont/geosparql#asWKT'][0]['@value'].match(/-?\d+\.\d+/g).map(Number);
 	              var deviceMarker = L.circleMarker( L.latLng(parseFloat(coordinates[0]),parseFloat(coordinates[1])), {
 	                  radius: 8,
 	                  color: 'blue',

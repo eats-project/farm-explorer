@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.ontology.OntModel;
@@ -29,6 +30,13 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.util.FileUtils;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.ValueFactory;
+import org.eclipse.rdf4j.query.BindingSet;
+import org.eclipse.rdf4j.query.TupleQuery;
+import org.eclipse.rdf4j.query.TupleQueryResult;
+import org.eclipse.rdf4j.repository.Repository;
+import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -36,6 +44,9 @@ import org.springframework.ui.Model;
 import com.google.gson.JsonElement;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+
+import uk.org.eats.graphdb.ConstantsDB;
+import uk.org.eats.graphdb.GraphDBUtils;
 
 
 public class SPARQLQueries {
@@ -331,6 +342,35 @@ public class SPARQLQueries {
 	
 		list.add(coordinates);
 		return list;
+	}
+
+	public static HashMap <String,String> getFarms() {
+		Repository repo = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager());
+		RepositoryConnection conn = repo.getConnection();
+	
+		
+		HashMap <String,String > map = new  HashMap <String,String >  ();
+		
+		String queryString = " Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/> SELECT DISTINCT ?farmIRI ?label FROM <"+ConstantsDB.ASSETS_NAMED_GRAPH_IRI+"> WHERE { ?farmIRI a smart:AgriFarm; smart_base:name ?label} ";
+		System.out.println(queryString);
+		TupleQuery tupleQuery = conn.prepareTupleQuery(queryString);
+			   try (TupleQueryResult result = tupleQuery.evaluate()) {
+				      while (result.hasNext()) {  // iterate over the result
+				         BindingSet bindingSet = result.next();
+				         Set <String> bindings = bindingSet.getBindingNames();  
+					    	
+					    	Iterator it2 = bindings.iterator();
+					    	while (it2.hasNext()) {
+					    		String key = (String) it2.next();
+					    		if (bindingSet.getValue(key)!=null)
+					    		map.put(key, bindingSet.getValue(key).toString()) ;
+					    	}
+					       
+					         
+				      }
+				   
+			   }
+		return map;
 	}
 
 }
