@@ -98,18 +98,18 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 	
 	
 	
-	if (!GraphDBUtils.checkResourcePresent (conn.getContextIDs(), Constants.OBSERVATIONS_NAMED_GRAPH_IRI)) {
+	if (!GraphDBUtils.checkResourcePresent (conn.getContextIDs(), ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI)) {
 		System.out.println ("Adding the default Observations named graph") ;
 		
-		IRI context = f.createIRI(Constants.OBSERVATIONS_NAMED_GRAPH_IRI);
-		conn.add(f.createIRI(Constants.OBSERVATIONS_NAMED_GRAPH_IRI), RDFS.LABEL, f.createLiteral("Observations"), context); 		
+		IRI context = f.createIRI(ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI);
+		conn.add(f.createIRI(ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI), RDFS.LABEL, f.createLiteral("Observations"), context); 		
 	}
 	
-	if (!GraphDBUtils.checkResourcePresent (conn.getContextIDs(), Constants.ASSETS_NAMED_GRAPH_IRI)) {
+	if (!GraphDBUtils.checkResourcePresent (conn.getContextIDs(), ConstantsDB.ASSETS_NAMED_GRAPH_IRI)) {
 		System.out.println ("Adding the default Assets named graph") ;
 		
-		IRI context = f.createIRI(Constants.ASSETS_NAMED_GRAPH_IRI);
-		conn.add(f.createIRI(Constants.ASSETS_NAMED_GRAPH_IRI), RDFS.LABEL, f.createLiteral("Assets"), context); 		
+		IRI context = f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI);
+		conn.add(f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI), RDFS.LABEL, f.createLiteral("Assets"), context); 		
 	}
 	
 	

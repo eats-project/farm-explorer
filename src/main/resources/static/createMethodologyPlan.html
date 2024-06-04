@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive List with Result Marker</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        #addForm {
+            margin: 20px;
+        }
+        #itemList {
+            width: 60%;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 70%;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-top: 5px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .titleText {
+            cursor: pointer;
+            padding: 2px 4px;
+            margin: 0 2px;
+			color: brown;
+        }
+        .specialText {
+            cursor: pointer;
+            padding: 2px 4px;
+            margin: 0 2px;
+        }
+		
+		.blink_me {
+		  animation: blinker 1s linear infinite;
+		}
+
+		@keyframes blinker {
+		  50% {
+		    opacity: 0;
+		  }
+		}
+		
+        .next {
+            color:blue;
+        }
+		
+        .incomplete {
+            color:red;
+        }
+		
+        .complete {
+            color:green;
+        }
+		
+        .resultMarker {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="addForm">
+	<input type="text" id="titleInput" placeholder="What are you calculating?">
+    <input type="text" id="textInput" placeholder="Enter text with +, *, =">
+    <button onclick="addItem()">Add</button>
+</div>
+<div id="itemList">
+    <ul id="theList"></ul>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalText">You clicked: <span id="clickedElementName"></span></p>
+        <p>Group: <span id="elementGroup"></span></p>
+        <select id="elementOptions">
+            <option value="result">Result</option>
+            <option value="conversionFactor">Conversion Factor</option>
+            <option value="activityData">Activity Data</option>
+        </select>
+		<button onclick="saveSegment()">Save</button>
+    </div>
+</div>
+
+<script>
+	
+var context = {};
+context.Plan	= "https://w3id.org/ep-plan#Plan";
+context.Step	= "https://w3id.org/ep-plan#Step";
+context.Variable	= "https://w3id.org/ep-plan#Variable";
+context.namedIndividual = "http://www.w3.org/2002/07/owl#NamedIndividual";
+context.label = "http://www.w3.org/2000/01/rdf-schema#label";
+context.comment = "http://www.w3.org/2000/01/rdf-schema#comment";
+context.hasInputVariable	= {"@id":"https://w3id.org/ep-plan#hasInputVariable","@type": "@id"};
+context.hasOutputVariable	= {"@id":"https://w3id.org/ep-plan#hasOutputVariable","@type": "@id"};
+context.isElementOfPlan	= {"@id":"https://w3id.org/ep-plan#isElementOfPlan","@type": "@id"};
+
+	
+let graph = [];
+let alreadyProcesed = [];
+let prefix = "http://example.com/";
+let plan = {}; 
+plan ['@id'] = prefix + "CF_Calculation";
+	
+let completedIndex = -1;
+let itemIndex = 0;
+let currentGroup = 0;
+let stepIRIs = []; 
+let curerentSelectedItem = {};
+
+function createNewVariable (iri, label) {
+	
+	let variable = {} ;
+	variable ['@id'] = iri;
+	variable ['@type'] = [];
+	variable ['@type'].push (context.Variable);
+	variable ['@type'].push (context.namedIndividual);
+	variable ['label'] = label; 
+	variable ['comment'] = "default description"; 
+	variable ['isElementOfPlan'] = plan['@id'];
+	variable['isInputVariableOf'] = [];
+	variable['isOutputVariableOf'] =[];
+	
+	graph.push(variable);	
+	
+	return variable;
+}
+
+function createNewStep (iri, label, stepArithmeticType) {
+
+let step = {} ;
+
+
+step ['@id'] = iri;
+step ['@type'] = [];
+step ['@type'].push (context.Step);
+step ['@type'].push (context.namedIndividual);
+step ['@type'].push (stepArithmeticType);
+ 
+step ['label'] = label; 
+step ['comment'] = "default comment";
+step ['isElementOfPlan'] = plan['@id']; 
+
+graph.push(step);
+}
+
+
+function updateClass () {
+ // Get the list by its ID
+    const list = document.getElementById('theList');
+
+    // Check if the list exists
+    if (list) {
+        // Get all list items (<li>) within the list
+        const listItems = list.getElementsByTagName('span');
+
+        // Iterate over each list item
+        for (let i = 0; i < listItems.length; i++) {
+			console.log(listItems[i].getAttribute('data-index'));
+			console.log(parseInt(completedIndex)+1);
+            if (listItems[i].getAttribute('data-index')== completedIndex) {
+               listItems[i].classList.remove('incomplete');
+			   listItems[i].classList.remove('blink_me');
+			   listItems[i].classList.add('complete');
+		    } 
+			if (listItems[i].getAttribute('data-index') == parseInt(completedIndex)+1) {
+				console.log("called");
+				listItems[i].classList.add('blink_me');
+			}
+        }
+
+            } 
+	
+}
+
+function saveSegment () {
+	const selectedOption = document.getElementById("elementOptions").value;
+	    console.log(curerentSelectedItem["index"]);
+	    completedIndex = curerentSelectedItem["index"];
+		updateClass ();
+	    modal.style.display = "none"; 
+}
+
+function addItem() {
+	const title = document.getElementById('titleInput');
+    const input = document.getElementById('textInput');
+    const list = document.getElementById('theList');
+    const newItem = document.createElement('li');
+	const calcualtionTitle = document.createElement('span');
+	calcualtionTitle.className = 'titleText'; 
+	calcualtionTitle.textContent = title.value + ": ";
+	newItem.appendChild(calcualtionTitle);
+    const segments = input.value.split(/(\+|\*|=)/g);
+    let followingEqual = false;
+	
+	let stepCount = currentGroup;
+	segments.forEach((segment, index) => {
+		if (segment === "=") {
+			stepCount++;
+		}
+	});
+
+   // segments.forEach((segment, index) => {
+	  
+	   for (i=0; i<segments.length;i++) {
+		
+		segment =segments[i];   
+		segment = segment.trim();
+		
+        if (segment === "=") {
+            currentGroup++;
+            newItem.appendChild(document.createTextNode(segment));
+            followingEqual = true; // Next segment follows "="
+        } else if (segment === "+" || segment === "*") {
+        	
+			newItem.appendChild(document.createTextNode(segment));
+        } 
+		
+		else {
+			
+			//check the type of arithmetic operation 
+			let stepArithmeticType = ""; 
+			
+			if (segments[i+1] =="*" || segments[i-1]=="*")  {
+				stepArithmeticType = "http://www.openmath.org/cd/arith1#times";
+			}
+			if (segments[i+1] =="+"||segments[i-1] =="+") {
+				stepArithmeticType = "http://www.openmath.org/cd/arith1#plus";
+			}
+			
+            const span = document.createElement('span');
+            if (followingEqual) {
+                span.className = 'specialText resultMarker incomplete'; // Mark result element
+            } else {
+				if (itemIndex === 0) {
+                span.className = 'specialText incomplete blink_me';
+			    }
+				else {
+					span.className = 'specialText incomplete';
+				}
+            }
+            span.textContent = segment;
+            span.setAttribute('data-group', currentGroup);
+			span.setAttribute('data-index', itemIndex);
+			
+			if (!alreadyProcesed.includes(segment)) {
+            span.onclick = function() {
+                showModal(this.textContent, this.getAttribute('data-group'), this.getAttribute('data-index'));
+            };
+		}
+		else {
+            span.onclick = function() {
+				//if it has already been completed previously don't open modal
+				completedIndex =parseInt(this.getAttribute('data-index'));
+               updateClass ();
+            };
+		}
+            newItem.appendChild(span);
+			
+			let step_iri = prefix + "CF_Calculation/Step/"+currentGroup;
+			
+			//add new step if not added already 
+			if (parseInt(stepCount) > parseInt(currentGroup) && !stepIRIs.includes(step_iri))
+			{
+				
+				createNewStep (step_iri, "Step"+currentGroup, stepArithmeticType );
+				stepIRIs.push (step_iri);
+			}
+			
+			let var_iri = prefix + "CF_Calculation/Var/"+segment;
+		
+			let variable = createNewVariable (var_iri,segment);
+			
+			if (parseInt(currentGroup)< parseInt(stepCount)) {
+			variable.isInputVariableOf.push(prefix + "/CF_Calculation/Step/"+currentGroup);
+		}
+			
+			if (parseInt(currentGroup)>0&&followingEqual  ) {
+			
+			variable.isOutputVariableOf.push(prefix + "/CF_Calculation/Step/"+(parseInt(currentGroup)-1));
+		    }
+			
+			if (followingEqual) {
+				//all conditions that needed the flag have been checked 
+				followingEqual = false; // Reset for next segments
+			}
+			alreadyProcesed.push(segment);
+			itemIndex++;
+        }
+    }
+
+	//);
+
+    if (newItem.textContent.trim().length > 0) {
+        list.appendChild(newItem);
+    }
+
+    input.value = ''; // Clear input field
+}
+
+// Modal Script
+var modal = document.getElementById("myModal");
+var span = document.getElementsByClassName("close")[0];
+
+function showModal(clickedText, group, index) {
+	if (index == parseInt(completedIndex)+1) {
+    document.getElementById('clickedElementName').textContent = clickedText;
+    document.getElementById('elementGroup').textContent = group;
+	
+	curerentSelectedItem["label"] = clickedText; 
+	curerentSelectedItem["index"] = index;
+	curerentSelectedItem["group"] = group;
+	
+    modal.style.display = "block";
+	
+}
+}
+
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>

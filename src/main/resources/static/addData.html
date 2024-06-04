@@ -23,21 +23,28 @@
         .nav-icon {
             margin-right: 5px;
         }
-        #drop-area {
+        #drop-area, #assetType, #polytunnelForm, #assets, #farms , #farmForm{
+            display: none; /* Initially hidden */
             width: 300px;
-            height: 200px;
-            border: 2px dashed #ccc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
             margin-top: 20px;
+            border: 2px dashed #ccc;
+            padding: 10px;
+            text-align: center;
         }
         #drop-area.hover {
             background-color: #f0f0f0;
         }
-        select {
-            margin-bottom: 10px;
+        select, input[type="text"], button {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .coordinates-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .coordinates-group input {
+            width: 100%;
         }
     </style>
 </head>
@@ -45,82 +52,238 @@
     <div id="nav-bar">
         <div class="nav-item">
             <i class="fas fa-plus-square nav-icon"></i>
-            <span>Add Data</span>
+            <span><a style="color:white" href="/addData.html">Add Data</a></span>
         </div>
         <div class="nav-item">
             <i class="fas fa-tree nav-icon"></i>
-            <span>Explore Farm</span>
+            <span><a style="color:white" href="/index.html">Explore Farm</a></span>
         </div>
     </div>
     <select id="dataType">
-        <option value="sensor_data">Sensor Data</option>
-        <option value="asset">Asset</option>
+        <option value="">Please select data type</option>
+        <option value="observations">Observations</option>
+        <option value="asset">Farm Asset</option>
+         <option value="farm">Farm</option>
+    </select>
+    
+     <select id="farms">
+        <option value="">Please select the farm</option>
+        <option value="happyFarm">Happy Farm</option>
+    </select> 
+    
+      <select id="assets">
+        <option value="">Please select the origin</option>
+         <option value="temp">Manual</option>
+        <option value="temp">Temperature Sensor</option>
+    </select> 
+    
+    <select id="assetType">
+        <option value="">Please select asset type</option>
+        <option value="polytunnel">Polytunnel</option>
+        <option value="sensor">Sensor</option>
+        <option value="actuator">Actuator</option>
+        <option value="https://saref.etsi.org/saref4agri/Farm">Farm</option>
     </select>
     <div id="drop-area">Drop your CSV file here</div>
+    <div id="polytunnelForm">
+    <form id= "polytunnelFormContent">
+        <input type="text" id="polytunnelName" placeholder="Name">
+        <div class="coordinates-group">
+          <input type="text" id="polytunnelLat" placeholder="Latitude">
+        <input type="text" id="polytunnelLong" placeholder="Longitude">
+        
+       
+          </div>
+        </form> 
+        <button onclick="saveForm()">Save</button>
+          
+        <button onclick="populateWithExample()">Populate with Example</button>
+    </div>
+    
+     <div id="farmForm">
+    <form id= "farmFormContent">
+        <input type="text" id="farmName" placeholder="Name">
+         <input type="text" id="farmDescription" placeholder="Description">
+        <div class="coordinates-group">
+          <input type="text" id="farmLat" placeholder="Latitude">
+        <input type="text" id="farmLong" placeholder="Longitude">
+        
+       
+          </div>
+        </form> 
+        <button onclick="saveFarmForm()">Save</button>
+          
+        <button onclick="populateFarmWithExample()">Populate with Example</button>
+    </div>
+    
 
     <script>
         const dropArea = document.getElementById('drop-area');
         const dataTypeSelect = document.getElementById('dataType');
+        const assetTypeSelect = document.getElementById('assetType');
+        const polytunnelForm = document.getElementById('polytunnelForm');
 
-        // Prevent default drag behaviors
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, preventDefaults, false);
-            document.body.addEventListener(eventName, preventDefaults, false);
+        // Toggle visibility based on selected option
+        dataTypeSelect.addEventListener('change', function() {
+            if (this.value === 'observations') {
+	            assets.style.display = 'block';
+                dropArea.style.display = 'flex';
+                assetTypeSelect.style.display = 'none';
+                polytunnelForm.style.display = 'none';
+                farms.style.display = 'none';
+            } else if (this.value === 'asset') {
+                dropArea.style.display = 'none';
+                assetTypeSelect.style.display = 'block';
+            } else if (this.value === 'farm') {
+                dropArea.style.display = 'none';
+                assetTypeSelect.style.display = 'none';
+                assets.style.display = 'none';
+                 polytunnelForm.style.display = 'none';
+                 farmForm.style.display = 'block';
+            }else {
+                dropArea.style.display = 'none';
+                assetTypeSelect.style.display = 'none';
+                polytunnelForm.style.display = 'none';
+                   farms.style.display = 'none';
+                     assets.style.display = 'none';
+            }
         });
 
-        // Highlight drop area when item is dragged over it
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropArea.addEventListener(eventName, highlight, false);
+        assetTypeSelect.addEventListener('change', function() {
+            if (this.value === 'polytunnel') {
+                polytunnelForm.style.display = 'block';
+            } else {
+                polytunnelForm.style.display = 'none';
+            }
         });
 
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, unhighlight, false);
-        });
+        function saveForm() {
+            // Placeholder for form submission logic
+              let latitude = document.getElementById('polytunnelLat').value;
+              let longitude = document.getElementById('polytunnelLong').value;
+              let name = document.getElementById('polytunnelName').value;
 
-        // Handle dropped files
-        dropArea.addEventListener('drop', handleDrop, false);
+           let payload = `{
+                  "@context": [
+     "https://w3id.org/demeter/agri/agriFeature-context.jsonld",
+     "https://w3id.org/demeter/agri/agriCrop-context.jsonld",
+     "https://w3id.org/demeter/agri/agriCommon-context.jsonld",
+     "https://w3id.org/demeter/agri/agriIntervention-context.jsonld",
+     "https://w3id.org/demeter/agri/agriAlert-context.jsonld",
+     "https://w3id.org/demeter/agri/agriProduct-context.jsonld",
+     "https://w3id.org/demeter/agri/agriProperty-context.jsonld",
+     "https://w3id.org/demeter/agri/agriSystem-context.jsonld",
+     "https://w3id.org/demeter/agri/agriPest-context.jsonld",
+     "https://w3id.org/demeter/agri/farmAnimal-context.jsonld"
+    ],"@graph":[{
+      "@id": "urn:ngsi-ld:AgriParcel:72d9fb43-53f8-4ec8-a33c-fa931360259a",
+      "@type": "AgriParcel",
+      "hasGeometry": {
+        "@id": "urn:ngsi-ld:AgriParcel:geo:72d9fb43-53f8-4ec8-a33c-fa931360259y",
+        "@type": "Feature",
+        "asWKT": "POINT (${latitude}, ${longitude})"
+      }}]
+      }`;
+      
+      // a POST request
+const response =  fetch('/addNewAsset', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json; charset=utf-8'
+  },
+  body: payload
+});
 
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
+console.log('status:', response.status)
+
+        // Log the latitude and longitude to the console
+        console.log("Latitude:", latitude);
+        console.log("Longitude:", longitude); 
+      
+        // Reset selections
+            dataTypeSelect.value = '';
+            assetTypeSelect.value = '';
+            assetTypeSelect.style.display = 'none';
+            polytunnelForm.style.display = 'none';
+             assets.style.display = 'none';
+            farms.style.display = 'none';
+            polytunnelFormContent.reset();
         }
+        
+        
+        function saveFarmForm() {
+            // Placeholder for form submission logic
+              let latitude = document.getElementById('polytunnelLat').value;
+              let longitude = document.getElementById('polytunnelLong').value;
+              let name_url_encoded = encodeURIComponent(document.getElementById('farmName').value);
+              let name = document.getElementById('farmName').value;
+              let description = document.getElementById('farmDescription').value;
 
-        function highlight(e) {
-            dropArea.classList.add('hover');
-        }
 
-        function unhighlight(e) {
-            dropArea.classList.remove('hover');
-        }
+           let payload = `{
+                  "@context": [
+     "https://w3id.org/demeter/agri/agriFeature-context.jsonld",
+     "https://w3id.org/demeter/agri/agriCrop-context.jsonld",
+     "https://w3id.org/demeter/agri/agriCommon-context.jsonld",
+     "https://w3id.org/demeter/agri/agriIntervention-context.jsonld",
+     "https://w3id.org/demeter/agri/agriAlert-context.jsonld",
+     "https://w3id.org/demeter/agri/agriProduct-context.jsonld",
+     "https://w3id.org/demeter/agri/agriProperty-context.jsonld",
+     "https://w3id.org/demeter/agri/agriSystem-context.jsonld",
+     "https://w3id.org/demeter/agri/agriPest-context.jsonld",
+     "https://w3id.org/demeter/agri/farmAnimal-context.jsonld"
+    ],"@graph":[{
+      "@id": "urn:ngsi-ld:AgriFarm:${name_url_encoded}",
+      "name": "${name}",
+      "description": "${description}",
+      "@type": "AgriFarm",
+      "hasGeometry": {
+        "@id": "urn:ngsi-ld:AgriFarm:${name_url_encoded}:geo",
+        "@type": "Feature",
+        "asWKT": "POINT (${latitude}, ${longitude})"
+      }}]
+      }`;
+      console.log(payload);
+      // a POST request
+const response =  fetch('/addNewAsset', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json; charset=utf-8'
+  },
+  body: payload
+});
 
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            handleFiles(files);
-        }
+console.log('status:', response.status)
 
-        function handleFiles(files) {
-            ([...files]).forEach(uploadFile);
-        }
-
-        function uploadFile(file) {
-            let url = './upload'; // Change to your server upload URL
-            let formData = new FormData();
-            formData.append('file', file);
-            formData.append('dataType', dataTypeSelect.value); // Append selected data type
-
-            fetch(url, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
+        // Log the latitude and longitude to the console
+        console.log("Latitude:", latitude);
+        console.log("Longitude:", longitude); 
+      
+        // Reset selections
+            dataTypeSelect.value = '';
+            assetTypeSelect.value = '';
+            assetTypeSelect.style.display = 'none';
+            polytunnelForm.style.display = 'none';
+             assets.style.display = 'none';
+            farms.style.display = 'none';
+            polytunnelFormContent.reset();
+        }     
+            
+             // Function to populate the latitude and longitude fields with example data
+    function populateWithExample() {
+        document.getElementById('polytunnelLat').value = 56.249324;
+        document.getElementById('polytunnelLong').value = -2.654500;
+        document.getElementById('polytunnelName').value = "Tunnel 25";
+    }
+    
+    function populateFarmWithExample() {
+        document.getElementById('farmLat').value = 56.34977;
+        document.getElementById('farmLong').value = -2.75445;
+        document.getElementById('farmName').value = "Great Farm";
+        document.getElementById('farmDescription').value = "Strawbery production";
+    }
+            
+        
     </script>
 </body>
 </html>

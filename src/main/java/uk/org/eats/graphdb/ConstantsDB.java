@@ -2,7 +2,7 @@ package uk.org.eats.graphdb;
 
 import java.util.UUID;
 
-public class Constants {
+public class ConstantsDB {
 	
 	
 	public static final String EPPLAN_NAMESPACE = "https://w3id.org/ep-plan#";

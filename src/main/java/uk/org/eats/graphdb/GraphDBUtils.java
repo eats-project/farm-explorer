@@ -2,9 +2,11 @@ package uk.org.eats.graphdb;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Namespace;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
@@ -16,7 +18,9 @@ import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
+import org.eclipse.rdf4j.rio.Rio;
 import org.springframework.util.ResourceUtils;
 
 public class GraphDBUtils {
@@ -24,14 +28,14 @@ public class GraphDBUtils {
 	
  public static Repository getFabricRepository (RepositoryManager repositoryManager ) {
 	repositoryManager.init();
-	Repository repository = repositoryManager.getRepository(Constants.FABRIC_REPOSITORY_NAME);
+	Repository repository = repositoryManager.getRepository(ConstantsDB.FABRIC_REPOSITORY_NAME);
 	return repository;
 }
  
  
  public static RepositoryManager getRepositoryManager () {
 	 
-	 return new RemoteRepositoryManager( Constants.GRAPH_DB_URL  ); 
+	 return new RemoteRepositoryManager( ConstantsDB.GRAPH_DB_URL  ); 
  }
  
 
@@ -78,6 +82,40 @@ public class GraphDBUtils {
 		*/
 		
 	}
+
+public static ArrayList<Double[][]> addJsonLD(String payload, String assetsNamedGraphIri) {
+	
+	Repository repo = getFabricRepository(getRepositoryManager());
+	RepositoryConnection conn = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager()).getConnection();
+	ValueFactory f = repo.getValueFactory();
+	Model results = null;
+	
+	try {  
+		    results = Rio.parse(new StringReader(payload), null, RDFFormat.JSONLD);
+	}
+	catch (IOException e) {
+		  // handle IO problems (e.g. the file could not be read)
+			System.out.println(e.getLocalizedMessage());
+		}
+		catch (RDFParseException e) {
+		  // handle unrecoverable parse error
+			System.out.println(e.getLocalizedMessage());
+		}
+		catch (RDFHandlerException e) {
+		  // handle a problem encountered by the RDFHandler
+			System.out.println(e.getLocalizedMessage());
+		}
+	
+	if (results!=null) {
+		System.out.println("adding model size" +results.size() );
+		System.out.println("adding into named graph" +assetsNamedGraphIri );
+	conn.add(results.getStatements(null, null, null, (Resource)null), f.createIRI(assetsNamedGraphIri));
+	}
+	else {
+		System.out.println("Parsing content to be saved failed ");
+	}
+	return null;
+}
  
  
 }
