@@ -373,4 +373,39 @@ public class SPARQLQueries {
 		return map;
 	}
 
+	public static HashMap <String,String>  getSensorData(String sensorIRI) {
+		
+		String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/> Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/> SELECT DISTINCT ?result ?time FROM <"+ConstantsDB.ASSETS_NAMED_GRAPH_IRI+"> WHERE { ?obs sosa:madeBySensor <"+sensorIRI+">; sosa:hasResult ?result; sosa:resultTime ?time} ";
+		
+		return runTupleQuery (queryString);
+	}
+	
+	
+	private static HashMap <String,String> runTupleQuery (String query) {
+		
+      Repository repo = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager());
+	  RepositoryConnection conn = repo.getConnection();
+		
+      HashMap <String,String > map = new  HashMap <String,String >  ();
+		
+	    System.out.println(query);
+		TupleQuery tupleQuery = conn.prepareTupleQuery(query);
+			   try (TupleQueryResult result = tupleQuery.evaluate()) {
+				      while (result.hasNext()) {  // iterate over the result
+				         BindingSet bindingSet = result.next();
+				         Set <String> bindings = bindingSet.getBindingNames();  
+					    	
+					    	Iterator it2 = bindings.iterator();
+					    	while (it2.hasNext()) {
+					    		String key = (String) it2.next();
+					    		if (bindingSet.getValue(key)!=null)
+					    		map.put(key, bindingSet.getValue(key).toString()) ;
+					    	}  
+				      }
+				   
+			   }
+		return map;
+		
+	}
+
 }

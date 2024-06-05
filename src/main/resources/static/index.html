@@ -11,12 +11,19 @@
   
     <!-- Include Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0"></script> 
+   
+  
       <!-- Set the height of the map container and panel -->
+      
       <style>
+       .chart-container {
+      width: 600px;
+      height: 400px;
+    }
           body {
-              margin: 0;
+              margin: 0px;
               padding: 0;
-              display: flex;
               height: 100vh;
           }
           
@@ -34,15 +41,7 @@
             height: calc(100% - 90px); /* Adjust based on header/footer height */
         }
 		  
-		   #nav-bar {
-             display: flex;
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            position: absolute;
-            width: 100%; /* Ensure nav bar extends full width */
-            z-index: 1000; /* Keeps the nav bar on top of other content */
-            }
+		
         .nav-item {
             margin-right: 20px;
             display: flex;
@@ -53,8 +52,11 @@
         }
 
           #map {
-              flex: 2; /* Two-thirds of the screen */
-              height: 50%;
+               position: relative;
+  border: 1px solid black;
+  border-radius: 8px;
+  height: 45vh;  /* or as desired */
+  width: 100%;
           }
 
           #panel {
@@ -156,60 +158,62 @@
 			  let result = irrigationRigCoeficient*waterUsed; 
 			   
 			  return result;
-		  }
-		  
-		  
+		  }	  
 	  </script>	  
-	  
-	  
+
 	  
   </head>
   <body>
-<div id="nav-bar">
-       
-        <div class="nav-item">
-            <i class="fas fa-tree nav-icon"></i>
-            <span><a style="color:white" href="/index.html">Explore Farm</a></span>
-        </div>
-         <div class="nav-item">
-            <i class="fas fa-plus-square nav-icon"></i>
-            <span><a style="color:white" href="/addData.html">Add Data</a></span>
-        </div>
-         <div class="nav-item">
-            <i class="fas fa-rotate-right nav-icon"></i>
-            <span><a style="color:white" href="/deleteData.html">Reset Demo</a></span>
-        </div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+ <div class="collapse navbar-collapse" ">
+ <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+       <i class="fas fa-tree nav-icon"></i>
+        <a class="nav-link" href="/index.html">Explore Farm <span class="sr-only">(current)</span></a>
+      </li>
+       <li class="nav-item ">
+     <i class="fas fa-plus-square nav-icon"></i>
+        <a class="nav-link" href="/addData.html">Add Data <span class="sr-only">(current)</span></a>
+      </li>
+       <li class="nav-item active">
+      <i class="fas fa-rotate-right nav-icon"></i>
+        <a class="nav-link" href="/deleteData.html">Reset Demo<span class="sr-only">(current)</span></a>
+      </li>
+ </ul>
+</div>
+</nav>
+
+<!-- Start container -->
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-md-4" id="browser"> 
+    
+    <ul class="list-group" id="browserList"> </ul>
+
+      </div>
+    <div class="col-md-8" style='border: 1px solid red '>
+      <!-- Map container -->
+      <div id="map"></div>
     </div>
-  <!-- Map container -->
-  <div id="map"></div>
+  </div>
 
-  <!-- Panel container -->
-  <!-- <div id="panel"></div>-->
-  
-  <!-- Panel container -->
-  <div id="bottomPanel"> 
-	
-	 <h3>  Carbon Footprint </h3>
+<!-- Start bottom row -->
+<div class="row">
 
-	  <p> 
- 
-  <span id="carbonFootprint"> 
-	  
-	
-  
-  </span>
-	  </p>
-	  
-	  <!-- Button trigger modal -->
+ <div class="col-md-4" id="bottomPanel">
+  <h3>  Carbon Footprint </h3>
+  <p><span id="carbonFootprint"></span></p>
+    <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" onclick="updateIframeAndShowModal()">
         Edit Calcualtion Method
     </button>
-	  
-	</div>  
-	
-	
-	 <!-- Panel container -->
-  <div id="provenancePanel"> 
+ </div>
+
+
+
+
+<div class="col-md-8" id="provenancePanel"> 
 	
 	 <h3>  Provenance of Carbon Footprint Calculation </h3>
 
@@ -267,38 +271,97 @@
   </div>
 </div>		             	 
 		             	 
-		             	 
- 
-	  
-	
- 
-  
   
 	  </p>
 	  
 	  <small><span> <a href="https://www.flaticon.com/">Icons attribution</a></span></small>
 	</div>    
+	
+
+</div>
 
 
 
-<!-- Modal -->
-    <div class="modal fade" id="iframeModal" tabindex="-1" aria-labelledby="iframeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="iframeModalLabel">Dynamic Iframe Content</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Iframe -->
-                    <iframe id="myIframe" src="" style="width:100%; height:500px;" frameborder="0" allowfullscreen></iframe>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- End bottom row -->
+</div>
+
+
+
+	<!-- Modal -->
+	    <div class="modal fade" id="iframeModal" tabindex="-1" aria-labelledby="iframeModalLabel" aria-hidden="true">
+	        <div class="modal-dialog modal-lg">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <h5 class="modal-title" id="iframeModalLabel">Dynamic Iframe Content</h5>
+	                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	                </div>
+	                <div class="modal-body">
+	                    <!-- Iframe -->
+	                    <iframe id="myIframe" src="" style="width:100%; height:500px;" frameborder="0" allowfullscreen></iframe>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    
+   
+   	<!-- Sensor Data Modal -->
+	    <div class="modal fade" id="sensorDataModal" tabindex="-1" aria-labelledby="sensorDataModal" aria-hidden="true">
+	        <div class="modal-dialog modal-lg">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <h5 class="modal-title" id="sensorDataModalLabel">Sensor Data</h5>
+	                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	                </div>
+	                <div class="modal-body">
+	                    <!-- Table goes here  -->
+	                    <div class="chart-container">
+    <canvas id="myChart"></canvas>
+  </div>
+  <script src="chart.js"></script>
+<SCRIPT>	                    
+const ctx = document.getElementById('myChart').getContext('2d');
+
+const labels = ['January', 'February', 'March', 'April', 'May', 'June'];
+const data = {
+  labels: labels,
+  datasets: [{
+    label: 'My Data',
+    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+    borderColor: 'rgba(75, 192, 192, 1)',
+    borderWidth: 1,
+    data: [10, 20, 30, 40, 50, 60],
+  }]
+};
+
+const myChart = new Chart(ctx, {
+  type: 'line',
+  data: data,
+  options: {
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
+  }
+});
+</SCRIPT>
+	                 </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+ 
+<!-- End container -->
+</div>
+
+
 
  
     <script>
@@ -313,7 +376,19 @@
             var myModal = new bootstrap.Modal(document.getElementById('iframeModal'));
             myModal.show();
         }
-    </script>
+        
+        
+        function updateIframeAndShowModal() {
+            var param1 = 1;
+            var param2 = 2;
+           
+         //   var iframe = document.getElementById('sensorDataModal');
+          
+
+            var myModal = new bootstrap.Modal(document.getElementById('sensorDataModal'));
+            myModal.show();
+        }
+    </SCRIPT>
 
   <script>
       // Initialize the map
@@ -329,9 +404,12 @@
         maxZoom:25
       }).addTo(map);
       
+      
       L.control.zoom({
             position: 'bottomright' // Positions zoom control at the bottom right corner
         }).addTo(map);
+
+     
 
     // Function to fetch JSON-LD data from a URL
     function fetchJsonLd(url, callback) {
@@ -375,10 +453,12 @@ console.log("here");
 		console.log (jsonLdData)
 		
 		console.log (jsonLdData['https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel'])
-		
+		 createBrowserList(jsonLdData )
       // Draw markers for devices
    //   drawItemMarkers(jsonLdData.hasDevice);
       drawItemMarkers(jsonLdData);
+      
+     
 			
 		/*
 		

@@ -38,6 +38,7 @@ import com.google.gson.Gson;
 
 import uk.org.eats.graphdb.ConstantsDB;
 import uk.org.eats.graphdb.GraphDBUtils;
+import uk.org.eats.templates.WaterFlowData;
 
 
 @org.springframework.stereotype.Controller
@@ -64,53 +65,11 @@ public class ServiceController {
 	@PostMapping("/upload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                  @RequestParam("dataType") String dataType) {
-        try {
-            BufferedReader fileReader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
-            CSVParser parser = new CSVParser(fileReader, CSVFormat.DEFAULT.withFirstRecordAsHeader());
-            List<String> headers = parser.getHeaderNames();
-
-            // RDF setup
-            ValueFactory vf = SimpleValueFactory.getInstance();
-            LinkedHashModel model = new LinkedHashModel();
-            String namespace = "http://example.org/sensor/";
-            // Regex to split the temperature string into value and unit
-            Pattern pattern = Pattern.compile("^(\\d+(?:\\.\\d+)?)(.*)$");
-            // Parse each CSV row and create RDF triples
-            for (CSVRecord record : parser) {
-                String sensorId = "sensor123";  // Example sensor ID
-               // String timestampStr = record.get("Timestamp(Europe/London)");
-                String temperatureStr = record.get("Temperature");
-   //             String humidity = record.get("Humidity");
-             //   ZonedDateTime timestamp = ZonedDateTime.parse(timestampStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(java.time.ZoneId.of("Europe/London")));
-
-                // Use regex to find matches and split
-                Matcher matcher = pattern.matcher(temperatureStr);
-                double temperature = 0;
-                String unit = "°C";  // Default unit
-
-                if (matcher.matches()) {
-                    temperature = Double.parseDouble(matcher.group(1));
-                    unit = matcher.group(2).trim().isEmpty() ? "°C" : matcher.group(2).trim();
-                }
-                
-                // Create RDF triples
-         //       model.add(vf.createIRI(namespace, sensorId), vf.createIRI(namespace, "hasTimestamp"), vf.createLiteral(timestamp.toString()));
-                model.add(vf.createIRI(namespace, sensorId), vf.createIRI(namespace, "hasTemperature"), vf.createLiteral(temperature));
-        //        model.add(vf.createIRI(namespace, sensorId), vf.createIRI(namespace, "hasHumidity"), vf.createLiteral(Double.parseDouble(humidity)));
-            }
-
-            // Print the model (or store it in a repository)
-            model.forEach(statement -> System.out.println(statement));
-            System.out.println("Data : " + dataType);
-            System.out.println("CSV Headers: " + headers);
-            parser.close();
-            fileReader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "{\"result\":\"error uploading data\"}";
-        }
-        
-        return "{\"result\":\"data recieved\"}";
+       
+        String payload = WaterFlowData.parseDataInJSONLD(file,dataType);
+		String result = GraphDBUtils.addJsonLD(payload, ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI);
+		Gson gson = new Gson();
+		return gson.toJson(result);
     }
 	
 	@PostMapping("/addNewAsset")
@@ -175,6 +134,18 @@ public class ServiceController {
 		return gson.toJson(result);
 
 	}
+	
+	@PostMapping("/getSensorData")
+	@ResponseBody
+	public String getSensorData(@RequestBody String sensorIRI) {
+
+
+		HashMap <String,String> result = SPARQLQueries.getSensorData(sensorIRI);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
 	
 	@PostMapping("/evaluateTrace")
 	@ResponseBody

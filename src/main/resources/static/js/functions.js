@@ -3,11 +3,93 @@ function roundTwoDecimal (num) {
 	return Math.round((num + Number.EPSILON) * 100) / 100
 }
 
+function htmlToNode(htmlString) {
+  const element = document.createElement("div"); // Create a temporary container element
+  element.innerHTML = htmlString;  // Set the HTML content
+  return element.firstChild; // Return the first child element (assuming it's the desired node)
+}
+
+function createBrowserList(items ) {
+	
+	console.log("creating list");
+	
+	let list = document.getElementById ("browserList");
+	let counter = 0;
+	let itemNode ='';
+	
+	items.forEach(function (item) {
+	  
+	   if (item['@type']&&item['@type'].includes("https://smartdatamodels.org/dataModel.Agrifood/AgriFarm")) {
+	   
+	   	itemNode = itemNode + `<li class="list-group-item"> 
+	   	                       <a href="#" data-bs-toggle="collapse" data-bs-target="#collapse-sublist-${counter}">Farm: ${item['https://smartdatamodels.org/name'][0]['@value']}</a>
+	   	                       </li><ul id="collapse-sublist-${counter}" class="list-group collapse">`
+	   	
+	   	
+	   	if (item['https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel']) {
+	   	let agriParcels = item['https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel'];
+	   	
+	   	agriParcels.forEach(function (agriParcel) {
+		    console.log("adding parcel");
+			itemNode = itemNode + `<li class="list-group-item"> Parcel: ${agriParcel['https://smartdatamodels.org/name'][0]['@value']}
+			                       <button type="button" class=" w-20" onClick="calculateTunnelFootprint ('${agriParcel['@id']}')">CF </button></li>`
+		    console.log(itemNode);
+		});
+		}
+		
+		if (item['https://smartdatamodels.org/dataModel.Agrifood/hasDevice']) {
+	   	let devices = item['https://smartdatamodels.org/dataModel.Agrifood/hasDevice'];
+	   	
+	   	devices.forEach(function (device) {
+		    console.log("adding device");
+			itemNode = itemNode + `<li class="list-group-item"> Sensor: ${device['https://smartdatamodels.org/name'][0]['@value']}
+			                       <button type="button" class=" w-20" onClick="updateIframeAndShowModal('${device['@id']}')">View Data </button></li>`
+		    console.log(itemNode);
+		});
+		}
+	   
+	   itemNode = itemNode + '</li>'
+	   
+	   
+	   counter++;
+	   
+	   }
+	});
+	
+	
+	
+	list.innerHTML = itemNode;
+	
+	
+	
+	
+	/*
+  <li class="list-group-item">
+    <a href="#" data-bs-toggle="collapse" data-bs-target="#collapse-sublist-1">Item 2 (with sublist)</a>
+    <ul id="collapse-sublist-1" class="list-group collapse">
+      <li class="list-group-item">Sublist Item 1</li>
+      <li class="list-group-item">Sublist Item 2</li>
+    </ul>
+  </li>
+  <li class="list-group-item">Item 3</li>
+	*/
+
+    }
+
+
  function drawItemMarkers(items ) {
 	          items.forEach(function (item) {
 		
+		      if (item['@type']&&item['@type'].includes("https://smartdatamodels.org/dataModel.Agrifood/AgriFarm")) {
+			
+			 // draw agri parcels 
+			 
+			 if (item['https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel']) {
+		       let agriParcels = item['https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel'];
+	   	
+	   	       agriParcels.forEach(function (agriParcel) {
 		          //TO DO add handling for multiple agri parcels on farm (currently only the first is selected) update code for handling look up of details 
- 	              var coordinates = item['https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel'][0]['http://www.opengis.net/ont/geosparql#hasGeometry'][0]['http://www.opengis.net/ont/geosparql#asWKT'][0]['@value'].match(/-?\d+\.\d+/g).map(Number);
+ 	              var coordinates = agriParcel['http://www.opengis.net/ont/geosparql#hasGeometry'][0]['http://www.opengis.net/ont/geosparql#asWKT'][0]['@value'].match(/-?\d+\.\d+/g).map(Number);
 	              var deviceMarker = L.circleMarker( L.latLng(parseFloat(coordinates[0]),parseFloat(coordinates[1])), {
 	                  radius: 8,
 	                  color: 'blue',
@@ -17,21 +99,12 @@ function roundTwoDecimal (num) {
 
 					let popupContent = ""; 
 
-					if (item['@type'].includes("AgriParcel")) {
-						popupContent +=  '<strong>' + item.name + '</strong><br>';
-						popupContent +=  '<strong> Description:</strong> ' + item.description +'<br>';
-						
-						popupContent +=  '<strong> Plant type:</strong> ' + item.hasAgriCrop.name +'<br>';
-						popupContent +=  '<strong> Status:</strong> ' + item.cropStatus +'<br>';
-						
-						popupContent +=  '<strong> Last Planted At:</strong> ' + item.lastPlantedAt +'<br>';
-						
-						  deviceMarker.on('click', function () {	
-								
-			                        calculateTunnelFootprint ();
+					if (item['@type'].includes("https://smartdatamodels.org/dataModel.Agrifood/AgriParcel")) {
+						popupContent +=  '<strong>' + agriParcel ['https://smartdatamodels.org/name'][0]['@value'] + '</strong><br>';					
+						deviceMarker.on('click', function () {	
+			                       // calculateTunnelFootprint ();
                           });
 					}
-
 					else { 
 						popupContent +=  '<strong> ' + item.name + '</strong>';
 					}
@@ -43,7 +116,60 @@ function roundTwoDecimal (num) {
 						}).setContent(popupContent);
 
 					deviceMarker.bindPopup(popup);
+				   	
+				   });	
+				}
+				
+				//End agri parcel loop 
+				}
+				
+				
+				if (item['@type']&&item['@type'].includes("https://smartdatamodels.org/dataModel.Agrifood/AgriFarm")) {
+			
+			 // draw agri parcels 
+			 
+			 if (item['https://smartdatamodels.org/dataModel.Agrifood/hasDevice']) {
+		       let devices = item['https://smartdatamodels.org/dataModel.Agrifood/hasDevice'];
+	   	
+	   	       devices.forEach(function (device) {
+		          //TO DO add handling for multiple agri parcels on farm (currently only the first is selected) update code for handling look up of details 
+ 	              var coordinates = device['http://www.opengis.net/ont/geosparql#hasGeometry'][0]['http://www.opengis.net/ont/geosparql#asWKT'][0]['@value'].match(/-?\d+\.\d+/g).map(Number);
+	              var deviceMarker = L.circleMarker( L.latLng(parseFloat(coordinates[0]),parseFloat(coordinates[1])), {
+	                  radius: 8,
+	                  color: 'blue',
+	                  fillColor: 'red',
+	                  fillOpacity: 0.8
+	              }).addTo(map);
 
+					let popupContent = ""; 
+
+					if (item['@type'].includes("http://www.w3.org/ns/sosa/Sensor")) {
+						popupContent +=  '<strong>' + device ['https://smartdatamodels.org/name'][0]['@value'] + '</strong><br>';					
+						deviceMarker.on('click', function () {	
+			                       // calculateTunnelFootprint ();
+                          });
+					}
+					else { 
+							popupContent +=  '<strong>' + device ['https://smartdatamodels.org/name'][0]['@value'] + '</strong><br>';					
+				
+					}
+
+	         	      // Add a popup with device information
+					let popup = L.popup({
+  						closeOnClick: false,
+  						autoClose: false
+						}).setContent(popupContent);
+
+					deviceMarker.bindPopup(popup);
+				   	
+				   });	
+				}
+				
+				//End agri parcel loop 
+				}
+				
+				
+				//end outer loop
 				});
 				
 				
@@ -89,6 +215,8 @@ function linkObservationFoI (mapLayer, provTrace) {
        }
        
  function calculateTunnelFootprint () {
+	
+	console.log('calculating')
 	
 		let waterQuantity = estimateWaterQuantity(); 
 	    let fertiliserQuantitiy = estimateFertiliserQuantity(waterQuantity.value, 0.01); 

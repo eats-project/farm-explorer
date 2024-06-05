@@ -33,7 +33,7 @@
 		#polytunnelForm,
 		#assets,
 		#farms,
-		#farmForm {
+		#farmForm, #sensorForm {
 			display: none;
 			/* Initially hidden */
 			width: 300px;
@@ -43,7 +43,11 @@
 			text-align: center;
 		}
 
+        #drop-area {
+	     height:50px;
+        }
 		#drop-area.hover {
+			
 			background-color: #f0f0f0;
 		}
 
@@ -97,7 +101,7 @@
 	<select id="assets">
 		<option value="">Please select the origin</option>
 		<option value="temp">Manual</option>
-		<option value="temp">Temperature Sensor</option>
+		<option value="urn:ngsi-ld:AgriFarm:Great%20Farm:Sensor:Tunnel%2025%20Flow%20Meter">Tunnel 20 Flow Meter (to do add dynamically)</option>
 	</select>
 
 	<select id="assetType">
@@ -105,9 +109,12 @@
 		<option value="polytunnel">Polytunnel</option>
 		<option value="sensor">Sensor</option>
 		<option value="actuator">Actuator</option>
-		<option value="https://saref.etsi.org/saref4agri/Farm">Farm</option>
 	</select>
+	
+	
 	<div id="drop-area">Drop your CSV file here</div>
+	
+	
 	<div id="polytunnelForm">
 		<form id="polytunnelFormContent">
 			<input type="text" id="polytunnelName" placeholder="Name">
@@ -138,6 +145,33 @@
 
 		<button onclick="populateFarmWithExample()">Populate with Example</button>
 	</div>
+	
+	<div id="sensorForm">
+		<form id="sensorFormContent">
+			<input type="text" id="sensorName" placeholder="Name">
+			<select id="sensorType">
+		      <option value="">Please select sensor type</option>
+		      <option value="https://eats.org.uk/eats#WaterFlowSensor">Water Flow Sensor (need to load dynamically)</option>
+		      <option value="https://eats.org.uk/eats#TemperatureSensor">Temperature Sensor (need to load dynamically)</option>
+	        </select>
+	        <select id="sensorFOI">
+		      <option value="">Please select sensor feature of interest</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025">Tunnel 25 (need to load dynamically)</option>
+	        </select>
+	         <select id="sensorProperty">
+		      <option value="">Please select sensor feature of interest</option>
+		      <option value="https://eats.org.uk/eats#growTableWaterFlow">Grow Table Waterflow (need to load dynamically)</option>
+		      <option value="https://eats.org.uk/eats#soilTemperature">Soil Temperature (need to load dynamically)</option>
+	        </select>
+			<div class="coordinates-group">
+				<input type="text" id="sensorLat" placeholder="Latitude">
+				<input type="text" id="sensorLong" placeholder="Longitude">
+			</div>
+		</form>
+		<button onclick="saveSensorForm()">Save</button>
+
+		<button onclick="populateSensorWithExample()">Populate with Example</button>
+	</div>
 
 
 	<script>
@@ -145,6 +179,9 @@
 		const dataTypeSelect = document.getElementById('dataType');
 		const assetTypeSelect = document.getElementById('assetType');
 		const polytunnelForm = document.getElementById('polytunnelForm');
+		const sensorForm = document.getElementById('sensorForm');
+		
+		resetSelections();
 
 		// Toggle visibility based on selected option
 		dataTypeSelect.addEventListener('change', function () {
@@ -167,11 +204,6 @@
 						updateSelectList(JSON.stringify(r), "farms")
 						farms.style.display = 'block';
 					}).catch(error => console.error('Error', error))
-
-
-
-
-
 
 			} else if (this.value === 'farm') {
 				dropArea.style.display = 'none';
@@ -201,6 +233,14 @@
 				polytunnelForm.style.display = 'block';
 			} else {
 				polytunnelForm.style.display = 'none';
+			}
+		});
+		
+		assetTypeSelect.addEventListener('change', function () {
+			if (this.value === 'sensor') {
+				sensorForm.style.display = 'block';
+			} else {
+				sensorForm.style.display = 'none';
 			}
 		});
 
@@ -324,8 +364,8 @@ console.log(payload)
 
 		function saveFarmForm() {
 			// Placeholder for form submission logic
-			let latitude = document.getElementById('polytunnelLat').value;
-			let longitude = document.getElementById('polytunnelLong').value;
+			let latitude = document.getElementById('farmLat').value;
+			let longitude = document.getElementById('farmLong').value;
 			let name_url_encoded = encodeURIComponent(document.getElementById('farmName').value);
 			let name = document.getElementById('farmName').value;
 			let description = document.getElementById('farmDescription').value;
@@ -372,6 +412,73 @@ console.log(payload)
 			resetSelections();
 
 		}
+		
+			function saveSensorForm() {
+			// Placeholder for form submission logic
+			let latitude = document.getElementById('sensorLat').value;
+			let longitude = document.getElementById('sensorLong').value;
+			let name_url_encoded = encodeURIComponent(document.getElementById('sensorName').value);
+			let name = document.getElementById('sensorName').value;
+			let type = document.getElementById('sensorType').value;
+			let foi = document.getElementById('sensorFOI').value;
+		    let property = document.getElementById('sensorProperty').value;
+		    let farmIRI = document.getElementById('farms').value;
+			
+
+
+			let payload = `{
+                  "@context": [
+     "https://w3id.org/demeter/agri/agriFeature-context.jsonld",
+     "https://w3id.org/demeter/agri/agriCrop-context.jsonld",
+     "https://w3id.org/demeter/agri/agriCommon-context.jsonld",
+     "https://w3id.org/demeter/agri/agriIntervention-context.jsonld",
+     "https://w3id.org/demeter/agri/agriAlert-context.jsonld",
+     "https://w3id.org/demeter/agri/agriProduct-context.jsonld",
+     "https://w3id.org/demeter/agri/agriProperty-context.jsonld",
+     "https://w3id.org/demeter/agri/agriSystem-context.jsonld",
+     "https://w3id.org/demeter/agri/agriPest-context.jsonld",
+     "https://w3id.org/demeter/agri/farmAnimal-context.jsonld"
+    ],"@graph":[
+    
+    {"@id":"${farmIRI}",
+    "hasDevice": {
+        "@id": "${farmIRI}:Sensor:${name_url_encoded}",
+        "name":"${name}",
+        "@type": "Sensor",
+        "http://www.w3.org/ns/sosa/observes":{
+	    "@id":"${property}"
+        }, 
+        "http://www.w3.org/ns/sosa/hasFeatureOfInterest": {
+	     "@id":"${foi}"
+		},
+      "hasGeometry": {
+        "@id": "${farmIRI}:Sensor:${name_url_encoded}:geo",
+        "@type": "Feature",
+        "http://www.opengis.net/ont/geosparql#asWKT": "POINT (${latitude}, ${longitude})"
+      }
+      }
+      }
+      ]
+      }`;
+			console.log(payload);
+			// a POST request
+			const response = fetch('/addNewAsset', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json; charset=utf-8'
+				},
+				body: payload
+			});
+
+			console.log('status:', response.status)
+
+			// Log the latitude and longitude to the console
+			console.log("Latitude:", latitude);
+			console.log("Longitude:", longitude);
+			resetSelections();
+
+		}
+
 
 		function resetSelections() {
 			// Reset selections
@@ -380,10 +487,11 @@ console.log(payload)
 			assetTypeSelect.style.display = 'none';
 			polytunnelForm.style.display = 'none';
 			farmForm.style.display = 'none';
+			sensorForm.style.display = 'none';
 			assets.style.display = 'none';
 			farms.style.display = 'none';
 			polytunnelFormContent.reset();
-
+            sensorFormContent.reset();
 			farmFormContent.reset();
 		}
 
@@ -400,7 +508,74 @@ console.log(payload)
 			document.getElementById('farmName').value = "Great Farm";
 			document.getElementById('farmDescription').value = "Strawbery production";
 		}
+		
+		function populateSensorWithExample() {
+			document.getElementById('sensorLat').value = 56.249324;
+			document.getElementById('sensorLong').value = -2.655500;
+			document.getElementById('sensorName').value = "Tunnel 25 Flow Meter";
+			document.getElementById('sensorType').value = "https://eats.org.uk/eats#WaterFlowSensor";
+			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025";
+			document.getElementById('sensorProperty').value = "https://eats.org.uk/eats#growTableWaterFlow";
+			document.getElementById('farmDescription').value = "Strawbery production";
+		}
+// Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
 
+        // Highlight drop area when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+// Handle dropped files
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight(e) {
+            dropArea.classList.add('hover');
+        }
+
+        function unhighlight(e) {
+            dropArea.classList.remove('hover');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            ([...files]).forEach(uploadFile);
+        }
+
+        function uploadFile(file) {
+            let url = './upload'; // Change to your server upload URL
+            let formData = new FormData();
+            formData.append('file', file);
+            formData.append('dataType', assets.value); // Append selected data type
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
 
 	</script>
 </body>
