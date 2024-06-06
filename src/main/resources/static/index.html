@@ -205,11 +205,8 @@
 
  <div class="col-md-4" id="bottomPanel">
   <h3>  Carbon Footprint </h3>
-  <p><span id="carbonFootprint"></span></p>
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" onclick="updateIframeAndShowModal()">
-        Edit Calcualtion Method
-    </button>
+  <span id="carbonFootprint"> Please select a farm asset you wish to evaluate</span>
+   
  </div>
 
 
@@ -337,14 +334,12 @@
 
  
     <script>
-        function updateIframeAndShowModal() {
-            var param1 = 1;
-            var param2 = 2;
-            var iframeUrl = `/createMethodologyPlan.html?param1=${encodeURIComponent(param1)}&param2=${encodeURIComponent(param2)}`;
+        function updateIframeAndShowModal(assetIRI) {
+            var iframeUrl = `/createMethodologyPlan.html?assetIRI=${assetIRI}`;
 
             var iframe = document.getElementById('myIframe');
             iframe.src = iframeUrl;
-
+            
             var myModal = new bootstrap.Modal(document.getElementById('iframeModal'));
             myModal.show();
         }

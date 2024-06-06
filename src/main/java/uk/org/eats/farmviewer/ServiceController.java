@@ -136,6 +136,16 @@ public class ServiceController {
 
 	}
 	
+	@PostMapping("/runSparqlQuery")
+	@ResponseBody
+	public String runSparqlQuery(@RequestBody String payload) {
+
+		HashMap<String, String> result = SPARQLQueries.runSparqlQuery(payload);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
 	
 	@GetMapping("/getFarms")
 	@ResponseBody

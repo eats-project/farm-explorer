@@ -434,4 +434,9 @@ public class SPARQLQueries {
 
 	}
 
+	public static HashMap<String, String> runSparqlQuery(String payload) {
+		// TODO Auto-generated method stub
+		return runTupleQuerySingleResult (payload);
+	}
+
 }

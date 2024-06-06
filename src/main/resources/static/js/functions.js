@@ -226,6 +226,34 @@ function linkObservationFoI (mapLayer, provTrace) {
             });
        }
        
+ function calculateFootprint (assetIRI) {
+	
+	let planExists = false;
+	
+	console.log(assetIRI)
+	
+	let panel = document.getElementById ('carbonFootprint');
+	
+
+	
+	if (planExists)
+	{}
+	
+	else {
+		panel.innerHTML = `
+		
+		There are currently no existing calcualtion methods for this asset stored in the system. 
+		
+		 <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" onclick="updateIframeAndShowModal('${assetIRI}')">
+        Create Calcualtion Method
+        </button>
+		`
+	}
+	
+ }      
+       
+       
  function calculateTunnelFootprint () {
 	
 	console.log('calculating')

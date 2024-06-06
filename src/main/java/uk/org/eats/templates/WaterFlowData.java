@@ -40,8 +40,14 @@ public class WaterFlowData {
 	             json = json + "{\"@id\":\""+namespace+timestamp+"\","
 	             		+ "    \"@type\": \"http://www.w3.org/ns/sosa/Observation\","
 	             		+ "     \"http://www.w3.org/ns/sosa/madeBySensor\":{\"@id\":\""+sensorIRI+"\"},"
-	             		+ "    \"http://www.w3.org/ns/sosa/hasResult\":\""+reading+"\","
-	             		+ "     \"http://www.w3.org/ns/sosa/resultTime\":\""+timestamp+"\""
+	             		+ "     \"http://www.w3.org/ns/sosa/resultTime\":\""+timestamp+"\","
+	             				+ "\"http://www.w3.org/ns/sosa/hasResult\": {"
+	             				+ "	\"@id\":\""+namespace+timestamp+":Result\","
+	             				+ "	\"@type\":[\"http://www.w3.org/ns/sosa/Result\",\"http://qudt.org/schema/qudt/\"],"
+	             				+ "	\"http://qudt.org/schema/qudt/unit\":{\"@id\":\"http://www.wikidata.org/entity/Q4263534\"},"
+	             				+ "	\"http://qudt.org/schema/qudt/hasQuantityKind\":{\"@id\":\"http://www.wikidata.org/entity/Q39297\"},"
+	             				+ "	\"http://qudt.org/schema/qudt/value\":{\"@value\":\""+reading+"\",\"@type\":\"http://www.w3.org/2001/XMLSchema#float\"}"
+	             				+ "	}"
 	             		+ "    },";
 	             }
 	            	  

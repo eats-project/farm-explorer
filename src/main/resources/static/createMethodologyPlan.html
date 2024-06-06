@@ -117,6 +117,16 @@
             padding: 10px;
             margin-top: 20px;
         }
+        #sparqlBox {
+            display: none; /* Initially hide the SPARQL box */
+        }
+        textarea {
+            width: 90%; /* Adjusts the width of the text area */
+            height: 200px; /* Sets a fixed height */
+            margin: 10px; /* Adds some margin around the text area */
+            padding: 10px; /* Adds internal padding for better text readability */
+            font-family: monospace; /* Makes the font monospaced, which is better for coding */
+        }
     </style>
 </head>
 <body>
@@ -130,6 +140,14 @@
     <ul id="theList"></ul>
 </div>
 
+<!-- Button trigger modal -->
+ <button type="button" class="btn btn-primary" onclick="testCalculation()">
+       Test Method
+        </button>
+        <button type="button" class="btn btn-primary" onclick="saveCalculation()">
+       Save Method
+        </button>
+
 <!-- The Modal -->
 <div id="myModal" class="modal">
     <div class="modal-content">
@@ -141,11 +159,48 @@
             <option value="conversionFactor">Conversion Factor</option>
             <option value="activityData">Activity Data</option>
         </select>
+        <br>
+        <div id="sparqlBox">  
+       
+        
+        <textarea id="sparqlQuery" placeholder="Type your SPARQL query here... The query shoudl produce single number in variable ?output. You can use $this to reference this selected asset iri"></textarea>
+        
+         
+ Example Query: 
+         <pre><code>
+ Prefix sosa:&lt;http://www.w3.org/ns/sosa/&gt 
+ Prefix ssn:&lt;http://www.w3.org/ns/ssn/&gt  
+ Prefix qudt:&lt;http://qudt.org/schema/qudt/&gt
+
+ SELECT (MAX(?resultValue) - MIN(?resultValue) AS ?output)  
+ FROM &lt;https://eats.org.uk/Assets/&gt 
+ FROM &lt;https://eats.org.uk/Observations/&gt  
+        
+ WHERE 
+ {    
+ ?sensor sosa:observes ?property.
+ ?property ssn:isPropertyOf 
+   &lt;urn:ngsi-ld:AgriFarm:Great%20Farm:Device:Irrigation%20Rig>.
+ ?observation sosa:madeBySensor ?sensor; sosa:hasResult ?result.
+ ?result qudt:unit &lt;http://www.wikidata.org/entity/Q182098&gt.
+ ?result qudt:value ?resultValue.
+ }  
+</code></pre>
+        <br>
+         <span id="testResult"> </span>
+        <br>
+        <button onclick="testQuery()">TestQuery</button>
+        
+        </div>
+        
+        
 		<button onclick="saveSegment()">Save</button>
     </div>
 </div>
 
 <script>
+
+
 	
 var context = {};
 context.Plan	= "https://w3id.org/ep-plan#Plan";
@@ -157,6 +212,8 @@ context.comment = "http://www.w3.org/2000/01/rdf-schema#comment";
 context.hasInputVariable	= {"@id":"https://w3id.org/ep-plan#hasInputVariable","@type": "@id"};
 context.hasOutputVariable	= {"@id":"https://w3id.org/ep-plan#hasOutputVariable","@type": "@id"};
 context.isElementOfPlan	= {"@id":"https://w3id.org/ep-plan#isElementOfPlan","@type": "@id"};
+
+context.forAsset	= {"@id":"https://eats.org.uk#forAsset","@type": "@id"};
 
 	
 let graph = [];
@@ -170,6 +227,77 @@ let itemIndex = 0;
 let currentGroup = 0;
 let stepIRIs = []; 
 let curerentSelectedItem = {};
+let assetIRI = "";
+
+setAssetIRI ();
+
+function setAssetIRI () {
+	 // Get the current URL
+const url = window.location.href;
+// Create a URLSearchParams object from the query string
+const params = new URLSearchParams(window.location.search);
+// Get the value of 'param1'
+const param1Value = params.get('assetIRI');
+console.log(param1Value); // Outputs: value1
+assetIRI = encodeURIComponent(param1Value);
+
+plan['forAsset'] = assetIRI;
+
+}
+
+document.getElementById('elementOptions').addEventListener('change', function() {
+            const sparqlBox = document.getElementById('sparqlBox');
+            const selectedValue = this.value;
+            
+            // Display sparqlBox only for 'conversionFactor' or 'activityData'
+            if (selectedValue === 'conversionFactor' || selectedValue === 'activityData') {
+                sparqlBox.style.display = 'block';
+            } else {
+                sparqlBox.style.display = 'none';
+            }
+        });
+
+ 
+async  function testQuery() {
+            let query = document.getElementById('sparqlQuery').value;
+            
+            query = query.replace ("$this","<"+assetIRI+">");
+            
+            let result = document.getElementById('testResult');
+            
+            let response = await fetch('/runSparqlQuery', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json; charset=utf-8'
+				},
+				body: query
+			});
+			
+			 if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.status);
+             }
+           const data = await response.json();  // Parse JSON data from the response
+            
+            result.innerHTML = "Response received: " + JSON.stringify(data);
+            
+            console.log('Submitting query:', query);
+            // Here you would add code to process the query or send it to a SPARQL endpoint
+        }
+
+function finaliseGraph () {
+	graph.push(plan);
+}
+
+function testCalculation () {
+	
+	finaliseGraph ();
+	
+	
+	
+	
+	
+	console.log (graph);
+}
 
 function createNewVariable (iri, label) {
 	
