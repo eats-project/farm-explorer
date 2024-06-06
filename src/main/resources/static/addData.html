@@ -33,7 +33,7 @@
 		#polytunnelForm,
 		#assets,
 		#farms,
-		#farmForm, #sensorForm {
+		#farmForm, #sensorForm, #actuatorForm {
 			display: none;
 			/* Initially hidden */
 			width: 300px;
@@ -153,15 +153,22 @@
 		      <option value="">Please select sensor type</option>
 		      <option value="https://eats.org.uk/eats#WaterFlowSensor">Water Flow Sensor (need to load dynamically)</option>
 		      <option value="https://eats.org.uk/eats#TemperatureSensor">Temperature Sensor (need to load dynamically)</option>
+		       <option value="https://eats.org.uk/eats#ElectricitySensor">Electricity Sensor (need to load dynamically)</option>
 	        </select>
 	        <select id="sensorFOI">
 		      <option value="">Please select sensor feature of interest</option>
 		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025">Tunnel 25 (need to load dynamically)</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:Device:Irrigation%20Rig">Irrigation Rig (need to load dynamically)</option>
+		      
+		     
 	        </select>
 	         <select id="sensorProperty">
-		      <option value="">Please select sensor feature of interest</option>
-		      <option value="https://eats.org.uk/eats#growTableWaterFlow">Grow Table Waterflow (need to load dynamically)</option>
-		      <option value="https://eats.org.uk/eats#soilTemperature">Soil Temperature (need to load dynamically)</option>
+		      <option value="">Please select the observed property</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow">Grow Table Waterflow Tunel 25 (need to load dynamically)</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:Device:Irrigation%20Rig:Property:Electricity">Irrigation Rig Electricity Consumption (need to load dynamically)</option>
+		      
+		      
+		      
 	        </select>
 			<div class="coordinates-group">
 				<input type="text" id="sensorLat" placeholder="Latitude">
@@ -170,7 +177,40 @@
 		</form>
 		<button onclick="saveSensorForm()">Save</button>
 
-		<button onclick="populateSensorWithExample()">Populate with Example</button>
+		<button onclick="populateSensorWithExampleFlow()">Populate with Flow Meter Example</button>
+		<button onclick="populateSensorWithExampleElectricity()">Populate with Electricity Meter Example</button>
+		
+	</div>
+	
+	<div id="actuatorForm">
+		<form id="actuatorFormContent">
+			<input type="text" id="actuatorName" placeholder="Name">
+			<select id="actuatorType">
+		      <option value="">Please select actuator type</option>
+		      <option value="https://eats.org.uk/eats#IrrigationRig">Irrigation Rig (need to load dynamically)</option>
+		      </select>
+	        <select id="actuatorFOI">
+		      <option value="">Please select actuator feature of interest</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025">Tunnel 25 (need to load dynamically)</option>
+		      
+		     
+	        </select>
+	         <select id="actuatorProperty">
+		      <option value="">Please select the actuable property</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow">Grow Table Waterflow Tunel 25 (need to load dynamically)</option>
+		     
+		      
+		      
+	        </select>
+			<div class="coordinates-group">
+				<input type="text" id="actuatorLat" placeholder="Latitude">
+				<input type="text" id="actuatorLong" placeholder="Longitude">
+			</div>
+		</form>
+		<button onclick="saveActuatorForm()">Save</button>
+
+		<button onclick="populateAuctuatorWithExampleIrrigation()">Populate with Irrigation Rig Example</button>
+		
 	</div>
 
 
@@ -186,11 +226,25 @@
 		// Toggle visibility based on selected option
 		dataTypeSelect.addEventListener('change', function () {
 			if (this.value === 'observations') {
-				assets.style.display = 'block';
-				dropArea.style.display = 'flex';
+				
+				
 				assetTypeSelect.style.display = 'none';
 				polytunnelForm.style.display = 'none';
 				farms.style.display = 'none';
+				
+				fetch('/getSensors', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json; charset=utf-8'
+					}
+				}).then(r => r.json())
+					.then(r => {
+						console.log('Response', r) // You will get JSON response here.
+						updateSelectList(JSON.stringify(r), "assets")
+						dropArea.style.display = 'flex';
+						assets.style.display = 'block';
+					}).catch(error => console.error('Error', error))
+				
 			} else if (this.value === 'asset') {
 				dropArea.style.display = 'none';
 				fetch('/getFarms', {
@@ -234,15 +288,19 @@
 			} else {
 				polytunnelForm.style.display = 'none';
 			}
-		});
-		
-		assetTypeSelect.addEventListener('change', function () {
 			if (this.value === 'sensor') {
 				sensorForm.style.display = 'block';
 			} else {
 				sensorForm.style.display = 'none';
 			}
+			if (this.value === 'actuator') {
+				actuatorForm.style.display = 'block';
+			} else {
+				actuatorForm.style.display = 'none';
+			}
 		});
+		
+		
 
 		function updateSelectList(jsonData, selectElementId) {
 			// Get the select element
@@ -287,14 +345,14 @@
 
 		// Function to create an option element from an object
 		function createOption(item) {
-			if (!item || (!item.farmIRI && !item.label)) {
+			if (!item || (!item.iri && !item.label)) {
 				console.error("Invalid item structure in JSON data: missing required properties");
 				return null;
 			}
 
 			const option = document.createElement("option");
 			option.text = item.label ;
-			option.value = item.farmIRI ;
+			option.value = item.iri ;
 			return option;
 		}
 
@@ -444,18 +502,88 @@ console.log(payload)
     "hasDevice": {
         "@id": "${farmIRI}:Sensor:${name_url_encoded}",
         "name":"${name}",
-        "@type": "Sensor",
+        "@type": ["Sensor","${type}"],
         "http://www.w3.org/ns/sosa/observes":{
-	    "@id":"${property}"
+	        "@id":"${property}", 
+	        "@type":"http://www.w3.org/ns/sosa/ObservableProperty",
+	        "http://www.w3.org/ns/ssn/isPropertyOf":{
+	            "@id":"${foi}",
+	            "@type":"http://www.w3.org/ns/sosa/FeatureOfInterest"
+		        }
         }, 
-        "http://www.w3.org/ns/sosa/hasFeatureOfInterest": {
-	     "@id":"${foi}"
-		},
       "hasGeometry": {
         "@id": "${farmIRI}:Sensor:${name_url_encoded}:geo",
         "@type": "Feature",
         "http://www.opengis.net/ont/geosparql#asWKT": "POINT (${latitude}, ${longitude})"
+        }
       }
+      }
+      ]
+      }`;
+			console.log(payload);
+			// a POST request
+			const response = fetch('/addNewAsset', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json; charset=utf-8'
+				},
+				body: payload
+			});
+
+			console.log('status:', response.status)
+
+			// Log the latitude and longitude to the console
+			console.log("Latitude:", latitude);
+			console.log("Longitude:", longitude);
+			resetSelections();
+
+		}
+		
+		function saveActuatorForm() {
+			// Placeholder for form submission logic
+			let latitude = document.getElementById('actuatorLat').value;
+			let longitude = document.getElementById('actuatorLong').value;
+			let name_url_encoded = encodeURIComponent(document.getElementById('actuatorName').value);
+			let name = document.getElementById('actuatorName').value;
+			let type = document.getElementById('actuatorType').value;
+			let foi = document.getElementById('actuatorFOI').value;
+		    let property = document.getElementById('actuatorProperty').value;
+		    let farmIRI = document.getElementById('farms').value;
+			
+
+
+			let payload = `{
+                  "@context": [
+     "https://w3id.org/demeter/agri/agriFeature-context.jsonld",
+     "https://w3id.org/demeter/agri/agriCrop-context.jsonld",
+     "https://w3id.org/demeter/agri/agriCommon-context.jsonld",
+     "https://w3id.org/demeter/agri/agriIntervention-context.jsonld",
+     "https://w3id.org/demeter/agri/agriAlert-context.jsonld",
+     "https://w3id.org/demeter/agri/agriProduct-context.jsonld",
+     "https://w3id.org/demeter/agri/agriProperty-context.jsonld",
+     "https://w3id.org/demeter/agri/agriSystem-context.jsonld",
+     "https://w3id.org/demeter/agri/agriPest-context.jsonld",
+     "https://w3id.org/demeter/agri/farmAnimal-context.jsonld"
+    ],"@graph":[
+    
+    {"@id":"${farmIRI}",
+    "hasDevice": {
+        "@id": "${farmIRI}:Actuator:${name_url_encoded}",
+        "name":"${name}",
+        "@type": ["http://www.w3.org/ns/sosa/Actuator","${type}"],
+        "http://www.w3.org/ns/sosa/actsOnProperty":{
+	    "@id":"${property}",
+	    "@type":"http://www.w3.org/ns/sosa/ActuatableProperty",
+	    "http://www.w3.org/ns/ssn/isPropertyOf": {
+	        "@id":"${foi}",
+	        "@type":"http://www.w3.org/ns/sosa/FeatureOfInterest"
+		  }
+        },
+      "hasGeometry": {
+        "@id": "${farmIRI}:Actuator:${name_url_encoded}:geo",
+        "@type": "Feature",
+        "http://www.opengis.net/ont/geosparql#asWKT": "POINT (${latitude}, ${longitude})"
+        }
       }
       }
       ]
@@ -493,6 +621,8 @@ console.log(payload)
 			polytunnelFormContent.reset();
             sensorFormContent.reset();
 			farmFormContent.reset();
+			actuatorFormContent.reset();
+			actuatorForm.style.display = 'none';
 		}
 
 		// Function to populate the latitude and longitude fields with example data
@@ -509,15 +639,41 @@ console.log(payload)
 			document.getElementById('farmDescription').value = "Strawbery production";
 		}
 		
-		function populateSensorWithExample() {
+		function populateSensorWithExampleFlow() {
 			document.getElementById('sensorLat').value = 56.249324;
 			document.getElementById('sensorLong').value = -2.655500;
 			document.getElementById('sensorName').value = "Tunnel 25 Flow Meter";
 			document.getElementById('sensorType').value = "https://eats.org.uk/eats#WaterFlowSensor";
 			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025";
-			document.getElementById('sensorProperty').value = "https://eats.org.uk/eats#growTableWaterFlow";
-			document.getElementById('farmDescription').value = "Strawbery production";
+			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow";
+			
 		}
+		
+		function populateSensorWithExampleElectricity() {
+			document.getElementById('sensorLat').value = 56.249100;
+			document.getElementById('sensorLong').value = -2.652925;
+			document.getElementById('sensorName').value = "Irrigation Rig Electricity Meter";
+			document.getElementById('sensorType').value = "https://eats.org.uk/eats#ElectricitySensor";
+			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:Device:Irrigation%20Rig";
+			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:Device:Irrigation%20Rig:Property:Electricity";
+			
+		}
+		
+		function populateAuctuatorWithExampleIrrigation() {
+			document.getElementById('actuatorLat').value = 56.249100;
+			document.getElementById('actuatorLong').value = -2.654925;
+			document.getElementById('actuatorName').value = "Irrigation Rig";
+			document.getElementById('actuatorType').value = "https://eats.org.uk/eats#IrrigationRig";
+			document.getElementById('actuatorFOI').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025";
+			document.getElementById('actuatorProperty').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow";
+			
+		}
+		
+	
+		   
+	
+		
+		
 // Prevent default drag behaviors
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, preventDefaults, false);

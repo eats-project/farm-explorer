@@ -135,13 +135,13 @@ public static String addJsonLD(String payload, String assetsNamedGraphIri) {
 }
 
 
-public static String clearNamedGraph(String namedGraphIri) {
+public static String clearNamedGraph(String namedGraphIri, String label) {
 	
 	Repository repo = getFabricRepository(getRepositoryManager());
 	RepositoryConnection conn = repo.getConnection();
 	ValueFactory f = repo.getValueFactory();
 	
-	String queryString = "clear graph  <"+ ConstantsDB.ASSETS_NAMED_GRAPH_IRI +">";
+	String queryString = "clear graph  <"+ namedGraphIri +">";
 	
 	System.out.println ("Deleting populated "+namedGraphIri+" named graph") ;
 	
@@ -151,8 +151,8 @@ public static String clearNamedGraph(String namedGraphIri) {
 
 	System.out.println ("Adding empty "+namedGraphIri+" named graph") ;
 	
-	IRI context = f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI);
-	conn.add(f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI), RDFS.LABEL, f.createLiteral("Assets"), context); 
+	IRI context = f.createIRI(namedGraphIri);
+	conn.add(f.createIRI(namedGraphIri), RDFS.LABEL, f.createLiteral(label), context); 
 	
 	
 	return "clearNamedGraph: need to handle response server side";

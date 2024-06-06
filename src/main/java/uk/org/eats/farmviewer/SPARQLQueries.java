@@ -344,44 +344,24 @@ public class SPARQLQueries {
 		return list;
 	}
 
-	public static HashMap <String,String> getFarms() {
-		Repository repo = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager());
-		RepositoryConnection conn = repo.getConnection();
-	
+	public static ArrayList<HashMap<String, String>> getFarms() {
 		
-		HashMap <String,String > map = new  HashMap <String,String >  ();
+
+		String queryString = " Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/> SELECT DISTINCT ?iri ?label FROM <"+ConstantsDB.ASSETS_NAMED_GRAPH_IRI+"> WHERE { ?iri a smart:AgriFarm; smart_base:name ?label} ";
 		
-		String queryString = " Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/> SELECT DISTINCT ?farmIRI ?label FROM <"+ConstantsDB.ASSETS_NAMED_GRAPH_IRI+"> WHERE { ?farmIRI a smart:AgriFarm; smart_base:name ?label} ";
-		System.out.println(queryString);
-		TupleQuery tupleQuery = conn.prepareTupleQuery(queryString);
-			   try (TupleQueryResult result = tupleQuery.evaluate()) {
-				      while (result.hasNext()) {  // iterate over the result
-				         BindingSet bindingSet = result.next();
-				         Set <String> bindings = bindingSet.getBindingNames();  
-					    	
-					    	Iterator it2 = bindings.iterator();
-					    	while (it2.hasNext()) {
-					    		String key = (String) it2.next();
-					    		if (bindingSet.getValue(key)!=null)
-					    		map.put(key, bindingSet.getValue(key).toString()) ;
-					    	}
-					       
-					         
-				      }
-				   
-			   }
-		return map;
+			   
+		return runTupleQueryListResult (queryString);
 	}
 
-	public static HashMap <String,String>  getSensorData(String sensorIRI) {
+	public static ArrayList<HashMap <String,String>>  getSensorData(String sensorIRI) {
 		
-		String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/> Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/> SELECT DISTINCT ?result ?time FROM <"+ConstantsDB.ASSETS_NAMED_GRAPH_IRI+"> WHERE { ?obs sosa:madeBySensor <"+sensorIRI+">; sosa:hasResult ?result; sosa:resultTime ?time} ";
+		String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/> Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/> SELECT DISTINCT ?result ?time FROM <"+ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI+"> WHERE { ?obs sosa:madeBySensor <"+sensorIRI+">; sosa:hasResult ?result; sosa:resultTime ?time} ORDER BY ASC(?time) ";
 		
-		return runTupleQuery (queryString);
+		return runTupleQueryListResult (queryString);
 	}
 	
 	
-	private static HashMap <String,String> runTupleQuery (String query) {
+	private static HashMap <String,String> runTupleQuerySingleResult (String query) {
 		
       Repository repo = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager());
 	  RepositoryConnection conn = repo.getConnection();
@@ -406,6 +386,52 @@ public class SPARQLQueries {
 			   }
 		return map;
 		
+	}
+	
+	private static ArrayList<HashMap <String,String>> runTupleQueryListResult (String query) {
+		
+	      Repository repo = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager());
+		  RepositoryConnection conn = repo.getConnection();
+			
+	     
+	      ArrayList<HashMap <String,String>> list = new ArrayList<HashMap <String,String>> ();
+			
+		    System.out.println(query);
+			TupleQuery tupleQuery = conn.prepareTupleQuery(query);
+				   try (TupleQueryResult result = tupleQuery.evaluate()) {
+					      while (result.hasNext()) {  // iterate over the result
+					    	 HashMap <String,String > map = new  HashMap <String,String >  ();
+					         BindingSet bindingSet = result.next();
+					         Set <String> bindings = bindingSet.getBindingNames();  
+						    	
+						    	Iterator it2 = bindings.iterator();
+						    	while (it2.hasNext()) {
+						    		String key = (String) it2.next();
+						    		if (bindingSet.getValue(key)!=null)
+						    		map.put(key, bindingSet.getValue(key).toString()) ;
+						    		
+						    	}  
+						    	list.add(map);
+					      }
+					   
+				   }
+			return list;
+			
+		}
+
+
+	public static ArrayList<HashMap <String,String>> getSensors() {
+	     String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/> Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/> SELECT DISTINCT ?iri ?label FROM <"+ConstantsDB.ASSETS_NAMED_GRAPH_IRI+"> WHERE {?iri a sosa:Sensor;smart_base:name ?label }  ";
+		
+		return runTupleQueryListResult (queryString);
+
+	}
+	
+	public static ArrayList<HashMap <String,String>> getSensorType(String sensorIri) {
+	     String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/> Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/> SELECT DISTINCT ?type FROM <"+ConstantsDB.ASSETS_NAMED_GRAPH_IRI+"> WHERE {<"+sensorIri+"> a ?type. }  ";
+		
+		return runTupleQueryListResult (queryString);
+
 	}
 
 }

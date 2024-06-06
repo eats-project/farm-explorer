@@ -38,6 +38,7 @@ import com.google.gson.Gson;
 
 import uk.org.eats.graphdb.ConstantsDB;
 import uk.org.eats.graphdb.GraphDBUtils;
+import uk.org.eats.templates.ElectricityData;
 import uk.org.eats.templates.WaterFlowData;
 
 
@@ -65,12 +66,43 @@ public class ServiceController {
 	@PostMapping("/upload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                  @RequestParam("dataType") String dataType) {
+		
+		System.out.println(dataType);
+		ArrayList<HashMap <String,String>> list = SPARQLQueries.getSensorType(dataType);
+		
+
        
-        String payload = WaterFlowData.parseDataInJSONLD(file,dataType);
-		String result = GraphDBUtils.addJsonLD(payload, ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI);
+		String payload = null;
+		
+		if (checkIfTypePresent(list,"https://eats.org.uk/eats#WaterFlowSensor")) {
+		
+        payload = WaterFlowData.parseDataInJSONLD(file,dataType);
+		
+		}
+		
+		if (checkIfTypePresent(list,"https://eats.org.uk/eats#ElectricitySensor")) {
+			
+	        payload = ElectricityData.parseDataInJSONLD(file,dataType);
+			
+			}
+		String result = "{}";
+		if (payload != null) {
+		   result = GraphDBUtils.addJsonLD(payload, ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI);
+		}
 		Gson gson = new Gson();
 		return gson.toJson(result);
     }
+	
+	private boolean checkIfTypePresent (ArrayList<HashMap <String,String>> list, String type) {
+		
+		for (int i=0;i<list.size();i++) {
+			if (list.get(i).containsValue(type)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 	@PostMapping("/addNewAsset")
 	@ResponseBody
@@ -86,7 +118,7 @@ public class ServiceController {
 	@ResponseBody
 	public String deleteAssets() {
 
-		String repsonse = GraphDBUtils.clearNamedGraph(ConstantsDB.ASSETS_NAMED_GRAPH_IRI);
+		String repsonse = GraphDBUtils.clearNamedGraph(ConstantsDB.ASSETS_NAMED_GRAPH_IRI, "Assets");
 		
 		
 		return repsonse;
@@ -97,7 +129,7 @@ public class ServiceController {
 	@ResponseBody
 	public String deleteObservations() {
 
-		String repsonse = GraphDBUtils.clearNamedGraph(ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI);
+		String repsonse = GraphDBUtils.clearNamedGraph(ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI, "Observations");
 		
 		
 		return repsonse;
@@ -109,7 +141,17 @@ public class ServiceController {
 	@ResponseBody
 	public String getFarms() {
 
-		HashMap<String, String> result = SPARQLQueries.getFarms();
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getFarms();
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
+	@GetMapping("/getSensors")
+	@ResponseBody
+	public String getSensors() {
+
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getSensors();
 		Gson gson = new Gson();
 		return gson.toJson(result);
 
@@ -135,12 +177,13 @@ public class ServiceController {
 
 	}
 	
-	@PostMapping("/getSensorData")
+	@GetMapping("/getSensorData")
 	@ResponseBody
-	public String getSensorData(@RequestBody String sensorIRI) {
+	public String getSensorData(@RequestParam String sensorIRI) {
 
+		System.out.println("getSensorData Called " + sensorIRI);
 
-		HashMap <String,String> result = SPARQLQueries.getSensorData(sensorIRI);
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getSensorData(sensorIRI);
 		Gson gson = new Gson();
 		return gson.toJson(result);
 

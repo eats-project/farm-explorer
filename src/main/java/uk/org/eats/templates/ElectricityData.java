@@ -1,27 +1,18 @@
 package uk.org.eats.templates;
 
-import org.springframework.web.multipart.MultipartFile;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.model.impl.LinkedHashModel;
-import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
+import org.springframework.web.multipart.MultipartFile;
 
-public class WaterFlowData {
-	
-	
+public class ElectricityData {
+
 	public static String parseDataInJSONLD (MultipartFile file , String sensorIRI) {
 		String json = "{\"@graph\":[";
 		
@@ -30,12 +21,12 @@ public class WaterFlowData {
 	            List<String> headers = parser.getHeaderNames();
 
 	            System.out.println (headers);
-	            String namespace = sensorIRI+":WaterFlow:Observation:";
+	            String namespace = sensorIRI+":Electricity:Observation:";
 	           
 	            for (CSVRecord record : parser) {
 	            
 	             String reading = record.get("Reading");
-	             String timestamp =record.get("Timestamp");
+	             String timestamp = record.get("Timestamp");
 	            	
 	             json = json + "{\"@id\":\""+namespace+timestamp+"\","
 	             		+ "    \"@type\": \"http://www.w3.org/ns/sosa/Observation\","
@@ -74,4 +65,6 @@ public class WaterFlowData {
 	  }
 	
 
+	
+	
 }

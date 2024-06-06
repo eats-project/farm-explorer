@@ -18,8 +18,8 @@
       
       <style>
        .chart-container {
-      width: 600px;
-      height: 400px;
+      width: 100%;
+      height: 100%;
     }
           body {
               margin: 0px;
@@ -52,7 +52,7 @@
         }
 
           #map {
-               position: relative;
+             
   border: 1px solid black;
   border-radius: 8px;
   height: 45vh;  /* or as desired */
@@ -60,7 +60,7 @@
           }
 
           #panel {
-              flex: 1; /* One-third of the screen */
+            
               height: 50%;
               overflow: auto; /* Allow scrolling if content exceeds the panel height */
               padding: 10px;
@@ -69,25 +69,25 @@
 		  /* Footer panel with fixed height of one-third of the visible screen */
 		      #bottomPanel  {
 		        height: 48vh; /* One-third of the viewport height */
-			    position: absolute; 
+			
 			      bottom: 0; 
 				  overflow: auto; /* Allow scrolling if content exceeds the panel height */
                   min-width:250px;
 	              padding: 10px;
 	              background-color: #B1E6A1;
-				  width: 30%;
+			 /* 	  width: 30%;*/
 			    
 			    
 		      }
 		      
 		      #provenancePanel  {
 		        height: 48vh; /* One-third of the viewport height */
-			    position: absolute; 
+			 /*    position: absolute; */
 			      bottom: 0; 
-				left: 30%;
+				/* left: 30%;*/
 	              padding: 10px;
 	             /* background-color: #AFAE26;*/
-				  width: 70%;
+				/*  width: 70%;*/
 			      overflow: auto; /* Allow scrolling if content exceeds the panel height */
           
 			    
@@ -97,6 +97,8 @@
 	  
 	  
 	  <script>
+	  
+	  var activeSensorIRI="";
 	  
 	  var graphLD=[];
 	  
@@ -321,39 +323,9 @@
     <canvas id="myChart"></canvas>
   </div>
   <script src="chart.js"></script>
-<SCRIPT>	                    
-const ctx = document.getElementById('myChart').getContext('2d');
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June'];
-const data = {
-  labels: labels,
-  datasets: [{
-    label: 'My Data',
-    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-    borderColor: 'rgba(75, 192, 192, 1)',
-    borderWidth: 1,
-    data: [10, 20, 30, 40, 50, 60],
-  }]
-};
-
-const myChart = new Chart(ctx, {
-  type: 'line',
-  data: data,
-  options: {
-    scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true
-        }
-      }]
-    }
-  }
-});
-</SCRIPT>
 	                 </div>
-	                <div class="modal-footer">
-	                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-	                </div>
+	                
 	            </div>
 	        </div>
 	    </div>
@@ -378,13 +350,65 @@ const myChart = new Chart(ctx, {
         }
         
         
-        function updateIframeAndShowModal() {
-            var param1 = 1;
-            var param2 = 2;
+        function updateSensorDataAndShowModal(sensorIRI) {
            
-         //   var iframe = document.getElementById('sensorDataModal');
-          
+           console.log(sensorIRI);
+            activeSensorIRI = sensorIRI;
+            
+            	                    
+const ctx = document.getElementById('myChart').getContext('2d');
 
+
+
+ fetch('/getSensorData?sensorIRI='+encodeURIComponent(activeSensorIRI))
+            .then(response => response.json())
+            .then(json => {
+	console.log(json);
+	
+	let labels = [];
+	let observations = [];
+	
+	for (let i = 0; i < json.length; i++) {
+	//	for (let i = 0; i < 10; i++) {
+         const item = json[i];
+        //  console.log(`Result ${i + 1}: Value is ${item.result}, Time is ${item.time}`);
+          
+          labels.push(item.time.replace('"',''));
+          observations.push (parseFloat(item.result.replace('"','')));
+}
+	
+	const data = {
+  labels: labels,
+  datasets: [{
+    label: 'My Data',
+    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+    borderColor: 'rgba(75, 192, 192, 1)',
+    borderWidth: 1,
+    data: observations,
+  }]
+};
+
+const myChart = new Chart(ctx, {
+  type: 'line',
+  data: data,
+  options: {
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: false
+        }
+      }]
+    }
+  }
+});
+	
+	
+})
+            .catch(error => console.error('Error fetching JSON-LD:', error));
+
+
+
+   
             var myModal = new bootstrap.Modal(document.getElementById('sensorDataModal'));
             myModal.show();
         }

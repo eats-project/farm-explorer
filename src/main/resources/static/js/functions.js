@@ -32,7 +32,7 @@ function createBrowserList(items ) {
 	   	agriParcels.forEach(function (agriParcel) {
 		    console.log("adding parcel");
 			itemNode = itemNode + `<li class="list-group-item"> Parcel: ${agriParcel['https://smartdatamodels.org/name'][0]['@value']}
-			                       <button type="button" class=" w-20" onClick="calculateTunnelFootprint ('${agriParcel['@id']}')">CF </button></li>`
+			                       <button type="button" class=" w-20" onClick="calculateFootprint ('${agriParcel['@id']}')">CF </button></li>`
 		    console.log(itemNode);
 		});
 		}
@@ -42,9 +42,21 @@ function createBrowserList(items ) {
 	   	
 	   	devices.forEach(function (device) {
 		    console.log("adding device");
+		    
+		    if (device['@type'].includes("http://www.w3.org/ns/sosa/Sensor")) {
+		    
 			itemNode = itemNode + `<li class="list-group-item"> Sensor: ${device['https://smartdatamodels.org/name'][0]['@value']}
-			                       <button type="button" class=" w-20" onClick="updateIframeAndShowModal('${device['@id']}')">View Data </button></li>`
-		    console.log(itemNode);
+			                       <button type="button" class=" w-20" onClick="updateSensorDataAndShowModal('${device['@id']}')">View Data </button></li>`
+		    }
+		    
+		     if (device['@type'].includes("http://www.w3.org/ns/sosa/Actuator")) {
+		    
+			itemNode = itemNode + `<li class="list-group-item"> Actuator: ${device['https://smartdatamodels.org/name'][0]['@value']}
+			                       
+			                       <button type="button" class=" w-20" onClick="calculateFootprint ('${device['@id']}')">CF </button></li>`
+	
+		    }
+		    
 		});
 		}
 	   
