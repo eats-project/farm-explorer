@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -17,6 +18,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Namespace;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
@@ -31,7 +33,9 @@ import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
+import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParseException;
+import org.eclipse.rdf4j.rio.Rio;
 import org.springframework.util.ResourceUtils;
 
 import uk.org.eats.farmviewer.ServiceController;
@@ -110,6 +114,35 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 		
 		IRI context = f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI);
 		conn.add(f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI), RDFS.LABEL, f.createLiteral("Assets"), context); 		
+	}
+	
+	if (!GraphDBUtils.checkResourcePresent (conn.getContextIDs(), ConstantsDB.METHOD_PLANS)) {
+		System.out.println ("Adding the default Method Plans named graph") ;
+		
+		IRI context = f.createIRI(ConstantsDB.METHOD_PLANS);
+		conn.add(f.createIRI(ConstantsDB.METHOD_PLANS), RDFS.LABEL, f.createLiteral("Method Plans"), context); 		
+	}
+	
+	if (!GraphDBUtils.checkResourcePresent (conn.getContextIDs(), ConstantsDB.CONVERSION_FACTORS)) {
+		System.out.println ("Adding the default CONVERSION FACTORS named graph") ;
+		
+		IRI context = f.createIRI(ConstantsDB.CONVERSION_FACTORS);
+		conn.add(f.createIRI(ConstantsDB.CONVERSION_FACTORS), RDFS.LABEL, f.createLiteral("Emissions Conversion Factors"), context); 
+		File file = ResourceUtils.getFile("classpath:data/cf_2022.ttl");   	
+		File wikiLabels = ResourceUtils.getFile("classpath:data/wikidata_labels.ttl");   	
+		   
+	     
+	    InputStream input = new FileInputStream(file);
+	    Model model = Rio.parse(input, "", RDFFormat.TURTLE);
+	    
+	   input = new FileInputStream(wikiLabels);
+	    model.addAll(Rio.parse(input, "", RDFFormat.TURTLE));
+
+	            // Start a transaction to add the data to the named graph
+	            conn.begin();
+	            conn.add(model, context);
+	            conn.commit();  // Commit transaction to finalize changes
+	       
 	}
 	
 	

@@ -100,6 +100,8 @@
 	  
 	  var activeSensorIRI="";
 	  
+	  var myChart;
+	  
 	  var graphLD=[];
 	  
 	  var baseIRI = "http://example.com/agriViewer/";
@@ -291,7 +293,7 @@
 	        <div class="modal-dialog modal-lg">
 	            <div class="modal-content">
 	                <div class="modal-header">
-	                    <h5 class="modal-title" id="iframeModalLabel">Dynamic Iframe Content</h5>
+	                    <h5 class="modal-title" id="iframeModalLabel">Emission Calculation Formula</h5>
 	                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	                </div>
 	                <div class="modal-body">
@@ -350,8 +352,9 @@
            console.log(sensorIRI);
             activeSensorIRI = sensorIRI;
             
-            	                    
+        	                    
 const ctx = document.getElementById('myChart').getContext('2d');
+let canvas = document.getElementById('myChart');
 
 
 
@@ -383,7 +386,7 @@ const ctx = document.getElementById('myChart').getContext('2d');
   }]
 };
 
-const myChart = new Chart(ctx, {
+ myChart = new Chart(ctx, {
   type: 'line',
   data: data,
   options: {
@@ -406,6 +409,12 @@ const myChart = new Chart(ctx, {
    
             var myModal = new bootstrap.Modal(document.getElementById('sensorDataModal'));
             myModal.show();
+            
+             document.getElementById('sensorDataModal').addEventListener('hidden.bs.modal', function (event) {
+	         myChart.destroy();
+        console.log('The modal has been closed.');
+        // Add any additional actions to perform after modal is closed
+    });
         }
     </SCRIPT>
 

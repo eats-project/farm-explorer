@@ -355,7 +355,12 @@ public class SPARQLQueries {
 
 	public static ArrayList<HashMap <String,String>>  getSensorData(String sensorIRI) {
 		
-		String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/> Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/> SELECT DISTINCT ?result ?time FROM <"+ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI+"> WHERE { ?obs sosa:madeBySensor <"+sensorIRI+">; sosa:hasResult ?result; sosa:resultTime ?time} ORDER BY ASC(?time) ";
+		String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/>  Prefix ssn:<http://www.w3.org/ns/ssn/> "
+							+ "Prefix qudt:<http://qudt.org/schema/qudt/>"
+							+ "Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> "
+							+ "Prefix smart_base:<https://smartdatamodels.org/> "
+							+ "SELECT DISTINCT ?result ?time FROM <"+ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI+"> "
+									+ "WHERE { ?obs sosa:madeBySensor <"+sensorIRI+">; sosa:hasResult ?resultObj; sosa:resultTime ?time. ?resultObj qudt:value ?result} ORDER BY ASC(?time) ";
 		
 		return runTupleQueryListResult (queryString);
 	}

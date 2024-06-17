@@ -5,6 +5,17 @@ var ecfo_prefix = "https://w3id.org/ecfo#"
 var qudt_prefix = "http://qudt.org/schema/qudt/"
 var sosa_prefix = "http://www.w3.org/ns/sosa/"
 var time_prefix = "http://www.w3.org/2006/time#";
+var epplan_prefix = "https://w3id.org/ep-plan#";
+
+//EP-Plan
+
+context.Step   = epplan_prefix+"Step";
+context.Plan   = epplan_prefix+"Plan";
+context.Variable  = epplan_prefix+"Variable"
+context.isInputVariableOf  = {"@id":epplan_prefix+"isInputVariableOf","@type": "@id"}
+context.isOutputVariableOf  = {"@id":epplan_prefix+"isOutputVariableOf","@type": "@id"}
+context.isElementOfPlan  = {"@id":epplan_prefix+"isElementOfPlan","@type": "@id"}
+context.hasConstraintImplementation  = {"@id":epplan_prefix+"isElementOfPlan","@type": "@id"}
 
 //RDF 
 context.value = "http://www.w3.org/1999/02/22-rdf-syntax-ns#value"

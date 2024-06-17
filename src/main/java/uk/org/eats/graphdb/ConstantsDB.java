@@ -23,5 +23,9 @@ public class ConstantsDB {
 	public static final String PREFIXES = " Prefix ep-plan: <"+EPPLAN_NAMESPACE+">  Prefix prov: <"+PROV_NAMESPACE+"> PREFIX owl: <http://www.w3.org/2002/07/owl#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX mls: <http://www.w3.org/ns/mls#> PREFIX dcterms: <http://purl.org/dc/terms/>";
 
 	public static final String OWL_NAMESPACE = "http://www.w3.org/2002/07/owl#";
+
+	public static final String CONVERSION_FACTORS = "https://eats.org.uk/ConversionFactors/";
+
+	public static final String METHOD_PLANS = "https://eats.org.uk/MethodPlans/";
 	
 }

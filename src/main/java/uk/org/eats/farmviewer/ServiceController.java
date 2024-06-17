@@ -104,6 +104,16 @@ public class ServiceController {
 		return false;
 	}
 	
+	@PostMapping("/saveCalculationMethod")
+	@ResponseBody
+	public String saveCalculationMethod(@RequestBody String payload) {
+
+		String result = GraphDBUtils.addJsonLD(payload, ConstantsDB.METHOD_PLANS);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
 	@PostMapping("/addNewAsset")
 	@ResponseBody
 	public String addNewAsset(@RequestBody String payload) {
