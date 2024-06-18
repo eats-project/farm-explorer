@@ -11,11 +11,13 @@ var epplan_prefix = "https://w3id.org/ep-plan#";
 
 context.Step   = epplan_prefix+"Step";
 context.Plan   = epplan_prefix+"Plan";
+context.Constraint   = epplan_prefix+"Constraint";
 context.Variable  = epplan_prefix+"Variable"
 context.isInputVariableOf  = {"@id":epplan_prefix+"isInputVariableOf","@type": "@id"}
 context.isOutputVariableOf  = {"@id":epplan_prefix+"isOutputVariableOf","@type": "@id"}
 context.isElementOfPlan  = {"@id":epplan_prefix+"isElementOfPlan","@type": "@id"}
-context.hasConstraintImplementation  = {"@id":epplan_prefix+"isElementOfPlan","@type": "@id"}
+context.hasConstraintImplementation  = {"@id":epplan_prefix+"hasConstraintImplementation","@type": "@id"}
+context.constrains  = {"@id":epplan_prefix+"constrains","@type": "@id"}
 
 //RDF 
 context.value = "http://www.w3.org/1999/02/22-rdf-syntax-ns#value"

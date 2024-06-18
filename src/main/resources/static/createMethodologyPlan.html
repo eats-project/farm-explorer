@@ -210,7 +210,7 @@
 			</ul>
 		</div>
 	</nav>
-	<div class="container fluid">
+	<div class="container-fluid">
 		<!-- Tab Navigation -->
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 			<li class="nav-item" role="presentation">
@@ -235,14 +235,107 @@
 					<thead>
 						<tr>
 							<th>Asset Name</th>
+							<th>Assigned Methods</th>
 							<th>Calculation Methods</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="assetTable">
 						<!-- Rows will be added here dynamically -->
 					</tbody>
 				</table>
 			</div>
+			
+			<script>
+			
+			function pupulateAssetTable () {
+				
+				var jsonLdUrl = '/getAssetsForEmissionCalculationMethods'; // Replace with your actual JSON-LD URL
+ 
+                // Fetch JSON-LD data and add a clickable polygon to the map
+                fetchJsonLd(jsonLdUrl, function (jsonLdData) {
+            
+		        console.log (jsonLdData)
+		        
+		        const tableBody = document.getElementById ("assetTable");
+		        
+		jsonLdData.forEach ((item) => {
+			
+			//add labels
+			const element = document.createElement ("tr");
+			
+			const td1 = document.createElement ("td");
+			td1.innerHTML = item.label.replaceAll("\"","");
+			element.appendChild (td1)
+			
+			const td2 = document.createElement ("td");
+			td2.innerHTML = `<ul id="list_${item.asset}"></ul>`;
+			element.appendChild (td2)
+			
+			const td3 = document.createElement ("td");
+			td3.innerHTML = `<select id="select_${item.asset}"></select> <button id="assign_${item.asset}" onclick="assignMethod('${item.asset}')"> Assign </button>`;
+			
+			element.appendChild (td3)
+			
+			
+			
+			tableBody.appendChild (element);
+			
+				//fetch items for the select menu
+			fetchJsonLd("/getAvailableCalculationMethods", function (data) {
+				      
+			          data.forEach ((dataItem) => { 
+											const option = document.createElement ("option");
+											option.innerHTML = dataItem.label.replaceAll("\"","");
+											option.value = dataItem.method;
+											console.log("select_"+item.asset)
+											let selectElement = document.getElementById ("select_"+item.asset)
+											selectElement.appendChild(option);
+			                              }
+				                          );
+				       });
+				       
+		    	//fetch items for the assigned methods
+			fetchJsonLd(`/getAssignedCalculationMethods?assetIRI=${encodeURIComponent(item.asset)}`, function (data) {
+				      
+			          data.forEach ((dataItem) => { 
+											const li = document.createElement ("li");
+											li.innerHTML = dataItem.label.replaceAll("\"","");
+											//li.value = dataItem.method;
+											console.log("list_"+item.asset)
+											let listElement = document.getElementById ("list_"+item.asset)
+											listElement.appendChild(li);
+			                              }
+				                          );
+				       });
+		   
+		   });
+		         
+				
+			});
+			}
+			
+			function fetchJsonLd(url, callback) {
+        fetch(url)
+            .then(response => response.json())
+            .then(json => callback(json))
+            .catch(error => console.error('Error fetching JSON-LD:', error));
+    }
+    
+    function assignMethod (assetIRI) {
+	
+	  let selectElement = document.getElementById ("select_"+assetIRI)
+	  
+	  
+	  fetch (`/linkMethodToAsset?assetIRI=${encodeURIComponent(assetIRI)}&methodIRI=${encodeURIComponent(selectElement.value)}`)
+	  console.log(assetIRI);
+	  console.log(selectElement.value);
+	  
+	  pupulateAssetTable () ;
+}
+    
+			
+			pupulateAssetTable () ;
+			</script>
 			
 			<div class="tab-pane fade" id="new-formula" role="tabpanel" aria-labelledby="new-formula-tab">
 				<div id="content">
@@ -308,27 +401,7 @@
 					placeholder="Type your SPARQL query here... The query shoudl produce single number in variable ?output. You can use $this to reference this selected asset iri"></textarea>
 
 
-				Example Query:
-				<pre><code>
-						Prefix sosa:&lt;http://www.w3.org/ns/sosa/&gt
-						Prefix ssn:&lt;http://www.w3.org/ns/ssn/&gt
-						Prefix qudt:&lt;http://qudt.org/schema/qudt/&gt
-
-						SELECT (MAX(?resultValue) - MIN(?resultValue) AS ?output)
-						FROM &lt;https://eats.org.uk/Assets/&gt
-						FROM &lt;https://eats.org.uk/Observations/&gt
-
-						WHERE
-						{
-						?sensor sosa:observes ?property.
-						?property ssn:isPropertyOf
-						&lt;urn:ngsi-ld:AgriFarm:Great%20Farm:Device:Irrigation%20Rig>.
-						?observation sosa:madeBySensor ?sensor; sosa:hasResult ?result.
-						?result qudt:unit &lt;http://www.wikidata.org/entity/Q182098&gt.
-						?result qudt:value ?resultValue.
-						}
-					</code></pre>
-				<br>
+				
 				<span id="testResult"> </span>
 				<br><br>
 
@@ -553,7 +626,7 @@
 			constraintImpl['@id'] = iri + ":Impl";
 			constraintImpl['value'] = constraintQuery;
 			
-			constraint['hasImplementation'] =constraintImpl['@id'] ;
+			constraint['hasConstraintImplementation'] =constraintImpl['@id'] ;
 			
 			
 
@@ -596,8 +669,12 @@
 			completedIndex = curerentSelectedItem["index"];
 			updateClass();
 			modal.style.display = "none";
-
-			createConstraint(prefix + ":Step"+curerentSelectedItem["group"]+":Constraint:"+encodeURIComponent(curerentSelectedItem["label"]), "Consrain for Var "+curerentSelectedItem["label"],document.getElementById('sparqlQuery').value, curerentSelectedItem["stepIRI"])
+			
+			let varIRI = curerentSelectedItem["varIRI"];
+			let parsedQuery = document.getElementById('sparqlQuery').value.replaceAll("$Variable",`<${varIRI}>`);
+			document.getElementById('sparqlQuery').value = "";
+            console.log(parsedQuery);
+			createConstraint(prefix + ":Step"+curerentSelectedItem["group"]+":Constraint:"+encodeURIComponent(curerentSelectedItem["label"]), "Consrain for Var "+curerentSelectedItem["label"],parsedQuery, curerentSelectedItem["stepIRI"])
 
 		}
 

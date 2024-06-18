@@ -35,6 +35,7 @@ import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.TupleQuery;
 import org.eclipse.rdf4j.query.TupleQueryResult;
+import org.eclipse.rdf4j.query.Update;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -442,6 +443,82 @@ public class SPARQLQueries {
 	public static HashMap<String, String> runSparqlQuery(String payload) {
 		// TODO Auto-generated method stub
 		return runTupleQuerySingleResult (payload);
+	}
+
+	public static ArrayList<HashMap <String,String>>  getAssetsForEmissionCalculationMethods() {
+		String queryString = "Prefix sosa:<http://www.w3.org/ns/sosa/>\n"
+				+ "Prefix ssn:<http://www.w3.org/ns/ssn/>\n"
+				+ "Prefix qudt:<http://qudt.org/schema/qudt/>\n"
+				+ "PREFIX  ep-plan: <https://w3id.org/ep-plan#>\n"
+				+ "prefix smart-core:<https://smartdatamodels.org/>\n"
+				+ "prefix smart-data:<https://smartdatamodels.org/dataModel.Agrifood/>\n"
+				+ "\n"
+				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+				+ "SELECT *\n"
+				+ "FROM <"+ConstantsDB.ASSETS_NAMED_GRAPH_IRI+">\n"
+				+ "\n"
+				+ "WHERE\n"
+				+ "{\n"
+				+ "    {  ?asset a sosa:Actuator; smart-core:name ?label.}\n"
+				+ "    UNION\n"
+				+ "    {\n"
+				+ "     ?asset a smart-data:AgriParcel; smart-core:name ?label.\n"
+				+ "    }\n"
+				+ "}\n"
+				+ "";
+		return runTupleQueryListResult(queryString);
+	}
+
+	public static ArrayList<HashMap<String, String>> getAvailableCalculationMethods() {
+		String queryString = "PREFIX  ep-plan: <https://w3id.org/ep-plan#>\n"
+				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+				+ "SELECT *\n"
+				+ "FROM <"+ConstantsDB.METHOD_PLANS+">\n"
+				+ "\n"
+				+ "WHERE\n"
+				+ "{\n"
+				+ "    ?method a ep-plan:Plan.\n"
+				+ "    ?method rdfs:label ?label.\n"
+				+ "}\n"
+				+ "";
+		return runTupleQueryListResult(queryString);
+	}
+
+	public static ArrayList<HashMap<String, String>> getAssignedCalculationMethods(String assetIRI) {
+		String queryString = "PREFIX  ep-plan: <https://w3id.org/ep-plan#>\n"
+				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+				+ "PREFIX eats:<https://eats.org.uk/>\n"
+				+ "\n"
+				+ "SELECT *\n"
+				+ "FROM <"+ConstantsDB.METHOD_PLANS+">\n"
+				+ "\n"
+				+ "WHERE\n"
+				+ "{\n"
+				+ "    ?method a ep-plan:Plan.\n"
+				+ "    ?method rdfs:label ?label.\n"
+				+ "    <"+assetIRI+"> eats:hasAssignedMethod ?method.\n"
+				+ "}";
+		return runTupleQueryListResult(queryString);
+	}
+
+	public static String linkMethodToAsset(String assetIRI, String methodIRI) {
+		
+		Repository repo = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager());
+		RepositoryConnection conn = repo.getConnection();
+		
+		String queryString = "PREFIX eats:<https://eats.org.uk/>\n"
+				+ "\n"
+				+ "INSERT DATA {   \n"
+				+ "    Graph <"+ConstantsDB.METHOD_PLANS+"> {\n"
+				+ "     <"+assetIRI+">    eats:hasAssignedMethod  <"+methodIRI+">;      \n"
+				+ "    }\n"
+				+ "}";
+		
+		Update query = conn.prepareUpdate(queryString);
+		System.out.println (queryString);
+		   
+		query.execute();
+		return "added triples ";
 	}
 
 }

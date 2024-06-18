@@ -96,7 +96,7 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
     	
     	
     	ValueFactory f = repository.getValueFactory();
-
+    	System.out.println ("Connecting to repository") ;
 	// Open a connection to this repository
 	RepositoryConnection conn = repository.getConnection();	
 	

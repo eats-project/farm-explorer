@@ -53,13 +53,14 @@ public class ServiceController {
 	@Autowired
 	public void setUpKG() {
 		
-
+		System.out.println ("Setting Up Repository");
 		semModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF);
 
 		// read some ontologies so we have the labels for units, etc.
-		semModel.read(Constants.QUDT_UNITS);
+		//semModel.read(Constants.QUDT_UNITS);
 		semModel.read(Constants.ECFO);
-		semModel.read(Constants.PECO);		
+		semModel.read(Constants.PECO);	
+		System.out.println ("Set Up Repositor Complete");
 	}
 
 	
@@ -107,6 +108,8 @@ public class ServiceController {
 	@PostMapping("/saveCalculationMethod")
 	@ResponseBody
 	public String saveCalculationMethod(@RequestBody String payload) {
+		
+		System.out.println(payload);
 
 		String result = GraphDBUtils.addJsonLD(payload, ConstantsDB.METHOD_PLANS);
 		Gson gson = new Gson();
@@ -174,6 +177,42 @@ public class ServiceController {
 		ArrayList<HashMap<String, String>> result = SPARQLQueries.getSensors();
 		Gson gson = new Gson();
 		return gson.toJson(result);
+
+	}
+	
+	@GetMapping("/getAssetsForEmissionCalculationMethods")
+	@ResponseBody
+	public String getAssetsForEmissionCalculationMethods() throws Exception {
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getAssetsForEmissionCalculationMethods ();
+		Gson gson = new Gson();	
+		return gson.toJson(result);
+
+	}
+	
+	@GetMapping("/getAvailableCalculationMethods")
+	@ResponseBody
+	public String getAvailableCalculationMethods() throws Exception {
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getAvailableCalculationMethods ();
+		Gson gson = new Gson();	
+		return gson.toJson(result);
+
+	}
+	
+	@GetMapping("/getAssignedCalculationMethods")
+	@ResponseBody
+	public String getAssignedCalculationMethods(@RequestParam String assetIRI) throws Exception {
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getAssignedCalculationMethods (assetIRI);
+		Gson gson = new Gson();	
+		return gson.toJson(result);
+
+	}
+	
+	@GetMapping("/linkMethodToAsset")
+	@ResponseBody
+	public String linkMethodToAsset(@RequestParam String assetIRI, String methodIRI) throws Exception {
+		String result = SPARQLQueries.linkMethodToAsset (assetIRI, methodIRI);
+		
+		return result;
 
 	}
 	
