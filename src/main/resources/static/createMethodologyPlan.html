@@ -257,7 +257,7 @@
 		        console.log (jsonLdData)
 		        
 		        const tableBody = document.getElementById ("assetTable");
-		        
+		        tableBody.innerHTML = "";
 		jsonLdData.forEach ((item) => {
 			
 			//add labels
@@ -338,7 +338,7 @@
 			</script>
 			
 			<div class="tab-pane fade" id="new-formula" role="tabpanel" aria-labelledby="new-formula-tab">
-				<div id="content">
+				<div id="content" class="container-fluid">
 					<div id="step1">
 						<div id="mainForm">
 							<label> Name:
@@ -667,15 +667,26 @@
 			//const selectedOption = document.getElementById("elementOptions").value;
 			console.log(curerentSelectedItem["index"]);
 			completedIndex = curerentSelectedItem["index"];
+			let varIRI = curerentSelectedItem["varIRI"];
+			let parsedQuery = document.getElementById('sparqlQuery').value.replaceAll("$Variable",`<${varIRI}>`);
+		    
+		    let groupIndex = curerentSelectedItem["group"];
+		    
+		
+		    if (curerentSelectedItem["isResult"]=="true") {
+			 groupIndex = groupIndex -1;
+		    }
+		    
+		    let stepIRI = prefix + ":Step:" + groupIndex;
+		    
+			createConstraint(prefix + ":Step"+groupIndex+":Constraint:"+encodeURIComponent(curerentSelectedItem["label"]), "Consrain for Var "+curerentSelectedItem["label"],parsedQuery, stepIRI)
+
 			updateClass();
 			modal.style.display = "none";
 			
-			let varIRI = curerentSelectedItem["varIRI"];
-			let parsedQuery = document.getElementById('sparqlQuery').value.replaceAll("$Variable",`<${varIRI}>`);
 			document.getElementById('sparqlQuery').value = "";
             console.log(parsedQuery);
-			createConstraint(prefix + ":Step"+curerentSelectedItem["group"]+":Constraint:"+encodeURIComponent(curerentSelectedItem["label"]), "Consrain for Var "+curerentSelectedItem["label"],parsedQuery, curerentSelectedItem["stepIRI"])
-
+			
 		}
 
 
@@ -741,10 +752,11 @@
 					span.textContent = segment;
 					span.setAttribute('data-group', currentGroup);
 					span.setAttribute('data-index', itemIndex);
+					span.setAttribute('data-result', followingEqual);
 
 					if (!alreadyProcesed.includes(segment)) {
 						span.onclick = function () {
-							showModal(this.textContent, this.getAttribute('data-group'), this.getAttribute('data-index'));
+							showModal(this.textContent, this.getAttribute('data-group'), this.getAttribute('data-index'), this.getAttribute('data-result'));
 						};
 					}
 					else {
@@ -770,12 +782,12 @@
 					let variable = createNewVariable(var_iri, segment);
 
 					if (parseInt(currentGroup) < parseInt(stepCount)) {
-						variable.isInputVariableOf.push(prefix + "Step:" + currentGroup);
+						variable.isInputVariableOf.push(prefix + ":Step:" + currentGroup);
 					}
 
 					if (parseInt(currentGroup) > 0 && followingEqual) {
 
-						variable.isOutputVariableOf.push(prefix + "Step:" + (parseInt(currentGroup) - 1));
+						variable.isOutputVariableOf.push(prefix + ":Step:" + (parseInt(currentGroup) - 1));
 					}
 
 					if (followingEqual) {
@@ -800,16 +812,18 @@
 		var modal = document.getElementById("myModal");
 		var span = document.getElementsByClassName("close")[0];
 
-		function showModal(clickedText, group, index) {
+		function showModal(clickedText, group, index, isResult) {
 			if (index == parseInt(completedIndex) + 1) {
 				document.getElementById('clickedElementName').textContent = prefix + "Var:" + encodeURIComponent(clickedText);
-				document.getElementById('elementGroup').textContent = prefix + "Step:" + group;
+				document.getElementById('elementGroup').textContent = prefix + ":Step:" + group;
 
 				curerentSelectedItem["label"] = clickedText;
 				curerentSelectedItem["index"] = index;
 				curerentSelectedItem["group"] = group;
 				curerentSelectedItem["stepIRI"] = prefix + ":Step:" + group;
 				curerentSelectedItem["varIRI"] = prefix + ":Var:" + encodeURIComponent(clickedText);
+				curerentSelectedItem["isResult"] = isResult;
+			
 
 				modal.style.display = "block";
 

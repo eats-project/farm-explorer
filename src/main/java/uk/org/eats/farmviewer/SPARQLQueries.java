@@ -254,16 +254,14 @@ public class SPARQLQueries {
 		return list;
 	}
 
-	public static ArrayList<HashMap<String, String>> getDatatTransformations(String payload, OntModel semModel) {
-		OntModel model = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF);
+	public static  ArrayList<HashMap <String,String>> getDatatTransformations(String assetIRI) {
 
-		model.read(new ByteArrayInputStream(payload.getBytes()), null, "JSON-LD");
-		model.add(semModel);
 
-		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-
-		Query query = QueryFactory.create(Constants.PREFIXES
+		String queryString = Constants.PREFIXES
 				+ " SELECT DISTINCT  ?activityLabel ?inputLabel   ?inputValue ?inputUnitLabel ?inputQuantityKindL ?outputLabel ?outputValue  ?outputUnitLabel ?outputQuantityKindL\n" + 
+				"FROM <"+assetIRI+":CarbonExecutionTrace> " +
+				"FROM <"+assetIRI+":CarbonExecutionTrace> " +
+				"FROM <"+ConstantsDB.CONVERSION_FACTORS+">"+
 				"WHERE\n" + 
 				"  { ?activity  rdf:type   peco:EmissionCalculationActivity ;\n" + 
 				"              rdfs:label  ?activityLabel ;\n" + 
@@ -283,7 +281,7 @@ public class SPARQLQueries {
 				"          { ?input  rdf:value  ?inputValue .\n" + 
 				"            ?input ecfo:hasTargetUnit/qudt:abbreviation ?inputUnitLabel .\n" + 
 				"            ?input ecfo:hasEmissionTarget/rdfs:label ?inputQuantityKindL.\n" + 
-				"            ecfo:EmissionConversionFactor rdfs:label ?inputLabel.\n" + 
+				"            ?input rdfs:label ?inputLabel.\n" + 
 				"            FILTER ( lang(?inputQuantityKindL) = \"en\" )\n" + 
 				"          }\n" + 
 				"        \n" + 
@@ -304,31 +302,9 @@ public class SPARQLQueries {
 				"            FILTER ( lang(?outputUnitLabel) = \"en\" )\n" + 
 				"          }\n" + 
 				"     \n" + 
-				"  } ");
-
-		System.out.println("----------------------");
-		System.out.println("Provenance Trace Query");
-		System.out.println("----------------------");
-		System.out.println(query);
-		QueryExecution qExe = QueryExecutionFactory.create(query, model);
-		System.out.println("Executing Provenance Trace Query");
-		ResultSet results = qExe.execSelect();
-
-		while (results.hasNext()) {
-			QuerySolution sol = results.next();
-			Iterator<String> it = sol.varNames();
-			HashMap<String, String> map = new HashMap<String, String>();
-			while (it.hasNext()) {
-				String varName = it.next();
-				map.put(varName, sol.get(varName).toString());
-			}
-
-			list.add(map);
-		}
-		System.out.println("Provenance Trace Query Result");
-		System.out.println(list);
-
-		return list;
+				"  } ";
+        System.out.println(queryString);
+		return  runTupleQueryListResult(queryString);
 	}
 
 	public static ArrayList<Double[][]> getLinksToEmissionSources(String payload, OntModel semModel) {

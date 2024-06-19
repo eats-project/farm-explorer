@@ -263,11 +263,11 @@ public class ServiceController {
 
 	@PostMapping("/getDataTransformations")
 	@ResponseBody
-	public String getDatatTransformations(@RequestBody String payload) {
+	public String getDatatTransformations(@RequestBody String assetIRI) {
 		
-		semModel.read(Constants.WIKIDATA_LABELS,"Turtle");
+	//	semModel.read(Constants.WIKIDATA_LABELS,"Turtle");
 
-		ArrayList<HashMap<String, String>> result = SPARQLQueries.getDatatTransformations(payload, semModel);
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getDatatTransformations(assetIRI);
 		Gson gson = new Gson();
 		return gson.toJson(result);
 

@@ -228,7 +228,7 @@ function linkObservationFoI (mapLayer, provTrace) {
        
  function calculateFootprint (assetIRI) {
 	
-	let planExists = false;
+	let planExists = true;
 	
 	console.log(assetIRI)
 	
@@ -237,7 +237,11 @@ function linkObservationFoI (mapLayer, provTrace) {
 
 	
 	if (planExists)
-	{}
+	{
+		console.log("Populating provenance trace for " + assetIRI)
+		pupulateProvenanceTable (assetIRI);
+		
+	}
 	
 	else {
 		panel.innerHTML = `
@@ -291,12 +295,12 @@ function linkObservationFoI (mapLayer, provTrace) {
 	
 	}
 	
-function pupulateProvenanceTable () {
+function pupulateProvenanceTable (assetIRI) {
 					// PRINT TRANSFORMATIONS TABLE
 			fetch('/getDataTransformations', {
 				method: 'POST',
 				mode: "cors", // no-cors, *cors, same-origin
-				body: generateJsonLDstring(graphLD)
+				body: assetIRI
 				,
 				headers: {
 					'Content-type': 'application/json; charset=UTF-8',

@@ -83,6 +83,7 @@ ORDER BY DESC(?applicablePeriodEnd)
 
 RESULT
 
+PREFIX  ep-plan: <https://w3id.org/ep-plan#>
 Prefix peco:<https://w3id.org/peco#>
 Prefix qudt:<http://qudt.org/schema/qudt/>
 
