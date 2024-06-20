@@ -47,6 +47,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 
 import uk.org.eats.graphdb.ConstantsDB;
+import uk.org.eats.farmviewer.Constants;
 import uk.org.eats.graphdb.GraphDBUtils;
 
 
@@ -175,83 +176,52 @@ public class SPARQLQueries {
 		
 	}
 
-	public static ArrayList<HashMap<String, String>> getCFInfo_All(String region, OntModel semModel) {
+	public static ArrayList<HashMap <String,String>> getCFInfo_All(String assetIRI) {
 
-		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
+		
 
-		Query query = QueryFactory.create(Constants.PREFIXES
-				+ "  SELECT DISTINCT  ?id ?sourceUnit ?targetUnit ?source ?value ?applicableLocation ?applicablePeriodStart ?applicablePeriodEnd ?emissionTargetSymbol\n" + 
+		String queryString =  Constants.PREFIXES
+				+ "  SELECT DISTINCT  ?id ?sourceUnit ?targetUnit ?source ?locationLabel ?value ?applicableLocation ?applicablePeriodStart ?applicablePeriodEnd ?emissionTargetSymbol\n" + 
+				"FROM <"+assetIRI+":CarbonExecutionTrace> " +
+				"FROM <"+ConstantsDB.CONVERSION_FACTORS+">"+
 				"WHERE\n" + 
 			
-				"      { ?id  rdf:type  ecfo:EmissionConversionFactor .\n" + 
-				"        ?id ecfo:hasTargetUnit ?targetUnitInst.\n" + 
-				"            ?targetUnitInst    rdfs:label \"kilogram\"@en.\n" + 
-				"            ?id    ecfo:hasEmissionTarget/rdfs:label ?emissionTargetSymbol. \n" + 
-			
-				"            ?id ecfo:hasApplicableLocation/rdfs:label \""+region+"\"@en .\n" + 
-				"            ?id  ecfo:hasScope ecfo:Scope2.\n" + 
-				"            ?id ecfo:hasTag <https://w3id.org/ecfkg/i/UK%20electricity>. \n" + 
+				" { ?activity prov:used ?id.\n"
+				+ "        ?id  rdf:type  ecfo:EmissionConversionFactor .\n"
+				+ "        ?id ecfo:hasTargetUnit ?targetUnitInst.\n"
+				+ "            ?targetUnitInst    rdfs:label \"kilogram\"@en.\n"
+				+ "            ?id    ecfo:hasEmissionTarget/rdfs:label ?emissionTargetSymbol. \n"
+				+ "            ?id ecfo:hasApplicableLocation/rdfs:label ?applicableLocation .\n"
+				+ "            ?id  ecfo:hasScope ecfo:Scope2.\n"
+				+ "            ?id ecfo:hasTag <https://w3id.org/ecfkg/i/UK%20electricity>. \n"
+				+ "            ?id ecfo:hasEmissionTarget <http://www.wikidata.org/entity/Q1933140>.         \n"
+				+ "      \n"
+				+ "        ?id ecfo:hasSourceUnit ?sourceUnitInst.\n"
+				+ "        \n"
+				+ "        OPTIONAL\n"
+				+ "          { ?id (ecfo:hasApplicablePeriod/time:hasBeginning)/time:inXSDDate ?applicablePeriodStart }\n"
+				+ "        OPTIONAL\n"
+				+ "          { ?id (ecfo:hasApplicablePeriod/time:hasEnd)/time:inXSDDate ?applicablePeriodEnd }\n"
+				+ "        \n"
+				+ "        OPTIONAL\n"
+				+ "          { ?id  prov:wasDerivedFrom  ?source }\n"
+				+ "        OPTIONAL\n"
+				+ "          { ?id  rdf:value  ?value }\n"
+				+ "         Optional {\n"
+				+ "             ?targetUnitInst  qudt:abbreviation  ?targetUnit.\n"
+				+ "        }\n"
+				+ "      Optional {\n"
+				+ "             ?sourceUnitInst  qudt:abbreviation  ?sourceUnit.\n"
+				+ "      } \n"
+				+ "        \n"
+				+ "       \n"
+				+ "  }\n"
+				+ "ORDER BY DESC(?applicablePeriodEnd)";
 
-				"            ?id ecfo:hasEmissionTarget <http://www.wikidata.org/entity/Q1933140>.         \n" + 
 		
-				"         OPTIONAL\n" + 
-				"        {?id ecfo:hasSourceUnit ?sourceUnitInst.}\n" + 
-				"        \n" + 
-				"        OPTIONAL\n" + 
-				"          { ?id  ecfo:hasApplicableLocation  ?location }\n" + 
-				"        \n" + 
-				"        OPTIONAL\n" + 
-				"          { ?id (ecfo:hasApplicablePeriod/time:hasBeginning)/time:inXSDDate ?applicablePeriodStart }\n" + 
-				"        OPTIONAL\n" + 
-				"          { ?id (ecfo:hasApplicablePeriod/time:hasEnd)/time:inXSDDate ?applicablePeriodEnd }\n" + 
-				"        \n" + 
-				"        OPTIONAL\n" + 
-				"          { ?id  prov:wasDerivedFrom  ?source }\n" + 
-				"        OPTIONAL\n" + 
-				"          { ?id  rdf:value  ?value }\n" + 
-			
-			
-				
-				"       OPTIONAL\n" + 
-				"          {\n" + 
-				"       ?location  rdfs:label  ?applicableLocation\n" + 
-		
-				"        }   \n" + 
-				"        Optional {\n" + 
-				"             ?targetUnitInst  qudt:abbreviation  ?targetUnit.\n" + 
-				"        }\n" + 
-				"        Optional {\n" + 
-				"             ?sourceUnitInst  qudt:abbreviation  ?sourceUnit.\n" + 
-				"      }\n" + 
 
-			
-				"  }\n" + 
-				"ORDER BY DESC(?applicablePeriodEnd)");
-
-		System.out.println("Emission Conversion Factor Query");
-		System.out.println(query);
-
-		// having only SPARQL query with two Service parts doesn't work if at least an
-		// empy model isn't passed as well - weird...
-		//QueryExecution qExe = QueryExecutionFactory.create(query, ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF));
-		QueryExecution qExe = QueryExecution.service(Constants.CF_ENDPOINT_URL).query(query).build();
-		
-		ResultSet results = qExe.execSelect();
-
-		while (results.hasNext()) {
-			QuerySolution sol = results.next();
-			Iterator<String> it = sol.varNames();
-			HashMap<String, String> map = new HashMap<String, String>();
-			while (it.hasNext()) {
-				String varName = it.next();
-				map.put(varName, sol.get(varName).toString());
-			}
-			list.add(map);
-		}
-		System.out.println("Result");
-		System.out.println(list);
-
-		return list;
+		System.out.println(queryString);
+		return  runTupleQueryListResult(queryString);
 	}
 
 	public static  ArrayList<HashMap <String,String>> getDatatTransformations(String assetIRI) {
@@ -259,7 +229,7 @@ public class SPARQLQueries {
 
 		String queryString = Constants.PREFIXES
 				+ " SELECT DISTINCT  ?activityLabel ?inputLabel   ?inputValue ?inputUnitLabel ?inputQuantityKindL ?outputLabel ?outputValue  ?outputUnitLabel ?outputQuantityKindL\n" + 
-				"FROM <"+assetIRI+":CarbonExecutionTrace> " +
+			
 				"FROM <"+assetIRI+":CarbonExecutionTrace> " +
 				"FROM <"+ConstantsDB.CONVERSION_FACTORS+">"+
 				"WHERE\n" + 

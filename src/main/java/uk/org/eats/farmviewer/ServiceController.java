@@ -281,10 +281,10 @@ public class ServiceController {
 
 	}
 
-	@GetMapping("/cf_info_all")
-	public String cf_info_alternative(@RequestParam String region) {
+	@PostMapping("/cf_info_all")
+	public String cf_info_all(@RequestBody String assetIRI) {
 
 		Gson gson = new Gson();
-		return gson.toJson(SPARQLQueries.getCFInfo_All(region, semModel));
+		return gson.toJson(SPARQLQueries.getCFInfo_All(assetIRI));
 	}
 }

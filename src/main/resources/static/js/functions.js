@@ -1,3 +1,5 @@
+const twoDigits = n => Number(Number(n).toFixed(2));
+
 //round to two decimal places
 function roundTwoDecimal (num) {
 	return Math.round((num + Number.EPSILON) * 100) / 100
@@ -31,7 +33,7 @@ function createBrowserList(items ) {
 	   	
 	   	agriParcels.forEach(function (agriParcel) {
 		    console.log("adding parcel");
-			itemNode = itemNode + `<li class="list-group-item"> Parcel: ${agriParcel['https://smartdatamodels.org/name'][0]['@value']}
+			itemNode = itemNode + `<li  class="list-group-item"> Parcel: ${agriParcel['https://smartdatamodels.org/name'][0]['@value']}
 			                       <button type="button" class=" w-20" onClick="calculateFootprint ('${agriParcel['@id']}')">CF </button></li>`
 		    console.log(itemNode);
 		});
@@ -45,8 +47,8 @@ function createBrowserList(items ) {
 		    
 		    if (device['@type'].includes("http://www.w3.org/ns/sosa/Sensor")) {
 		    
-			itemNode = itemNode + `<li class="list-group-item"> Sensor: ${device['https://smartdatamodels.org/name'][0]['@value']}
-			                       <button type="button" class=" w-20" onClick="updateSensorDataAndShowModal('${device['@id']}')">View Data </button></li>`
+			itemNode = itemNode + `<li onclick="getDetailsPane('sensor','${device['@id']}')" class="list-group-item"> Sensor: ${device['https://smartdatamodels.org/name'][0]['@value']}`
+			                      
 		    }
 		    
 		     if (device['@type'].includes("http://www.w3.org/ns/sosa/Actuator")) {
@@ -296,6 +298,9 @@ function linkObservationFoI (mapLayer, provTrace) {
 	}
 	
 function pupulateProvenanceTable (assetIRI) {
+	
+	
+	        
 					// PRINT TRANSFORMATIONS TABLE
 			fetch('/getDataTransformations', {
 				method: 'POST',
@@ -371,4 +376,91 @@ function pupulateProvenanceTable (assetIRI) {
 						 .catch(function(error) {                        // catch
      alert ("The calcualtor could not retrieve the calculation provenance trace. ");
   });
+  
+  //Print CF table
+
+console.log("Fetching CF ")
+			//document.getElementById('score_value').innerHTML = "<br> for " + energy + "kWh"
+fetch('/cf_info_all?', {
+				method: 'POST',
+				mode: "cors", // no-cors, *cors, same-origin
+				body: assetIRI
+				,
+				headers: {
+					'Content-type': 'application/json; charset=UTF-8',
+					'Access-Control-Allow-Origin': '*'
+				},
+			}).then((response) =>
+			response.json()
+		)
+		.then((CF_data) => {
+			
+			console.log(CF_data)
+
+			let html_string = "";
+
+			for (i = 0; i < CF_data.length; i++) {
+				if (i == 0) {
+					html_string = html_string + '<tr style="background-color:#CCF6D3 ;">'
+				}
+				else {
+					html_string = html_string + "<tr>"
+				}
+
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].sourceUnit) + "</td>"
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].targetUnit) + "</td>"
+
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].applicablePeriodStart) + "</td>"
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].applicablePeriodEnd) + "</td>"
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].applicableLocation) + "</td>"
+
+
+
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].value) + "</td>"
+
+
+                html_string = html_string + "<td><a href=\"" + CF_data[i].id + "\">link</a></td>"
+				
+				if (CF_data[i].source) {
+				html_string = html_string + "<td><a href=\"" + CF_data[i].source + "\">link</a></td>"
+				} else {
+					html_string = html_string + "<td>no value</td>"
+				}
+				
+				//html_string = html_string + "<td>" + twoDigits(energy * twoDigits(CF_data[i].value.split("^")[0])) + "" + removeLiteralType(CF_data[i].targetUnit) + " ["+removeLiteralType(CF_data[i].emissionTargetSymbol)+"]</td>"
+				html_string = html_string + "</tr>"
+
+
+
+			}
+			console.log(html_string)
+			let table_body = document.getElementById('cf_table_body');
+			table_body.innerHTML = html_string;
+
+
+
+
+
+		
+			console.log(graph_ld_object);
+			$('#graph').empty();
+			// d3.jsonldVis(graph_ld_object, '#graph', {  maxLabelWidth: 550 });
+
+			
+			
+			fillComparisonTable(co2);
+
+			$("#comparison-result-co2").text(co2);
+			
+			$("#details-counts").html(`
+  ${state.gpus[gpu].watt}W x ${hours}h = <strong>${energy} kWh</strong> x ${impact}
+  kg  eq. CO<sub>2</sub>/kWh = <strong>${co2} kg eq. CO<sub>2</sub></strong>
+  `);
+		
+			//end first fetch()
+		
+		
+});
+  
+  
 }

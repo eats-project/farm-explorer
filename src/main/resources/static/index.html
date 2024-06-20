@@ -89,10 +89,15 @@
 	             /* background-color: #AFAE26;*/
 				/*  width: 70%;*/
 			      overflow: auto; /* Allow scrolling if content exceeds the panel height */
-          
-			    
+
 		      }
-		  
+		  #iframe {
+			min-height:40vh;	
+			}
+			
+		ul.clickable-items li, ol.clickable-items li {
+       cursor: pointer;
+      }
       </style>
 	  
 	  
@@ -180,8 +185,8 @@
         <a class="nav-link" href="/addData.html">Add Data <span class="sr-only">(current)</span></a>
       </li>
        <li class="nav-item active">
-      <i class="fas fa-rotate-right nav-icon"></i>
-        <a class="nav-link" href="/deleteData.html">Reset Demo<span class="sr-only">(current)</span></a>
+      <i class="fas fa-database nav-icon"></i>
+        <a class="nav-link" href="/deleteData.html">Manage Data<span class="sr-only">(current)</span></a>
       </li>
  </ul>
 </div>
@@ -193,30 +198,59 @@
   <div class="row">
     <div class="col-md-4" id="browser"> 
     
-    <ul class="list-group" id="browserList"> </ul>
+    <ul class="list-group clickable-items" id="browserList"> </ul>
 
       </div>
-    <div class="col-md-8" style='border: 1px solid red '>
+    <div class="col-md-8" >
       <!-- Map container -->
-      <div id="map"></div>
+     <!--  <div id="map"></div> -->
+     <iframe id="iframe" src="/farmDashboard.html" width="100%" height="100%"></iframe>
+     <script>
+     function getDetailsPane (assetType, assetID) {
+	    console.log("changing iframe")
+	    let iframe = document.getElementById('iframe');
+       
+        if (assetType=="sensor") {
+        let newUrl = "sensorDashboard.html" +  "?id=" + encodeURIComponent(assetID);
+        iframe.src = newUrl;
+        }
+     }
+     </script>
     </div>
   </div>
+  
+  <hr>
 
 <!-- Start bottom row -->
 <div class="row">
 
- <div class="col-md-4" id="bottomPanel">
-  <h3>  Carbon Footprint </h3>
+
+	<!-- Tab Navigation -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#footprint"
+                type="button" role="tab" aria-controls="details" aria-selected="true">Carbon Footprint Estimate</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="add-asset-tab" data-bs-toggle="tab" data-bs-target="#provenance"
+                type="button" role="tab" aria-controls="add" aria-selected="false">Provenance Report</button>
+    </li>
+</ul>
+    
+<!-- Tab Content -->
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="footprint" role="tabpanel" aria-labelledby="footprint-tab">
+       <div class="col-md-12" id="bottomPanel">
+
   <span id="carbonFootprint"> Please select a farm asset you wish to evaluate</span>
    
  </div>
-
-
-
-
-<div class="col-md-8" id="provenancePanel"> 
+    </div>
+    
+    <div class="tab-pane fade" id="provenance" role="tabpanel" aria-labelledby="provenance-tab">
+        <div class="col-md-12" id="provenancePanel"> 
 	
-	 <h3>  Provenance of Carbon Footprint Calculation </h3>
+	
 
 	  <p> 
  <i class="fa fa-download" aria-hidden="true"></i> <a href="#" onclick="downloadProvenanceTrace('provenance_trace')"> Download trace (.jsonld)</a>
@@ -253,9 +287,17 @@
       </button>
     </h2>
     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-      </div>
+      <div class="accordion-body" >
+       <table class="table table-bordered" style="table-layout:fixed;width:100%; ">
+						  <thead>
+						  <tr>
+						  <th class="col-1">Source Unit</th><th>Target Unit</th><th>Applicable Period Start</th><th>Applicable Period End</th><th>Applicable Location</th><th>CF Value</th><th>CF IRI</th><th>Source</th></span></th>
+						  </tr>
+						  </thead>
+						  <tbody  id="cf_table_body">
+						  </tbody>
+						  
+						  </table>      </div>
     </div>
   </div>
   <div class="accordion-item">
@@ -276,7 +318,18 @@
 	  </p>
 	  
 	  <small><span> <a href="https://www.flaticon.com/">Icons attribution</a></span></small>
-	</div>    
+	</div>     
+    </div>
+</div>
+	</div>		
+
+
+
+
+
+
+
+
 	
 
 </div>
@@ -403,10 +456,6 @@ let canvas = document.getElementById('myChart');
 	
 })
             .catch(error => console.error('Error fetching JSON-LD:', error));
-
-
-
-   
             var myModal = new bootstrap.Modal(document.getElementById('sensorDataModal'));
             myModal.show();
             
@@ -419,6 +468,7 @@ let canvas = document.getElementById('myChart');
     </SCRIPT>
 
   <script>
+  /*
       // Initialize the map
       var map = L.map('map', {zoomControl:false}).setView([56.249324, -2.654500], 19); // Centered at a point within the polygon
       	// Create a layer group for lines
@@ -436,7 +486,7 @@ let canvas = document.getElementById('myChart');
       L.control.zoom({
             position: 'bottomright' // Positions zoom control at the bottom right corner
         }).addTo(map);
-
+*/
      
 
     // Function to fetch JSON-LD data from a URL
@@ -515,7 +565,9 @@ console.log("here");
 		
 	 // Add an event listener to the polygon for the click event
 	 */
-	});  
+	 
+	});
+	  
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 

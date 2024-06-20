@@ -186,35 +186,16 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<div class="collapse navbar-collapse" ">
- <ul class=" navbar-nav mr-auto">
-			<li class="nav-item active">
-				<i class="fas fa-tree nav-icon"></i>
-				<a class="nav-link" href="/index.html">Explore Farm <span class="sr-only">(current)</span></a>
-			</li>
-			<li class="nav-item active">
-				<i class="fas fa-calculator nav-icon"></i>
-				<a class="nav-link" href="/deleteData.html">Emission Calculation Formulas<span
-						class="sr-only">(current)</span></a>
-			</li>
-			<li class="nav-item ">
-				<i class="fas fa-plus-square nav-icon"></i>
-				<a class="nav-link" href="/addData.html">Add Data <span class="sr-only">(current)</span></a>
-			</li>
 
-			<li class="nav-item active">
-				<i class="fas fa-database nav-icon"></i>
-				<a class="nav-link" href="/deleteData.html">Manage Data<span class="sr-only">(current)</span></a>
-			</li>
-			</ul>
-		</div>
-	</nav>
 	<div class="container-fluid">
 		<!-- Tab Navigation -->
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
+		    <li class="nav-item" role="presentation">
+				<button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details"
+					type="button" role="tab" aria-controls="details" aria-selected="true">Asset Details</button>
+			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link active" id="asset-list-tab" data-bs-toggle="tab" data-bs-target="#asset-list"
+				<button class="nav-link " id="asset-list-tab" data-bs-toggle="tab" data-bs-target="#asset-list"
 					type="button" role="tab" aria-controls="asset-list" aria-selected="true">Assign Calculation Methods</button>
 			</li>
 			<li class="nav-item" role="presentation">
@@ -226,10 +207,19 @@
 					type="button" role="tab" aria-controls="new-formula" aria-selected="false">Edit Calculation Method</button>
 			</li>
 		</ul>
+		
+		
+	<!-- Tab Content -->
+		<div class="tab-content" id="myTabContent">			
+		<div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="asset-list-tab">
+			Asset Details 
+			</div>
+			
+			
+		
 
-		<!-- Tab Content -->
-		<div class="tab-content" id="myTabContent">
-			<div class="tab-pane fade show active" id="asset-list" role="tabpanel" aria-labelledby="asset-list-tab">
+		
+			<div class="tab-pane fade show " id="asset-list" role="tabpanel" aria-labelledby="asset-list-tab">
 				<!-- Table goes here -->
 				<table class="table" id="data-table">
 					<thead>

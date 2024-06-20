@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Interactive List with Result Marker</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<style>
+		.nav-item {
+			margin-right: 20px;
+			display: flex;
+			align-items: center;
+		}
+
+		.nav-icon {
+			margin-right: 5px;
+		}
+
+		#content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			font-family: Arial, sans-serif;
+		}
+
+		#addForm {
+			margin: 20px;
+		}
+
+		#mainForm {
+			margin: 20px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			flex-wrap: nowrap;
+		}
+
+		#mainForm label {
+			white-space: nowrap;
+			/* Prevents the label from breaking into multiple lines */
+		}
+
+
+		#itemList {
+			width: 60%;
+		}
+
+		input[type="text"] {
+			padding: 10px;
+			margin-right: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			width: 70%;
+		}
+
+		button {
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			background-color: #4CAF50;
+			color: white;
+			cursor: pointer;
+
+		}
+
+		#content.ul {
+			list-style-type: none;
+			padding: 0;
+		}
+
+		#content.li {
+			margin-top: 5px;
+			background-color: #f9f9f9;
+			padding: 10px;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+		}
+
+		.titleText {
+			cursor: pointer;
+			padding: 2px 4px;
+			margin: 0 2px;
+			color: brown;
+		}
+
+		.specialText {
+			cursor: pointer;
+			padding: 2px 4px;
+			margin: 0 2px;
+		}
+
+		.blink_me {
+			animation: blinker 1s linear infinite;
+		}
+
+		@keyframes blinker {
+			50% {
+				opacity: 0;
+			}
+		}
+
+		.next {
+			color: blue;
+		}
+
+		.incomplete {
+			color: red;
+		}
+
+		.complete {
+			color: green;
+		}
+
+		.resultMarker {
+			font-weight: bold;
+			text-decoration: underline;
+		}
+
+		/* Modal styles */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0, 0, 0, 0.4);
+			padding-top: 60px;
+		}
+
+		.modal-content {
+			background-color: #fefefe;
+			margin: 5% auto;
+			padding: 20px;
+			border: 1px solid #888;
+			width: 80%;
+			max-width: 500px;
+		}
+
+		.close {
+			color: #aaa;
+			float: right;
+			font-size: 28px;
+			font-weight: bold;
+		}
+
+		.close:hover,
+		.close:focus {
+			color: black;
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+		select {
+			width: 100%;
+			padding: 10px;
+			margin-top: 20px;
+		}
+
+		#sparqlBox {
+			display: block;
+			/* Initially hide the SPARQL box */
+		}
+
+		textarea {
+			width: 90%;
+			/* Adjusts the width of the text area */
+			height: 200px;
+			/* Sets a fixed height */
+			margin: 10px;
+			/* Adds some margin around the text area */
+			padding: 10px;
+			/* Adds internal padding for better text readability */
+			font-family: monospace;
+			/* Makes the font monospaced, which is better for coding */
+		}
+
+		#step2 {
+			display: none;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="container-fluid">
+		<!-- Tab Navigation -->
+		<!-- Tab Navigation -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details"
+                type="button" role="tab" aria-controls="details" aria-selected="true">Asset Details</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="view-asset-tab" data-bs-toggle="tab" data-bs-target="#view"
+                type="button" role="tab" aria-controls="add" aria-selected="false">View Data</button>
+             
+    </li>
+    
+     <li class="nav-item" role="presentation">
+        <button class="nav-link" id="add-asset-tab" data-bs-toggle="tab" data-bs-target="#add"
+                type="button" role="tab" aria-controls="add" aria-selected="false">Add Data</button>
+    </li>
+</ul>
+    
+<!-- Tab Content -->
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+        Asset Details 
+    </div>
+    
+    <div class="tab-pane fade" id="view" role="tabpanel" aria-labelledby="add-asset-tab">
+        View Data 
+        
+           <!-- Table goes here  -->
+	                    <div class="chart-container">
+    <canvas id="myChart"></canvas>
+  </div>
+  <script src="chart.js"></script>
+    </div>
+    <script>
+    
+
+
+window.addEventListener('load', function() {
+   let id = getIdFromUrl();
+	loadSensorData(id);
+});
+
+function getIdFromUrl() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const id = urlParams.get('id');
+    console.log('ID from URL:', id);
+    return id;
+}
+
+function loadSensorData(activeSensorIRI) {
+	const ctx = document.getElementById('myChart').getContext('2d');
+	let canvas = document.getElementById('myChart');
+
+	fetch('/getSensorData?sensorIRI='+encodeURIComponent(activeSensorIRI))
+            .then(response => response.json())
+            .then(json => {
+	let labels = [];
+	let observations = [];
+	
+	for (let i = 0; i < json.length; i++) {
+	//	for (let i = 0; i < 10; i++) {
+         const item = json[i];
+        //  console.log(`Result ${i + 1}: Value is ${item.result}, Time is ${item.time}`);
+          
+          labels.push(item.time.replace('"',''));
+          observations.push (parseFloat(item.result.replace('"','')));
+	}
+	
+	const data = {
+  	labels: labels,
+  	datasets: [{
+    label: 'My Data',
+    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+    borderColor: 'rgba(75, 192, 192, 1)',
+    borderWidth: 1,
+    data: observations,
+  }]
+};
+
+ 	myChart = new Chart(ctx, {
+  	type: 'line',
+  	data: data,
+  	options: {
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: false
+        }
+      }]
+    }
+  }
+});
+	
+	
+})
+.catch(error => console.error('Error fetching JSON-LD:', error));
+            
+}
+        </script>
+    
+      <div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="add-asset-tab">
+        Add Data
+    </div>
+</div>
+	</div>		
+ </div>		
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>	
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0"></script> 
+</body>
+</html>			
