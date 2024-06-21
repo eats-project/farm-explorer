@@ -23,7 +23,7 @@ function createBrowserList(items ) {
 	  
 	   if (item['@type']&&item['@type'].includes("https://smartdatamodels.org/dataModel.Agrifood/AgriFarm")) {
 	   
-	   	itemNode = itemNode + `<li onclick="getDetailsPane('farm','${item['@id']}')" class="list-group-item"> 
+	   	itemNode = itemNode + `<li id="item-${item['@id']}"  onclick="getDetailsPane('farm','${item['@id']}');highlightSelected('item-${item['@id']}');" class="list-group-item"> 
 	   	                       <a href="#" data-bs-toggle="collapse" data-bs-target="#collapse-sublist-${counter}">Farm: ${item['https://smartdatamodels.org/name'][0]['@value']}</a>
 	   	                       </li><ul id="collapse-sublist-${counter}" class="list-group collapse">`
 	   	
@@ -33,7 +33,7 @@ function createBrowserList(items ) {
 	   	
 	   	agriParcels.forEach(function (agriParcel) {
 		    console.log("adding parcel");
-			itemNode = itemNode + `<li  onclick="getDetailsPane('parcel','${agriParcel['@id']}')" class="list-group-item"> Parcel: ${agriParcel['https://smartdatamodels.org/name'][0]['@value']}
+			itemNode = itemNode + `<li id="item-${agriParcel['@id']}" onclick="getDetailsPane('parcel','${agriParcel['@id']}');highlightSelected('item-${agriParcel['@id']}');" class="list-group-item"> Parcel: ${agriParcel['https://smartdatamodels.org/name'][0]['@value']}
 			                       <button type="button" class=" w-20" onClick="calculateFootprint ('${agriParcel['@id']}')">CF </button></li>`
 		    console.log(itemNode);
 		});
@@ -47,13 +47,13 @@ function createBrowserList(items ) {
 		    
 		    if (device['@type'].includes("http://www.w3.org/ns/sosa/Sensor")) {
 		    
-			itemNode = itemNode + `<li onclick="getDetailsPane('sensor','${device['@id']}')" class="list-group-item"> Sensor: ${device['https://smartdatamodels.org/name'][0]['@value']}`
+			itemNode = itemNode + `<li id="item-${device['@id']}" onclick="getDetailsPane('sensor','${device['@id']}');highlightSelected('item-${device['@id']}');" class="list-group-item"> Sensor: ${device['https://smartdatamodels.org/name'][0]['@value']}`
 			                      
 		    }
 		    
 		     if (device['@type'].includes("http://www.w3.org/ns/sosa/Actuator")) {
 		    
-			itemNode = itemNode + `<li onclick="getDetailsPane('actuator','${device['@id']}')" class="list-group-item"> Actuator: ${device['https://smartdatamodels.org/name'][0]['@value']}
+			itemNode = itemNode + `<li id="item-${device['@id']}" onclick="getDetailsPane('actuator','${device['@id']}');highlightSelected('item-${device['@id']}');" class="list-group-item"> Actuator: ${device['https://smartdatamodels.org/name'][0]['@value']}
 			                       
 			                       <button type="button" class=" w-20" onClick="calculateFootprint ('${device['@id']}')">CF </button></li>`
 	
@@ -463,4 +463,17 @@ fetch('/cf_info_all?', {
 });
   
   
+}
+
+function highlightSelected(itemId) {
+    // Remove active class from all items
+    document.querySelectorAll('.list-group-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    // Add active class to the clicked item
+    const selectedItem = document.getElementById(itemId);
+    if (selectedItem) {
+        selectedItem.classList.add('active');
+    }
 }
