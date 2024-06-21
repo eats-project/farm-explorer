@@ -151,21 +151,21 @@
 			<input type="text" id="sensorName" placeholder="Name">
 			<select id="sensorType">
 		      <option value="">Please select sensor type</option>
-		      <option value="https://eats.org.uk/eats#WaterFlowSensor">Water Flow Sensor (need to load dynamically)</option>
-		      <option value="https://eats.org.uk/eats#TemperatureSensor">Temperature Sensor (need to load dynamically)</option>
-		       <option value="https://eats.org.uk/eats#ElectricitySensor">Electricity Sensor (need to load dynamically)</option>
+		      <option value="https://www.robeau.tech/en/">Water Flow Sensor (need to load dynamically)</option>
+		      <option value="https://enless-wireless.com/en/products/temperature-sensor-embedded-sensor-lora/">Temperature Sensor (need to load dynamically)</option>
+		       <option value="https://enless-wireless.com/en/products/pulse-sensor-led-optical-reader-lora/">Electricity Sensor (need to load dynamically)</option>
 	        </select>
 	        <select id="sensorFOI">
 		      <option value="">Please select sensor feature of interest</option>
 		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025">Tunnel 25 (need to load dynamically)</option>
-		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:Actuator:Irrigation%20Rig">Irrigation Rig (need to load dynamically)</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:Actuator:Irrigation%20Rig">Irrigation Rig</option>
 		      
 		     
 	        </select>
 	         <select id="sensorProperty">
 		      <option value="">Please select the observed property</option>
-		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow">Grow Table Waterflow Tunel 25 (need to load dynamically)</option>
-		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:Actuator:Irrigation%20Rig:Property:Electricity">Irrigation Rig Electricity Consumption (need to load dynamically)</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow">Grow Table Waterflow Tunel 25</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:Actuator:Irrigation%20Rig:Property:Electricity">Irrigation Rig Electricity Consumption</option>
 		      
 		      
 		      
@@ -187,7 +187,7 @@
 			<input type="text" id="actuatorName" placeholder="Name">
 			<select id="actuatorType">
 		      <option value="">Please select actuator type</option>
-		      <option value="https://eats.org.uk/eats#IrrigationRig">Irrigation Rig (need to load dynamically)</option>
+		      <option value="https://files.rileysurfaceworld.co.uk/live/machines2/25494.pdf">Lowara Hydrovar Irrigation Rig</option>
 		      </select>
 	        <select id="actuatorFOI">
 		      <option value="">Please select actuator feature of interest</option>
@@ -197,7 +197,7 @@
 	        </select>
 	         <select id="actuatorProperty">
 		      <option value="">Please select the actuable property</option>
-		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow">Grow Table Waterflow Tunel 25 (need to load dynamically)</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow">Waterflow of Growing Table - Tunnel 25 </option>
 		     
 		      
 		      
@@ -643,7 +643,7 @@ console.log(payload)
 			document.getElementById('sensorLat').value = 56.249324;
 			document.getElementById('sensorLong').value = -2.655500;
 			document.getElementById('sensorName').value = "Tunnel 25 Flow Meter";
-			document.getElementById('sensorType').value = "https://eats.org.uk/eats#WaterFlowSensor";
+			document.getElementById('sensorType').value = "https://www.robeau.tech/en/";
 			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025";
 			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow";
 			
@@ -653,7 +653,7 @@ console.log(payload)
 			document.getElementById('sensorLat').value = 56.249100;
 			document.getElementById('sensorLong').value = -2.652925;
 			document.getElementById('sensorName').value = "Irrigation Rig Electricity Meter";
-			document.getElementById('sensorType').value = "https://eats.org.uk/eats#ElectricitySensor";
+			document.getElementById('sensorType').value = "https://enless-wireless.com/en/products/pulse-sensor-led-optical-reader-lora/";
 			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:Actuator:Irrigation%20Rig";
 			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:Actuator:Irrigation%20Rig:Property:Electricity";
 			
@@ -663,7 +663,7 @@ console.log(payload)
 			document.getElementById('actuatorLat').value = 56.249100;
 			document.getElementById('actuatorLong').value = -2.654925;
 			document.getElementById('actuatorName').value = "Irrigation Rig";
-			document.getElementById('actuatorType').value = "https://eats.org.uk/eats#IrrigationRig";
+			document.getElementById('actuatorType').value = "https://files.rileysurfaceworld.co.uk/live/machines2/25494.pdf";
 			document.getElementById('actuatorFOI').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025";
 			document.getElementById('actuatorProperty').value = "urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow";
 			

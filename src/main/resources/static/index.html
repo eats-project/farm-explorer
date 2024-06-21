@@ -92,7 +92,7 @@
 
 		      }
 		  #iframe {
-			min-height:40vh;	
+			min-height:50vh;	
 			}
 			
 		ul.clickable-items li, ol.clickable-items li {
@@ -212,6 +212,14 @@
        
         if (assetType=="sensor") {
         let newUrl = "sensorDashboard.html" +  "?id=" + encodeURIComponent(assetID);
+        iframe.src = newUrl;
+        }
+        if (assetType=="farm") {
+        let newUrl = "farmDashboard.html" +  "?id=" + encodeURIComponent(assetID);
+        iframe.src = newUrl;
+        }
+         if (assetType=="actuator") {
+        let newUrl = "actuatorDashboard.html" +  "?id=" + encodeURIComponent(assetID);
         iframe.src = newUrl;
         }
      }

@@ -47,6 +47,7 @@ import uk.org.eats.templates.WaterFlowData;
 @RestController
 public class ServiceController {
 
+	
 	public static Repository repository;
 	OntModel semModel;
 
@@ -75,13 +76,13 @@ public class ServiceController {
        
 		String payload = null;
 		
-		if (checkIfTypePresent(list,"https://eats.org.uk/eats#WaterFlowSensor")) {
+		if (checkIfTypePresent(list,"https://www.robeau.tech/en/")) {
 		
         payload = WaterFlowData.parseDataInJSONLD(file,dataType);
 		
 		}
 		
-		if (checkIfTypePresent(list,"https://eats.org.uk/eats#ElectricitySensor")) {
+		if (checkIfTypePresent(list,"https://enless-wireless.com/en/products/pulse-sensor-led-optical-reader-lora/")) {
 			
 	        payload = ElectricityData.parseDataInJSONLD(file,dataType);
 			
@@ -180,10 +181,29 @@ public class ServiceController {
 
 	}
 	
+	@GetMapping("/getSensorDetails")
+	@ResponseBody
+	public String getSensorDetails(@RequestParam String sensorIri) {
+
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getSensorDetails(sensorIri);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
 	@GetMapping("/getAssetsForEmissionCalculationMethods")
 	@ResponseBody
 	public String getAssetsForEmissionCalculationMethods() throws Exception {
 		ArrayList<HashMap<String, String>> result = SPARQLQueries.getAssetsForEmissionCalculationMethods ();
+		Gson gson = new Gson();	
+		return gson.toJson(result);
+
+	}
+	
+	@GetMapping("/getSensorCoordinates")
+	@ResponseBody
+	public String getSensorCoordinates(@RequestParam String sensorIri) throws Exception {
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getSensorCoordinates (sensorIri);
 		Gson gson = new Gson();	
 		return gson.toJson(result);
 

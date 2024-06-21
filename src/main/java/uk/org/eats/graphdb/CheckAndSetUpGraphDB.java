@@ -58,6 +58,9 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 	
 	Repository repository = GraphDBUtils.getFabricRepository(repositoryManager);
 	
+	
+	
+	
 		
     if (repository==null) {
       	//HAndle if there  is no repository
@@ -101,6 +104,16 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 	RepositoryConnection conn = repository.getConnection();	
 	
 	
+	//add additional labels 
+	File file2 = ResourceUtils.getFile("classpath:data/sensor_labels.ttl");
+	 InputStream input2 = new FileInputStream(file2);
+	    Model model2 = Rio.parse(input2, "", RDFFormat.TURTLE);
+
+	            // Start a transaction to add the data to the named graph
+	            conn.begin();
+	            conn.add(model2, f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI));
+	            conn.commit();  // Commit transaction to finalize changes
+	
 	
 	if (!GraphDBUtils.checkResourcePresent (conn.getContextIDs(), ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI)) {
 		System.out.println ("Adding the default Observations named graph") ;
@@ -113,7 +126,17 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 		System.out.println ("Adding the default Assets named graph") ;
 		
 		IRI context = f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI);
-		conn.add(f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI), RDFS.LABEL, f.createLiteral("Assets"), context); 		
+		conn.add(f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI), RDFS.LABEL, f.createLiteral("Assets"), context); 
+		
+		//add additional labels 
+		File file = ResourceUtils.getFile("classpath:data/sensor_labels.ttl");
+		 InputStream input = new FileInputStream(file);
+		    Model model = Rio.parse(input, "", RDFFormat.TURTLE);
+
+		            // Start a transaction to add the data to the named graph
+		            conn.begin();
+		            conn.add(model, context);
+		            conn.commit();  // Commit transaction to finalize changes
 	}
 	
 	if (!GraphDBUtils.checkResourcePresent (conn.getContextIDs(), ConstantsDB.METHOD_PLANS)) {

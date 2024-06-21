@@ -247,17 +247,12 @@ loadSensorDetails ();
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details"
-                type="button" role="tab" aria-controls="details" aria-selected="true" onclick="loadSensorDetails ()">Sensor Details</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="view-asset-tab" data-bs-toggle="tab" data-bs-target="#view"
-                type="button" role="tab" aria-controls="add" aria-selected="false" onclick="loadSensorData()">View Data</button>
-             
+                type="button" role="tab" aria-controls="details" aria-selected="true" onclick="loadSensorDetails ()">Actuator Details</button>
     </li>
     
      <li class="nav-item" role="presentation">
         <button class="nav-link" id="add-asset-tab" data-bs-toggle="tab" data-bs-target="#add"
-                type="button" role="tab" aria-controls="add" aria-selected="false">Add Data</button>
+                type="button" role="tab" aria-controls="add" aria-selected="false">Emissions Calculations Methods</button>
     </li>
 </ul>
     
@@ -387,14 +382,12 @@ console.log("here");
     
     
     
-    <div class="tab-pane fade" id="view" role="tabpanel" aria-labelledby="add-asset-tab">
+    <div class="tab-pane fade" id="methods" role="tabpanel" aria-labelledby="add-asset-tab">
      
          <div id="loadingData" class="loading">Loading...</div>
            <!-- Table goes here  -->
 	                    <div class="chart-container">
-    <canvas id="myChart"></canvas>
-  </div>
-  <script src="chart.js"></script>
+ 
     </div>
     <script>
     
@@ -410,140 +403,12 @@ function getIdFromUrl() {
     return id;
 }
 
-function loadSensorData() {
-	 let activeSensorIRI = getIdFromUrl();
-	const loadingDiv = document.getElementById('loadingData');
-	loadingDiv.style.display = 'block';
-	const ctx = document.getElementById('myChart').getContext('2d');
-	let canvas = document.getElementById('myChart');
-
-	fetch('/getSensorData?sensorIRI='+encodeURIComponent(activeSensorIRI))
-            .then(response => response.json())
-            .then(json => {
-	let labels = [];
-	let observations = [];
-	
-	for (let i = 0; i < json.length; i++) {
-	//	for (let i = 0; i < 10; i++) {
-         const item = json[i];
-        //  console.log(`Result ${i + 1}: Value is ${item.result}, Time is ${item.time}`);
-          
-          labels.push(item.time.replace('"',''));
-          observations.push (parseFloat(item.result.replace('"','')));
-	}
-	
-	const data = {
-  	labels: labels,
-  	datasets: [{
-    label: 'Sensor Readings',
-    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-    borderColor: 'rgba(75, 192, 192, 1)',
-    borderWidth: 1,
-    data: observations,
-  }]
-};
-
- 	myChart = new Chart(ctx, {
-  	type: 'line',
-  	data: data,
-  	options: {
-    scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: false
-        }
-      }]
-    }
-  }
-});
-	  loadingDiv.style.display = 'none';  
-	
-})
-.catch(error => {
-	  loadingDiv.style.display = 'none';  
-console.error('Error fetching JSON-LD:', error)});
-        
-}
 
         </script>
     
-      <div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="add-asset-tab">
-        <p>Header of the CSV shoudl be should be Timestamp, Reading, Unit. Example CSV <a href="/data/examples/">here</a></p>
-        <div class="container py-5">
-        <div id="drop-area" class="mb-3">
-            Drag and drop files here or click to select files
-        </div>
-        <input type="file" id="fileElem" multiple style="display:none" onchange="handleFiles(this.files)">
-        <button type="button" class="btn btn-primary" onclick="document.getElementById('fileElem').click()">Select files</button>
-    </div>
-    </div>
     
     
-    <script>
-    	const dropArea = document.getElementById('drop-area');
-
-        // Prevent default drag behaviors
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-          dropArea.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-
-        // Highlight drop area when item is dragged over it
-        ['dragenter', 'dragover'].forEach(eventName => {
-          dropArea.addEventListener(eventName, highlight, false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-          dropArea.addEventListener(eventName, unhighlight, false);
-        });
-
-        function highlight(e) {
-          dropArea.classList.add('hover');
-        }
-
-        function unhighlight(e) {
-          dropArea.classList.remove('hover');
-        }
-
-        // Handle dropped files
-        dropArea.addEventListener('drop', handleDrop, false);
-
-        function handleDrop(e) {
-          let dt = e.dataTransfer;
-          let files = dt.files;
-
-          handleFiles(files);
-        }
-
-        function handleFiles(files) {
-          ([...files]).forEach(uploadFile);
-        }
-
-        function uploadFile(file) {
-	       
-            let url = './upload'; // Change to your server upload URL
-            let formData = new FormData();
-            formData.append('file', file);
-            formData.append('dataType', getIdFromUrl()); // Append selected data type
-
-            fetch(url, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-    </script>
+  
     
     
 </div>
@@ -551,7 +416,6 @@ console.error('Error fetching JSON-LD:', error)});
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 		crossorigin="anonymous"></script>	
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0"></script> 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </body>
 </html>			

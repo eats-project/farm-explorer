@@ -1,0 +1,14 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<urn:ngsi-ld:AgriFarm:Great%20Farm:Actuator:Irrigation%20Rig:Property:Electricity> rdfs:label "Irrigation Rig Electricity Consumption"@en .
+
+<urn:ngsi-ld:AgriFarm:Great%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow> rdfs:label "Growing Table Waterflow Tunnel 25"@en .
+
+<https://www.robeau.tech/en/> rdfs:label "Water Flow Sensor"@en .
+
+<https://enless-wireless.com/en/products/temperature-sensor-embedded-sensor-lora/> rdfs:label "Temperature Sensor"@en .
+  
+<https://enless-wireless.com/en/products/pulse-sensor-led-optical-reader-lora/> rdfs:label "Electricity Sensor"@en .
+
+
+
