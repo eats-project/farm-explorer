@@ -191,6 +191,16 @@ public class ServiceController {
 
 	}
 	
+	@GetMapping("/getActuatorDetails")
+	@ResponseBody
+	public String getActuatorDetails(@RequestParam String sensorIri) {
+
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getActuatorDetails(sensorIri);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
 	@GetMapping("/getAssetsForEmissionCalculationMethods")
 	@ResponseBody
 	public String getAssetsForEmissionCalculationMethods() throws Exception {

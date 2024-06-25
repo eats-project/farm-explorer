@@ -10,5 +10,7 @@
   
 <https://enless-wireless.com/en/products/pulse-sensor-led-optical-reader-lora/> rdfs:label "Electricity Sensor"@en .
 
+<https://files.rileysurfaceworld.co.uk/live/machines2/25494.pdf> rdfs:label "Lowara Hydrovar SCH 60.25"@en .
+
 
 

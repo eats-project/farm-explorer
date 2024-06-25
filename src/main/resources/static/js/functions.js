@@ -24,17 +24,17 @@ function createBrowserList(items ) {
 	   if (item['@type']&&item['@type'].includes("https://smartdatamodels.org/dataModel.Agrifood/AgriFarm")) {
 	   
 	   	itemNode = itemNode + `<li id="item-${item['@id']}"  onclick="getDetailsPane('farm','${item['@id']}');highlightSelected('item-${item['@id']}');" class="list-group-item"> 
-	   	                       <a href="#" data-bs-toggle="collapse" data-bs-target="#collapse-sublist-${counter}">Farm: ${item['https://smartdatamodels.org/name'][0]['@value']}</a>
+	   	                       <a href="#" data-bs-toggle="collapse" data-bs-target="#collapse-sublist-${counter}">+ <i class="fas fa-home"></i> </a>  ${item['https://smartdatamodels.org/name'][0]['@value']}
 	   	                       </li><ul id="collapse-sublist-${counter}" class="list-group collapse">`
 	   	
-	   	
+	   	 	itemNode = itemNode + `<div class="list-divider">Farm Emissions Sources</div>`
 	   	if (item['https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel']) {
 	   	let agriParcels = item['https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel'];
 	   	
 	   	agriParcels.forEach(function (agriParcel) {
 		    console.log("adding parcel");
-			itemNode = itemNode + `<li id="item-${agriParcel['@id']}" onclick="getDetailsPane('parcel','${agriParcel['@id']}');highlightSelected('item-${agriParcel['@id']}');" class="list-group-item"> Parcel: ${agriParcel['https://smartdatamodels.org/name'][0]['@value']}
-			                       <button type="button" class=" w-20" onClick="calculateFootprint ('${agriParcel['@id']}')">CF </button></li>`
+			itemNode = itemNode + `<li id="item-${agriParcel['@id']}" onclick="getDetailsPane('parcel','${agriParcel['@id']}');highlightSelected('item-${agriParcel['@id']}');" class="list-group-item"> <i class="fas fa-leaf"></i> ${agriParcel['https://smartdatamodels.org/name'][0]['@value']}
+			                      </li>`
 		    console.log(itemNode);
 		});
 		}
@@ -45,26 +45,43 @@ function createBrowserList(items ) {
 	   	devices.forEach(function (device) {
 		    console.log("adding device");
 		    
-		    if (device['@type'].includes("http://www.w3.org/ns/sosa/Sensor")) {
-		    
-			itemNode = itemNode + `<li id="item-${device['@id']}" onclick="getDetailsPane('sensor','${device['@id']}');highlightSelected('item-${device['@id']}');" class="list-group-item"> Sensor: ${device['https://smartdatamodels.org/name'][0]['@value']}`
-			                      
-		    }
-		    
 		     if (device['@type'].includes("http://www.w3.org/ns/sosa/Actuator")) {
 		    
-			itemNode = itemNode + `<li id="item-${device['@id']}" onclick="getDetailsPane('actuator','${device['@id']}');highlightSelected('item-${device['@id']}');" class="list-group-item"> Actuator: ${device['https://smartdatamodels.org/name'][0]['@value']}
+			itemNode = itemNode + `<li id="item-${device['@id']}" onclick="getDetailsPane('actuator','${device['@id']}');highlightSelected('item-${device['@id']}');" class="list-group-item"> <i class="fas fa-cogs"></i> ${device['https://smartdatamodels.org/name'][0]['@value']}
 			                       
-			                       <button type="button" class=" w-20" onClick="calculateFootprint ('${device['@id']}')">CF </button></li>`
+			                       </li>`
 	
 		    }
 		    
-		});
 		}
+		);
+		
+		}
+		
+			itemNode = itemNode + `<div class="list-divider">Automated Observations</div>`
+		if (item['https://smartdatamodels.org/dataModel.Agrifood/hasDevice']) {
+	   	let devices = item['https://smartdatamodels.org/dataModel.Agrifood/hasDevice'];
+	   	
+	   	devices.forEach(function (device) {
+		    console.log("adding device");
+		    
+		    if (device['@type'].includes("http://www.w3.org/ns/sosa/Sensor")) {
+		    
+			itemNode = itemNode + `<li id="item-${device['@id']}" onclick="getDetailsPane('sensor','${device['@id']}');highlightSelected('item-${device['@id']}');" class="list-group-item"> <i class="fas fa-tachometer-alt"></i> ${device['https://smartdatamodels.org/name'][0]['@value']}</li>`
+			                      
+		    }
+		    
+		    
+		});
+		
+		
+		}
+		
+		
 	   
-	   itemNode = itemNode + '</li>'
+	  
 	   
-	   
+	   itemNode = itemNode + `<div class="list-divider">Manual Observations</div>`
 	   counter++;
 	   
 	   }
@@ -368,9 +385,14 @@ function pupulateProvenanceTable (assetIRI) {
 
 
 					}
-					console.log(html_string)
-					let table_body = document.getElementById('data_transformations_table_body');
-					table_body.innerHTML = html_string;
+					//console.log(html_string)
+					//let table_body = document.getElementById('data_transformations_table_body');
+					//table_body.innerHTML = html_string;
+					
+					 window.parent.postMessage({
+        type: 'provenanceTable',
+        text: html_string
+    }, '*'); 
 				}
 				)
 						 .catch(function(error) {                        // catch
@@ -434,28 +456,14 @@ fetch('/cf_info_all?', {
 
 			}
 			console.log(html_string)
-			let table_body = document.getElementById('cf_table_body');
-			table_body.innerHTML = html_string;
+			//let table_body = document.getElementById('cf_table_body');
+			//table_body.innerHTML = html_string;
 
+ window.parent.postMessage({
+        type: 'provenanceTableCF',
+        text: html_string
+    }, '*'); 
 
-
-
-
-		
-			console.log(graph_ld_object);
-			$('#graph').empty();
-			// d3.jsonldVis(graph_ld_object, '#graph', {  maxLabelWidth: 550 });
-
-			
-			
-			fillComparisonTable(co2);
-
-			$("#comparison-result-co2").text(co2);
-			
-			$("#details-counts").html(`
-  ${state.gpus[gpu].watt}W x ${hours}h = <strong>${energy} kWh</strong> x ${impact}
-  kg  eq. CO<sub>2</sub>/kWh = <strong>${co2} kg eq. CO<sub>2</sub></strong>
-  `);
 		
 			//end first fetch()
 		

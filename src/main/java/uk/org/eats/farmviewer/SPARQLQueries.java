@@ -405,6 +405,26 @@ public class SPARQLQueries {
 		return runTupleQueryListResult (queryString);
 
 	}
+	
+	public static ArrayList<HashMap <String,String>> getActuatorDetails(String sensorIri) {
+	     String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/> Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/> \n"
+	     		+ "PREFIX ssn:<http://www.w3.org/ns/ssn/>\n"
+	     		+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+	     		+ "SELECT DISTINCT * \n"
+	     		+ " FROM <"+ConstantsDB.ASSETS_NAMED_GRAPH_IRI+">"
+	     		+ "    \n"
+	     		+ "   WHERE {  \n"
+	     		+ "    <"+sensorIri+"> \n"
+	     		+ "        a/rdfs:label ?type;\n"
+	     		+ "        smart_base:name ?name;\n"
+	     		+ "        sosa:actsOnProperty ?property.\n"
+	     		+ "        ?property ssn:isPropertyOf ?foi.\n"
+	     		+ "        ?property rdfs:label ?propertyLabel."	
+	     		+ "        ?foi smart_base:name ?foiLabel.\n"
+	     		+ "} ";
+		return runTupleQueryListResult (queryString);
+
+	}
 
 	public static HashMap<String, String> runSparqlQuery(String payload) {
 		// TODO Auto-generated method stub

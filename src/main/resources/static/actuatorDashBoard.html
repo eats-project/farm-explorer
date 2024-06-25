@@ -290,7 +290,7 @@ loadSensorDetails ();
 	// Display the loading icon
     loadingDiv.style.display = 'block';
 	
-	fetch('/getSensorDetails?sensorIri='+encodeURIComponent(id))
+	fetch('/getActuatorDetails?sensorIri='+encodeURIComponent(id))
 				.then((response) =>
 					response.json()
 				)
@@ -307,7 +307,7 @@ loadSensorDetails ();
                     <p class="form-control">${data[0].name}</p>
                 </div>
                 <div class="mb-12">
-                    <label class="form-label">Sensor type:</label>
+                    <label class="form-label">Actuator type:</label>
                     <p class="form-control">${data[0].type}</p>
                 </div>
                 <div class="mb-12">
@@ -315,11 +315,11 @@ loadSensorDetails ();
                     <p class="form-control">${data[0].foiLabel}</p>
                 </div>
                 <div class="mb-12">
-                    <label class="form-label">Observed property:</label>
+                    <label class="form-label">Acted on property:</label>
                     <p class="form-control">${data[0].propertyLabel}</p>
                 </div>
           
-     
+                <button type="button" class=" w-20" onClick="calculateFootprint ('${id}')">Calculate Carbon Footoprint </button>
 `;}).catch(error => {
             console.error('Fetch error:', error);
             loadingDiv.style.display = 'none';
@@ -417,5 +417,8 @@ function getIdFromUrl() {
 		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 		crossorigin="anonymous"></script>	
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="js/tec-context.js"></script>
+<script src="js/tec-lib.js"></script>
+<script src="js/functions.js"></script>
 </body>
 </html>			
