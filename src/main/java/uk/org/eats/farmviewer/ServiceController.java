@@ -201,6 +201,16 @@ public class ServiceController {
 
 	}
 	
+	@GetMapping("/getEmissionResults")
+	@ResponseBody
+	public String getEmissionResults(@RequestParam String assetIri) {
+
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getEmissionResults(assetIri);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
 	@GetMapping("/getAssetsForEmissionCalculationMethods")
 	@ResponseBody
 	public String getAssetsForEmissionCalculationMethods() throws Exception {

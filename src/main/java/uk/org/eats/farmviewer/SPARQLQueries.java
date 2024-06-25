@@ -530,4 +530,20 @@ public class SPARQLQueries {
 				+ "          }    ";
 		return runTupleQueryListResult(queryString);
 	}
+
+	public static ArrayList<HashMap<String, String>> getEmissionResults(String assetIri) {
+		String queryString = "PREFIX peco:<https://w3id.org/peco#>\n"
+				+ "PREFIX ep-plan:<https://w3id.org/ep-plan#>\n"
+				+ "PREFIX qudt:<http://qudt.org/schema/qudt/>\n"
+				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
+				+ "SELECT DISTINCT * \n"
+				+ " FROM <"+assetIri+":CarbonExecutionTrace>   \n"
+				+ " FROM <https://eats.org.uk/ConversionFactors/>    \n"
+				+ " FROM <https://eats.org.uk/MethodPlans/>    \n"
+				+ "   WHERE {  \n"
+				+ "   ?score a peco:EmissionScore; qudt:value ?value; qudt:hasQuantityKind/rdfs:label ?quantityKind; qudt:unit/rdfs:label ?unit;ep-plan:correspondsToVariable/ep-plan:isElementOfPlan/rdfs:label ?plan.\n"
+				+ "} ";
+		return runTupleQueryListResult(queryString);
+	}
 }

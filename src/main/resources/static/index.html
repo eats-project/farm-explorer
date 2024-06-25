@@ -207,22 +207,29 @@ window.addEventListener('message', function(event) {
 					table_body.innerHTML = event.data.text;
     }
     
+    if (event.data.type === 'provenanceResults') {
+        console.log('Message received from iframe:', event.data.text);
+        let table_body = document.getElementById('resultsTableBody');
+					table_body.innerHTML = event.data.text;
+    }
+    
+    
    
 		
 });
 </script>
   
   
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
- <div class="collapse navbar-collapse" ">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" style="padding-left:20px;">
+ <div class="collapse navbar-collapse" >
  <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-       <i class="fas fa-tree nav-icon"></i>
-        <a class="nav-link" href="/index.html">Explore Farm <span class="sr-only">(current)</span></a>
+       <i class="fas fa-home nav-icon"></i>
+        <a class="nav-link" href="/index.html">Home <span class="sr-only">(current)</span></a>
       </li>
        <li class="nav-item ">
-     <i class="fas fa-plus-square nav-icon"></i>
-        <a class="nav-link" href="/addData.html">Add Data <span class="sr-only">(current)</span></a>
+     <i class="fas fa-calculator nav-icon"></i>
+        <a class="nav-link" href="/calculationMethods.html">Calculation Methods<span class="sr-only">(current)</span></a>
       </li>
        <li class="nav-item active">
       <i class="fas fa-database nav-icon"></i>
@@ -289,8 +296,16 @@ window.addEventListener('message', function(event) {
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="footprint" role="tabpanel" aria-labelledby="footprint-tab">
        <div class="col-md-12" id="bottomPanel">
-
-  <span id="carbonFootprint"> Please select a farm asset you wish to evaluate</span>
+ <table class="table" id="data-table"> 
+  <thead>
+  <th>Calcualtion Method</th>
+   <th>Result</th>
+    <th>Unit</th>
+   </thead>
+                                   <tbody id="resultsTableBody">
+   
+                                   </tbody>
+                                   </table> 
    
  </div>
     </div>

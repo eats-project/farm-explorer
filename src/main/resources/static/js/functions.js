@@ -24,7 +24,7 @@ function createBrowserList(items ) {
 	   if (item['@type']&&item['@type'].includes("https://smartdatamodels.org/dataModel.Agrifood/AgriFarm")) {
 	   
 	   	itemNode = itemNode + `<li id="item-${item['@id']}"  onclick="getDetailsPane('farm','${item['@id']}');highlightSelected('item-${item['@id']}');" class="list-group-item"> 
-	   	                       <a href="#" data-bs-toggle="collapse" data-bs-target="#collapse-sublist-${counter}">+ <i class="fas fa-home"></i> </a>  ${item['https://smartdatamodels.org/name'][0]['@value']}
+	   	                       <a href="#" data-bs-toggle="collapse" data-bs-target="#collapse-sublist-${counter}"><i class="fas fa-building"></i></a>  ${item['https://smartdatamodels.org/name'][0]['@value']}
 	   	                       </li><ul id="collapse-sublist-${counter}" class="list-group collapse">`
 	   	
 	   	 	itemNode = itemNode + `<div class="list-divider">Farm Emissions Sources</div>`
@@ -33,7 +33,7 @@ function createBrowserList(items ) {
 	   	
 	   	agriParcels.forEach(function (agriParcel) {
 		    console.log("adding parcel");
-			itemNode = itemNode + `<li id="item-${agriParcel['@id']}" onclick="getDetailsPane('parcel','${agriParcel['@id']}');highlightSelected('item-${agriParcel['@id']}');" class="list-group-item"> <i class="fas fa-leaf"></i> ${agriParcel['https://smartdatamodels.org/name'][0]['@value']}
+			itemNode = itemNode + `<li id="item-${agriParcel['@id']}" onclick="getDetailsPane('parcel','${agriParcel['@id']}');highlightSelected('item-${agriParcel['@id']}');" class="list-group-item"> <i class="fas fa-seedling"></i> ${agriParcel['https://smartdatamodels.org/name'][0]['@value']}
 			                      </li>`
 		    console.log(itemNode);
 		});
@@ -465,8 +465,45 @@ fetch('/cf_info_all?', {
     }, '*'); 
 
 		
-			//end first fetch()
-		
+		fetch('/getEmissionResults?assetIri='+encodeURIComponent(assetIRI)).then((response) =>
+			response.json()
+		)
+		.then((CF_data) => {
+			
+			console.log(CF_data)
+
+			let html_string = "";
+
+			for (i = 0; i < CF_data.length; i++) {
+				if (i == 0) {
+					html_string = html_string + '<tr style="background-color:#CCF6D3 ;">'
+				}
+				else {
+					html_string = html_string + "<tr>"
+				}
+
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].plan) + "</td>"
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].value) + "</td>"
+
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].unit) + " " + removeLiteralType(CF_data[i].quantitiyKind) + "</td>"
+				
+				
+				
+				//html_string = html_string + "<td>" + twoDigits(energy * twoDigits(CF_data[i].value.split("^")[0])) + "" + removeLiteralType(CF_data[i].targetUnit) + " ["+removeLiteralType(CF_data[i].emissionTargetSymbol)+"]</td>"
+				html_string = html_string + "</tr>"
+
+
+			}
+			console.log(html_string)
+			//let table_body = document.getElementById('cf_table_body');
+			//table_body.innerHTML = html_string;
+
+ window.parent.postMessage({
+        type: 'provenanceResults',
+        text: html_string
+    }, '*'); 
+
+});		
 		
 });
   
