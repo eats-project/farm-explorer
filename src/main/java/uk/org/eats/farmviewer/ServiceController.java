@@ -37,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.gson.Gson;
 
 import uk.org.eats.graphdb.ConstantsDB;
+import uk.org.eats.graphdb.ConstraintQueryUpdate;
 import uk.org.eats.graphdb.GraphDBUtils;
 import uk.org.eats.templates.ElectricityData;
 import uk.org.eats.templates.WaterFlowData;
@@ -116,6 +117,19 @@ public class ServiceController {
 		Gson gson = new Gson();
 		return gson.toJson(result);
 
+	}
+	
+	@PostMapping("/saveQueryUpdate")
+	@ResponseBody
+	public void saveQueryUpdate(@RequestBody String query) {
+		
+		System.out.println(query);
+		Gson gson = new Gson();
+		ConstraintQueryUpdate update = gson.fromJson(query,ConstraintQueryUpdate.class);
+		GraphDBUtils.updateConstraint(update, ConstantsDB.METHOD_PLANS);
+		//
+		//returnConstraintQueryUpdate gson.toJson(result);
+		
 	}
 	
 	@PostMapping("/addNewAsset")
@@ -206,6 +220,16 @@ public class ServiceController {
 	public String getEmissionResults(@RequestParam String assetIri) {
 
 		ArrayList<HashMap<String, String>> result = SPARQLQueries.getEmissionResults(assetIri);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
+	@GetMapping("/getCalculationFormulas")
+	@ResponseBody
+	public String getCalculationFromulas() {
+
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getCalculationFromulas();
 		Gson gson = new Gson();
 		return gson.toJson(result);
 

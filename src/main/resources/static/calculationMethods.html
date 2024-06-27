@@ -7,7 +7,13 @@
 		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sparql/sparql.min.js"></script>
+ 
 	<style>
+	 .CodeMirror { height: auto; border: 1px solid #ddd; }
+        .CodeMirror-lines { padding: 10px; }
 		.nav-item {
 			margin-right: 20px;
 			display: flex;
@@ -216,7 +222,7 @@
 			</li>
 			<li class="nav-item" role="presentation">
 				<button class="nav-link" id="new-formula-tab" data-bs-toggle="tab" data-bs-target="#edit-formula"
-					type="button" role="tab" aria-controls="new-formula" aria-selected="false">Edit Calculation Method</button>
+					type="button" role="tab" aria-controls="new-formula" aria-selected="false" onclick = "getFormulas ()">Edit Calculation Method</button>
 			</li>
 		</ul>
 		
@@ -224,13 +230,7 @@
 	<!-- Tab Content -->
 		<div class="tab-content" id="myTabContent">			
 	
-			
-			
 		
-
-		
-			
-			
 			<div class="tab-pane fade active show" id="new-formula" role="tabpanel" aria-labelledby="new-formula-tab">
 				<div id="content" class="container-fluid">
 					<div id="step1">
@@ -268,11 +268,89 @@
 			
 				
 			<div class="tab-pane fade show active" id="edit-formula" role="tabpanel" aria-labelledby="edit-formula-tab">
-				<!-- Table goes here -->
+				<div id= "edit-formula"></div>
 				
 			</div>
 		</div>
 	</div>
+	
+	<script>
+	//edit-formula function
+	 const editorInstances = {};
+	 
+	function getFormulas () {
+		
+		let resultsDiv  = document.getElementById("edit-formula");
+		
+		resultsDiv.innerHTML = "";
+		
+		fetch('/getCalculationFormulas').then((response) =>
+			response.json()
+		)
+		.then((data) => {
+			
+			console.log(data)
+		
+
+			let html_string = "";
+            let newTable = true;
+			for (i = 0; i < data.length; i++) {
+				if (newTable) {
+					html_string = html_string + `<h2>${data[i].planLabel}</h2>`;
+					html_string = html_string + '<table class="table"><thead><th>Constraint</th><th>Constraint Implementation</th></thead><tbody>';
+				    newTable= false;
+				}
+				
+                html_string = html_string + `<tr><td>${data[i].constraintLabel}<br><br> <button onclick="saveQueryUpdate('${data[i].impl}')">Save Edits</button></td><td><textarea id="${data[i].impl}" class="sparql-editor">${data[i].query}</textarea></td></tr>`
+		
+				if (i+1<data.length&& data[i].plan != data[i+1].plan) {
+					html_string = html_string + "</tbody></table>"
+					newTable = true;
+				}
+				
+				if (i+1==data.length) {
+			     html_string = html_string + "</tbody></table>"
+			    }
+
+
+			}
+			
+			
+			resultsDiv.innerHTML = html_string;
+			
+			
+
+        // Initialize editors and store references
+        document.querySelectorAll('.sparql-editor').forEach(function(textarea) {
+            editorInstances[textarea.id] = CodeMirror.fromTextArea(textarea, {
+                mode: "application/sparql-query",
+                lineNumbers: true,
+                lineWrapping: true,
+                autoCloseBrackets: true
+            });
+        });
+        });		
+		
+	}
+	
+	function saveQueryUpdate(editorId) {
+            const editor = editorInstances[editorId];
+            const data = { query: editor.getValue(), implIRI : editorId};
+
+            fetch('/saveQueryUpdate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            
+            
+            }
+	
+	
+	</script>
+	
 
 
 
@@ -280,8 +358,7 @@
 	<div id="myModal" class="modal">
 		<div class="modal-content">
 			<span class="close">&times;</span>
-			<p id="modalText">You clicked: <span id="clickedElementName"></span></p>
-			<p>Group: <span id="elementGroup"></span></p>
+			
 			<!-- <select id="elementOptions">
 				<option value="result">Result</option>
 				<option value="conversionFactor">Conversion Factor</option>
@@ -292,10 +369,8 @@
 
 
 				<textarea id="sparqlQuery"
-					placeholder="Type your SPARQL query here... The query shoudl produce single number in variable ?output. You can use $this to reference this selected asset iri"></textarea>
+					placeholder="Type your SPARQL query here... "></textarea>
 
-
-				
 				<span id="testResult"> </span>
 				<br><br>
 
@@ -573,7 +648,7 @@
 		    
 		    let stepIRI = prefix + ":Step:" + groupIndex;
 		    
-			createConstraint(prefix + ":Step"+groupIndex+":Constraint:"+encodeURIComponent(curerentSelectedItem["label"]), "Consrain for Var "+curerentSelectedItem["label"],parsedQuery, stepIRI)
+			createConstraint(prefix + ":Step"+groupIndex+":Constraint:"+encodeURIComponent(curerentSelectedItem["label"]), "Constraint for Var "+curerentSelectedItem["label"],parsedQuery, stepIRI)
 
 			updateClass();
 			modal.style.display = "none";

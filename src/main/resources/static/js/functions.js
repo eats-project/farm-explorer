@@ -485,7 +485,7 @@ fetch('/cf_info_all?', {
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].plan) + "</td>"
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].value) + "</td>"
 
-				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].unit) + " " + removeLiteralType(CF_data[i].quantitiyKind) + "</td>"
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].unit) + " of " + removeLiteralType(CF_data[i].quantityKind) + "</td>"
 				
 				
 				

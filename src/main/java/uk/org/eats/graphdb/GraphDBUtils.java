@@ -206,6 +206,33 @@ public static String dumpGraphAsJsonLd(String namedGraphIri) throws Exception {
   }
 
 
+public static void updateConstraint(ConstraintQueryUpdate updateJson, String methodPlans) {
+	Repository repo = getFabricRepository(getRepositoryManager());
+	RepositoryConnection conn = repo.getConnection();
+   // String query = "CONSTRUCT { ?subject ?predicate ?object . } FROM  <" + namedGraphIri + ">" + " WHERE { ?subject ?predicate ?object . }";
+   
+	String update = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
+			+ "            \n"
+			+ "            Delete {GRAPH <"+methodPlans+"> {\n"
+			+ "                ?item rdf:value ?oldValue ."
+			+ "            }}"
+			+ "            INSERT {GRAPH <"+methodPlans+">{\n"
+			+ "                ?item rdf:value \"\"\""+updateJson.getQuery()+"\"\"\" ."
+			+ "            }}\n"
+			+ "            WHERE {\n"
+			+ "                VALUES (?item) { (<"+updateJson.getImplIRI()+">) }"
+			+ "                \n"
+			+ "                {SELECT ?oldValue WHERE {"
+			+ "                    ?item rdf:value ?oldValue ."
+			+ "                }}"
+			+ "            }";
+	
+	System.out.println (update);
+	conn.prepareUpdate(update).execute();
+   
+}
+
+
 
  
 }

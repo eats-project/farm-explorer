@@ -546,4 +546,22 @@ public class SPARQLQueries {
 				+ "} ";
 		return runTupleQueryListResult(queryString);
 	}
+
+	public static ArrayList<HashMap<String, String>> getCalculationFromulas() {
+		String queryString = "PREFIX ep-plan:<https://w3id.org/ep-plan#>\n"
+				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
+				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+				+ "SELECT DISTINCT * \n"
+				+ "FROM <https://eats.org.uk/MethodPlans/>\n"
+				+ "\n"
+				+ "Where {\n"
+				+ "    ?plan a ep-plan:Plan; rdfs:label ?planLabel.\n"
+				+ "    ?constraint ep-plan:isElementOfPlan ?plan; a ep-plan:Constraint.\n"
+				+ "    ?constraint ep-plan:hasConstraintImplementation ?impl;rdfs:label ?constraintLabel.\n"
+				+ "    ?impl rdf:value ?query.\n"
+				+ "}\n"
+				+ "\n"
+				+ "Order BY ?plan";
+		return runTupleQueryListResult(queryString);
+	}
 }
