@@ -87,7 +87,7 @@
 				  overflow: auto; /* Allow scrolling if content exceeds the panel height */
                   min-width:250px;
 	              padding: 10px;
-	              background-color: #B1E6A1;
+	             
 			 /* 	  width: 30%;*/
 			    
 			    
@@ -195,6 +195,22 @@ window.addEventListener('message', function(event) {
         return; // Stop processing the message if it's from an untrusted origin
     }
     
+    if (event.data.type === 'startedFootprintCalcualtion') {
+        
+       document.getElementById('bottom-initial').style.display = "none";
+       document.getElementById('bottom-result').style.display = "none";
+       document.getElementById('bottom-loading').style.display = "block";
+	    
+    }
+    
+     if (event.data.type === 'endedFootprintCalcualtion') {
+        
+       document.getElementById('bottom-initial').style.display = "none";
+       document.getElementById('bottom-result').style.display = "block";
+       document.getElementById('bottom-loading').style.display = "none";
+	    
+    }
+    
     if (event.data.type === 'provenanceTable') {
         console.log('Message received from iframe:', event.data.text);
         let table_body = document.getElementById('data_transformations_table_body');
@@ -251,7 +267,7 @@ window.addEventListener('message', function(event) {
     <div class="col-md-8" >
       <!-- Map container -->
      <!--  <div id="map"></div> -->
-     <iframe id="iframe" src="/farmDashboard.html" width="100%" height="100%"></iframe>
+     <iframe id="iframe" src="/select.html" width="100%" height="100%"></iframe>
      <script>
      function getDetailsPane (assetType, assetID) {
 	    console.log("changing iframe")
@@ -275,9 +291,18 @@ window.addEventListener('message', function(event) {
   </div>
   
   <hr>
-
+<div id="bottom-initial" class="row">
+<div class="col-md-12">
+Select an item for which you wish to estimate emissions
+</div>
+</div>
+<div id="bottom-loading" style="display:none;" class="row">
+<div class="col-md-12">
+Loading....
+</div>
+</div>
 <!-- Start bottom row -->
-<div class="row">
+<div id="bottom-result" style="display:none;" class="row">
 
 
 	<!-- Tab Navigation -->
@@ -296,6 +321,8 @@ window.addEventListener('message', function(event) {
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="footprint" role="tabpanel" aria-labelledby="footprint-tab">
        <div class="col-md-12" id="bottomPanel">
+
+ 
  <table class="table" id="data-table"> 
   <thead>
   <th>Calcualtion Method</th>

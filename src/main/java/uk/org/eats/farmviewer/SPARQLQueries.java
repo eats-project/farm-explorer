@@ -509,9 +509,12 @@ public class SPARQLQueries {
 
 	private static String removeQuotesRegex  (String input) {
 
-		 if (input.startsWith("\"") && input.endsWith("\"")) {
+		/* if (input.startsWith("\"") && input.endsWith("\"")) {
 	            input = input.substring(1, input.length() - 1);
-	        }
+	        }*/
+		   input = input.replaceAll("^\"|\"(@[a-zA-Z\\-]+)?$|(@[a-zA-Z\\-]+)$", "");
+	       
+	    
 	       return input;
 
 	  
@@ -562,6 +565,16 @@ public class SPARQLQueries {
 				+ "}\n"
 				+ "\n"
 				+ "Order BY ?plan";
+		return runTupleQueryListResult(queryString);
+	}
+
+	public static ArrayList<HashMap<String, String>> getFarmDetails(String farmIri) {
+		String queryString = "Prefix foodie:<http://foodie-cloud.com/model/foodie#> \n"
+				+ "Prefix smart:<https://smartdatamodels.org/> \n"
+				+ "\n"
+				+ "select * where { \n"
+				+ "	<"+farmIri+"> foodie:description ?description; smart:name ?name.\n"
+				+ "} ";
 		return runTupleQueryListResult(queryString);
 	}
 }

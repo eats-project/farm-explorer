@@ -185,6 +185,16 @@ public class ServiceController {
 
 	}
 	
+	@GetMapping("/getFarmDetails")
+	@ResponseBody
+	public String getFarmDetails(@RequestParam String farmIri) {
+
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getFarmDetails(farmIri);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
 	@GetMapping("/getSensors")
 	@ResponseBody
 	public String getSensors() {

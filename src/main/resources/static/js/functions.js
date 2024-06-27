@@ -316,7 +316,10 @@ function linkObservationFoI (mapLayer, provTrace) {
 	
 function pupulateProvenanceTable (assetIRI) {
 	
-	
+	 window.parent.postMessage({
+        type: 'startedFootprintCalcualtion',
+        text: "true"
+    }, '*'); 
 	        
 					// PRINT TRANSFORMATIONS TABLE
 			fetch('/getDataTransformations', {
@@ -502,10 +505,15 @@ fetch('/cf_info_all?', {
         type: 'provenanceResults',
         text: html_string
     }, '*'); 
-
+ window.parent.postMessage({
+        type: 'endedFootprintCalcualtion',
+        text: "true"
+    }, '*'); 
 });		
 		
 });
+  
+  
   
   
 }
