@@ -47,7 +47,7 @@ function createBrowserList(items ) {
 		    
 		     if (device['@type'].includes("http://www.w3.org/ns/sosa/Actuator")) {
 		    
-			itemNode = itemNode + `<li id="item-${device['@id']}" onclick="getDetailsPane('actuator','${device['@id']}');highlightSelected('item-${device['@id']}');" class="list-group-item"> <i class="fas fa-cogs"></i> ${device['https://smartdatamodels.org/name'][0]['@value']}
+			itemNode = itemNode + `<li id="item-${device['@id']}" onclick="getDetailsPane('actuator','${device['@id']}');highlightSelected('item-${device['@id']}');" class="list-group-item"> <i class="fas fa-toggle-on"></i> ${device['https://smartdatamodels.org/name'][0]['@value']}
 			                       
 			                       </li>`
 	
@@ -257,8 +257,49 @@ function linkObservationFoI (mapLayer, provTrace) {
 	
 	if (planExists)
 	{
-		console.log("Populating provenance trace for " + assetIRI)
+		 window.parent.postMessage({
+        type: 'startedFootprintCalcualtion',
+        text: "true"
+    }, '*'); 
+		fetch('/getAssignedCalculationMethods?assetIRI='+encodeURIComponent(assetIRI))
+		.then((response) =>
+			response.json()
+		)
+		.then((data) => {
+			
+			console.log(data)
+			if (data.length >0) {
+				
+			
+			
+	     fetch('/calculateFootprint?assetIri='+encodeURIComponent(assetIRI))
+		.then((response) =>
+			response.json()
+		)
+		.then((data) => {
+			console.log(data);
+			console.log("Populating provenance trace for " + assetIRI)
 		pupulateProvenanceTable (assetIRI);
+			});
+			
+			}
+			
+			else {
+				alert ("No emission calculation method is linked to the asset"); 
+				window.parent.postMessage({
+        type: 'canceledFootprintCalcualtion',
+        text: "true"
+    }, '*'); 
+			}
+			
+			
+			
+			});
+		
+		
+		
+		
+		
 		
 	}
 	
@@ -316,10 +357,7 @@ function linkObservationFoI (mapLayer, provTrace) {
 	
 function pupulateProvenanceTable (assetIRI) {
 	
-	 window.parent.postMessage({
-        type: 'startedFootprintCalcualtion',
-        text: "true"
-    }, '*'); 
+	
 	        
 					// PRINT TRANSFORMATIONS TABLE
 			fetch('/getDataTransformations', {

@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sparql/sparql.min.js"></script>
  
 	<style>
-	 .CodeMirror { height: auto; border: 1px solid #ddd; }
+	 .CodeMirror { height: auto; border: 1px solid #ddd; min-height:200px; }
         .CodeMirror-lines { padding: 10px; }
 		.nav-item {
 			margin-right: 20px;
@@ -27,7 +27,7 @@
 		#content {
 			display: flex;
 			flex-direction: column;
-			align-items: center;
+			align-items: left;
 			font-family: Arial, sans-serif;
 		}
 
@@ -189,6 +189,9 @@
 			display: none;
 		}
 	</style>
+	<script>
+	let sparqlQueryEditor; 
+	</script>
 </head>
 
 <body>
@@ -255,10 +258,7 @@
 							<ul id="theList"></ul>
 						</div>
 
-						<!-- Button trigger modal -->
-						<button type="button" class="btn btn-primary" onclick="testCalculation()">
-							Test Method
-						</button>
+					
 						<button type="button" class="btn btn-primary" onclick="saveCalculation()">
 							Save Method
 						</button>
@@ -365,16 +365,15 @@
 			<br>
 			<div id="sparqlBox">
 
-
-				<textarea id="sparqlQuery"
+                <h4>Enter SPARQL Query</h4>
+				<textarea id="sparqlQuery" class="sparql-editor"
 					placeholder="Type your SPARQL query here... "></textarea>
 
 				<span id="testResult"> </span>
 				<br><br>
 
 
-				<button onclick="testQuery()">TestQuery</button>
-
+				
 				<button onclick="saveSegment()">Save</button>
 
 
@@ -636,7 +635,7 @@
 			completedIndex = curerentSelectedItem["index"];
 			let varIRI = curerentSelectedItem["varIRI"];
 			let parsedQuery = document.getElementById('sparqlQuery').value.replaceAll("$Variable",`<${varIRI}>`);
-		    
+		  // let parsedQuery =  sparqlQueryEditor.getValue().replaceAll("$Variable",`<${varIRI}>`);
 		    let groupIndex = curerentSelectedItem["group"];
 		    
 		
@@ -652,6 +651,9 @@
 			modal.style.display = "none";
 			
 			document.getElementById('sparqlQuery').value = "";
+			console.log("reseting editor");
+			//sparqlQueryEditor.setValue('');
+			
             console.log(parsedQuery);
 			
 		}
@@ -740,7 +742,7 @@
 					//add new step if not added already 
 					if (parseInt(stepCount) > parseInt(currentGroup) && !stepIRIs.includes(step_iri)) {
 
-						createNewStep(step_iri, ":Step" + currentGroup, stepArithmeticType);
+						createNewStep(step_iri, document.getElementById('titleInput').value, stepArithmeticType);
 						stepIRIs.push(step_iri);
 					}
 
@@ -778,11 +780,20 @@
 		// Modal Script
 		var modal = document.getElementById("myModal");
 		var span = document.getElementsByClassName("close")[0];
+		/*
+		let sparqlQuery = document.getElementById('sparqlQuery');
+				
+				sparqlQueryEditor = CodeMirror.fromTextArea(sparqlQuery, {
+                mode: "application/sparql-query",
+                lineNumbers: false,
+                lineWrapping: true,
+                autoCloseBrackets: true
+            });*/
 
 		function showModal(clickedText, group, index, isResult) {
 			if (index == parseInt(completedIndex) + 1) {
-				document.getElementById('clickedElementName').textContent = prefix + "Var:" + encodeURIComponent(clickedText);
-				document.getElementById('elementGroup').textContent = prefix + ":Step:" + group;
+				//document.getElementById('clickedElementName').textContent = prefix + "Var:" + encodeURIComponent(clickedText);
+				//document.getElementById('elementGroup').textContent = prefix + ":Step:" + group;
 
 				curerentSelectedItem["label"] = clickedText;
 				curerentSelectedItem["index"] = index;
@@ -790,6 +801,8 @@
 				curerentSelectedItem["stepIRI"] = prefix + ":Step:" + group;
 				curerentSelectedItem["varIRI"] = prefix + ":Var:" + encodeURIComponent(clickedText);
 				curerentSelectedItem["isResult"] = isResult;
+				
+				
 			
 
 				modal.style.display = "block";

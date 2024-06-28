@@ -233,6 +233,18 @@ public static void updateConstraint(ConstraintQueryUpdate updateJson, String met
 }
 
 
+public static void dropGraph(String graph) {
+	Repository repo = getFabricRepository(getRepositoryManager());
+	RepositoryConnection conn = repo.getConnection();
+   // String query = "CONSTRUCT { ?subject ?predicate ?object . } FROM  <" + namedGraphIri + ">" + " WHERE { ?subject ?predicate ?object . }";
+   
+	String update = "Drop Graph <"+graph+">";
+	
+	System.out.println (update);
+	conn.prepareUpdate(update).execute();
+   
+}
+
 
  
 }

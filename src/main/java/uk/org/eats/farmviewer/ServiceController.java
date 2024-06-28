@@ -354,6 +354,14 @@ public class ServiceController {
 		return SPARQLQueries.getCFInfo(cf_iri);
 
 	}
+	
+	@GetMapping("/calculateFootprint")
+	public String calculateFootprint(@RequestParam String assetIri) {
+		
+		GraphDBUtils.dropGraph (assetIri+":CarbonExecutionTrace");
+		return "{\"resul\":\""+new PlanExecutor().executeWorkflow(assetIri)+"\"}";
+
+	}
 
 	@PostMapping("/cf_info_all")
 	public String cf_info_all(@RequestBody String assetIRI) {

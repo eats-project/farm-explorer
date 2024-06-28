@@ -195,6 +195,15 @@ window.addEventListener('message', function(event) {
         return; // Stop processing the message if it's from an untrusted origin
     }
     
+    if (event.data.type === 'canceledFootprintCalcualtion') {
+        
+       document.getElementById('bottom-initial').style.display = "block";
+       document.getElementById('bottom-result').style.display = "none";
+       document.getElementById('bottom-loading').style.display = "none";
+	    
+    }
+    
+    
     if (event.data.type === 'startedFootprintCalcualtion') {
         
        document.getElementById('bottom-initial').style.display = "none";
@@ -293,7 +302,7 @@ window.addEventListener('message', function(event) {
   <hr>
 <div id="bottom-initial" class="row">
 <div class="col-md-12">
-Select an item for which you wish to estimate emissions
+<span id="default-message">Select an item for which you wish to estimate emissions</span>
 </div>
 </div>
 <div id="bottom-loading" style="display:none;" class="row">

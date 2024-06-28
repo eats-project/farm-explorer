@@ -131,10 +131,11 @@ public class PlanExecutor {
             			 if (query.iterator().hasNext()) {
             					String queryString= query.iterator().next().getObject().toString();
             			 				//System.out.println("QUERY >>>>>>>>");
-            			 				//System.out.println(queryString);
+            			 				
             			 				queryString = queryString.replaceAll("\\$Asset", "<"+assetIRI.toString()+">");
             			 				
             			 				queryString = queryString.replaceAll("^\"|\"$", "");
+            			 				System.out.println(queryString);
             			 				//System.out.println("QUERY Transformed >>>>>>>>");
             			 				//System.out.println(queryString);
             			 				if (!queryString.contains("$Output")) {
@@ -174,7 +175,7 @@ public class PlanExecutor {
     
     }
 
-    private void executeWorkflow(String assetIRI) {
+    public String executeWorkflow(String assetIRI) {
     	
     	  this.assetIRI = vf.createIRI(assetIRI);
     	
@@ -213,6 +214,8 @@ public class PlanExecutor {
         
         //save the execution trace
         saveExecutionTrace ();
+        
+        return "workflow completed";
     }
     
     private void saveExecutionTrace () {
@@ -220,6 +223,8 @@ public class PlanExecutor {
     	Repository repo = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager());
 		RepositoryConnection global_conn = repo.getConnection();
 		System.out.println ("adding to named grpah "+ namedGraph);
+		
+		System.out.println (executionTrace);
 		
 		global_conn.add(executionTrace, namedGraph);
 		
