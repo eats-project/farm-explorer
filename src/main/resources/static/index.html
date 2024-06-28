@@ -203,6 +203,13 @@ window.addEventListener('message', function(event) {
 	    
     }
     
+    if (event.data.type === 'provEvaluationResults') {
+        
+       document.getElementById('evaluation').innerHTML= event.data.text;
+      
+	    
+    }
+    
     
     if (event.data.type === 'startedFootprintCalcualtion') {
         
@@ -256,10 +263,7 @@ window.addEventListener('message', function(event) {
      <i class="fas fa-calculator nav-icon"></i>
         <a class="nav-link" href="/calculationMethods.html">Calculation Methods<span class="sr-only">(current)</span></a>
       </li>
-       <li class="nav-item active">
-      <i class="fas fa-database nav-icon"></i>
-        <a class="nav-link" href="/deleteData.html">Manage Data<span class="sr-only">(current)</span></a>
-      </li>
+       
  </ul>
 </div>
 </nav>
@@ -280,6 +284,7 @@ window.addEventListener('message', function(event) {
      <script>
      function getDetailsPane (assetType, assetID) {
 	    console.log("changing iframe")
+	     console.log(assetType)
 	    let iframe = document.getElementById('iframe');
        
         if (assetType=="sensor") {
@@ -292,6 +297,11 @@ window.addEventListener('message', function(event) {
         }
          if (assetType=="actuator") {
         let newUrl = "actuatorDashboard.html" +  "?id=" + encodeURIComponent(assetID);
+        iframe.src = newUrl;
+        }
+        
+          if (assetType=="parcel") {
+        let newUrl = "agriParcelDashboard.html" +  "?id=" + encodeURIComponent(assetID);
         iframe.src = newUrl;
         }
      }
@@ -403,8 +413,8 @@ Loading....
     </h2>
     <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
       <div class="accordion-body">
-        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-      </div>
+       <div id="evaluation"></div>
+             </div>
     </div>
   </div>
 </div>		             	 

@@ -225,6 +225,27 @@ public class ServiceController {
 
 	}
 	
+	@GetMapping("/evaluateTrace")
+	@ResponseBody
+	public String evaluateTrace(@RequestParam String assetIRI, Model model) {
+
+		SPARQLQueries.executeQueriesFromCSV(model, assetIRI);
+		Gson gson = new Gson();
+		System.out.println("-----------------------------------------");
+		System.out.println(gson.toJson(model));
+		return gson.toJson(model);
+	}
+	
+	@GetMapping("/getAgriParcelDetails")
+	@ResponseBody
+	public String getAgriParcelDetails(@RequestParam String parcelIri) {
+
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getAgriParcelDetails(parcelIri);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
 	@GetMapping("/getEmissionResults")
 	@ResponseBody
 	public String getEmissionResults(@RequestParam String assetIri) {
@@ -322,7 +343,7 @@ public class ServiceController {
 
 	}
 	
-	
+	/*
 	@PostMapping("/evaluateTrace")
 	@ResponseBody
 	public String evaluateTrace(@RequestBody String payload, Model model) {
@@ -333,7 +354,7 @@ public class ServiceController {
 		System.out.println(gson.toJson(model));
 		return gson.toJson(model);
 
-	}
+	}*/
 
 	@PostMapping("/getDataTransformations")
 	@ResponseBody

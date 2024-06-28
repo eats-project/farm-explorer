@@ -33,11 +33,14 @@ import org.apache.jena.util.FileUtils;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.query.BindingSet;
+import org.eclipse.rdf4j.query.QueryLanguage;
+import org.eclipse.rdf4j.query.QueryResults;
 import org.eclipse.rdf4j.query.TupleQuery;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.query.Update;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.util.Repositories;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -53,13 +56,58 @@ import uk.org.eats.graphdb.GraphDBUtils;
 
 public class SPARQLQueries {
 
-	public static void executeQueriesFromCSV(Model modelResults, String payload, OntModel semModel) {
+	public static void executeQueriesFromCSV(Model modelResults, String payload) {
 
 		ResourceLoader resourceLoader = new DefaultResourceLoader();
 		Resource queriesFile = resourceLoader.getResource("/validation/queries.csv");
 
-		Reader reader;
 
+		
+		Repository repo = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager());
+		RepositoryConnection connection = repo.getConnection();
+		 String sparqlQuery = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/namedGraph> { ?s ?p ?o } }";
+		 org.eclipse.rdf4j.model.Model model = Repositories.graphQuery(repo, sparqlQuery, r -> QueryResults.asModel(r));
+		
+         System.out.println("Prov trace model size: " + model.size());
+        
+        // Optionally, add the model to a named graph within the repository
+        connection.begin();
+        connection.add(model, connection.getValueFactory().createIRI("http://example.org/namedGraph"));
+        connection.commit();
+        
+        // Read queries from CSV and execute them
+        try (InputStreamReader reader = new InputStreamReader(queriesFile.getInputStream());
+             CSVReader csvReader = new CSVReader(reader)) {
+            List<String[]> r = csvReader.readAll();
+            System.out.println("Running validation queries");
+            for (String[] row : r) {
+                System.out.println("Evaluating: " + row[1]);
+                TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, Constants.PREFIXES + " " + row[1].replaceAll("\uFEFF", ""));
+                try (TupleQueryResult result = tupleQuery.evaluate()) {
+                    ArrayList<HashMap<String, String>> list = new ArrayList<>();
+                    while (result.hasNext()) {
+                        HashMap<String, String> map = new HashMap<>();
+                        BindingSet bindingSet = result.next();
+                        for (String bindingName : bindingSet.getBindingNames()) {
+                            map.put(bindingName, bindingSet.getValue(bindingName).stringValue());
+                        }
+                        list.add(map);
+                    }
+                    System.out.println("Result: " + list);
+                    // Add results to modelResults or another appropriate structure
+                    modelResults.addAttribute(row[0], list);
+                }
+            }
+        } catch (IOException | CsvException e) {
+            e.printStackTrace();
+        }
+     catch (Exception e) {
+        e.printStackTrace();
+    
+}
+		
+		
+/*
 		OntModel model = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF);
 
 		model.read(new ByteArrayInputStream(payload.getBytes()), null, "JSON-LD");
@@ -107,7 +155,7 @@ public class SPARQLQueries {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
+*/
 	}
 
 	public static String getCFInfo(String cf_iri) {
@@ -577,4 +625,16 @@ public class SPARQLQueries {
 				+ "} ";
 		return runTupleQueryListResult(queryString);
 	}
+
+	public static ArrayList<HashMap<String, String>> getAgriParcelDetails(String parcelIri) {
+		String queryString = "Prefix foodie:<http://foodie-cloud.com/model/foodie#> \n"
+				+ "Prefix smart:<https://smartdatamodels.org/> \n"
+				+ "\n"
+				+ "select * where { \n"
+				+ "	<"+parcelIri+">  smart:name ?name.\n"
+				+ "} ";
+		return runTupleQueryListResult(queryString);
+	}
+
+	
 }

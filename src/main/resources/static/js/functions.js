@@ -81,7 +81,7 @@ function createBrowserList(items ) {
 	   
 	  
 	   
-	   itemNode = itemNode + `<div class="list-divider">Manual Observations</div>`
+	  // itemNode = itemNode + `<div class="list-divider">Manual Observations</div>`
 	   counter++;
 	   
 	   }
@@ -538,7 +538,7 @@ fetch('/cf_info_all?', {
 			console.log(html_string)
 			//let table_body = document.getElementById('cf_table_body');
 			//table_body.innerHTML = html_string;
-
+           validateProvenanceTrace (assetIRI);
  window.parent.postMessage({
         type: 'provenanceResults',
         text: html_string
@@ -554,6 +554,77 @@ fetch('/cf_info_all?', {
   
   
   
+}
+
+
+function validateProvenanceTrace (assetIRI) {
+	
+	fetch('/evaluateTrace?assetIRI='+assetIRI)
+				.then((response) =>
+					response.json()
+				)
+				.then((data) => {					
+					
+					let defaultString = '<div class="alert alert-success" role="alert">No constraints violations were detected</div>'
+					
+					let resultString = ""; 
+					
+					if (data["CF-Out-Of-Date-Violation"].length > 0) {
+						
+						for (i = 0; i < data["CF-Out-Of-Date-Violation"].length; i++) {
+							resultString = resultString + '<div class="alert alert-warning" role="alert">Out of Date: The latest Emission conversion factor with value ' + removeLiteralType(data["CF-Out-Of-Date-Violation"][i].cf_value) + ' was valid until  ' + removeLiteralType(data["CF-Out-Of-Date-Violation"][i].time) +' </div>'
+						}
+						
+					}
+					
+					if (data["CF-No-Source-Violation"].length > 0) {
+
+						for (i = 0; i < data["CF-No-Source-Violation"].length; i++) {
+							resultString = resultString + '<div class="alert alert-warning" role="alert">No Source: The Emission conversion factor with value ' + removeLiteralType(data["CF-No-Source-Violation"][i].cf_value) + ' has an unknown source </div>'
+						}
+						
+					}
+					
+					if (data["CF-No-ApplicablePeriod-Start-Violation"].length > 0) {
+
+						for (i = 0; i < data["CF-No-ApplicablePeriod-Start-Violation"].length; i++) {
+							resultString = resultString + '<div class="alert alert-warning" role="alert">No Start: The Emission conversion factor with value ' + removeLiteralType(data["CF-No-ApplicablePeriod-Start-Violation"][i].cf_value) + ' has an unknown start of the applicable period </div>'
+						}
+						
+					}
+					
+					if (data["CF-No-ApplicablePeriod-End-Violation"].length > 0) {
+
+						for (i = 0; i < data["CF-No-ApplicablePeriod-End-Violation"].length; i++) {
+							resultString = resultString + '<div class="alert alert-warning" role="alert">No End: The Emission conversion factor with value ' + removeLiteralType(data["CF-No-ApplicablePeriod-End-Violation"][i].cf_value) + ' has an unknown end of the applicable period </div>'
+						}
+						
+					}
+					
+					if (resultString.length ==0) {
+						//document.getElementById('evaluation').innerHTML = defaultString
+						
+							 window.parent.postMessage({
+        type: 'provEvaluationResults',
+        text: defaultString
+    }, '*'); 
+					}
+					else {
+						
+						 window.parent.postMessage({
+        type: 'provEvaluationResults',
+        text: resultString
+    }, '*'); 
+					//document.getElementById('evaluation').innerHTML = resultString
+					}
+				}
+				)
+				 .catch(function(error) {    
+					console.log(error)                    // catch
+     alert ("The calcualtor could not evaluate the calculation provenance trace. ");
+  });
+	
+	
 }
 
 function highlightSelected(itemId) {
