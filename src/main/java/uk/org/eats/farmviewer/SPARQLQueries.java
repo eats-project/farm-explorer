@@ -606,6 +606,7 @@ public class SPARQLQueries {
 				+ "FROM <https://eats.org.uk/MethodPlans/>\n"
 				+ "\n"
 				+ "Where {\n"
+				+ "    ?constraint ep-plan:constrains/rdfs:comment ?stepComment.\n"
 				+ "    ?plan a ep-plan:Plan; rdfs:label ?planLabel.\n"
 				+ "    ?constraint ep-plan:isElementOfPlan ?plan; a ep-plan:Constraint.\n"
 				+ "    ?constraint ep-plan:hasConstraintImplementation ?impl;rdfs:label ?constraintLabel.\n"

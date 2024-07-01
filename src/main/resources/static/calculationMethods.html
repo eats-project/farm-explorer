@@ -294,6 +294,7 @@
 			for (i = 0; i < data.length; i++) {
 				if (newTable) {
 					html_string = html_string + `<h2>${data[i].planLabel}</h2>`;
+					html_string = html_string + `<h4>Formula:${data[i].stepComment}</h4>`;
 					html_string = html_string + '<table class="table"><thead><th>Constraint</th><th>Constraint Implementation</th></thead><tbody>';
 				    newTable= false;
 				}
@@ -409,9 +410,7 @@
 		let currentGroup = 0;
 		let stepIRIs = [];
 		let curerentSelectedItem = {};
-		let assetIRI = "";
-
-		setAssetIRI();
+	
 
 		function setAssetIRI() {
 			// Get the current URL
@@ -496,6 +495,23 @@
 		function resetInputs() {
 
 			console.log("TO DO : implement reset inputs function in createMethodologyPlan.html")
+			document.getElementById('textInput').value = "";
+			document.getElementById('titleInput').value="";
+			document.getElementById('formulaName').value="";
+			document.getElementById('theList').innerHTML = "";
+			
+			 graph = [];
+		     alreadyProcesed = [];
+		     prefix = "";
+		     plan = {};
+
+		     completedIndex = -1;
+		     itemIndex = 0;
+		     currentGroup = 0;
+		     stepIRIs = [];
+		     curerentSelectedItem = {};
+		     
+		    
 
 		}
 
@@ -542,7 +558,7 @@
 			variable['@type'].push(context.Variable);
 			variable['@type'].push(context.namedIndividual);
 			variable['label'] = label;
-			variable['comment'] = "default description";
+			
 			variable['isElementOfPlan'] = plan['@id'];
 			variable['isInputVariableOf'] = [];
 			variable['isOutputVariableOf'] = [];
@@ -552,7 +568,7 @@
 			return variable;
 		}
 
-		function createNewStep(iri, label, stepArithmeticType) {
+		function createNewStep(iri, label, stepArithmeticType, comment) {
 
 			let step = {};
 
@@ -564,7 +580,7 @@
 			step['@type'].push(stepArithmeticType);
 
 			step['label'] = label;
-			step['comment'] = "default comment";
+			step['comment'] = comment;
 			step['isElementOfPlan'] = plan['@id'];
 
 			graph.push(step);
@@ -739,7 +755,7 @@
 					//add new step if not added already 
 					if (parseInt(stepCount) > parseInt(currentGroup) && !stepIRIs.includes(step_iri)) {
 
-						createNewStep(step_iri, document.getElementById('titleInput').value, stepArithmeticType);
+						createNewStep(step_iri, document.getElementById('titleInput').value, stepArithmeticType,input.value );
 						stepIRIs.push(step_iri);
 					}
 
