@@ -525,7 +525,7 @@
 
 			finaliseGraph();
 
-			resetInputs();
+			
 
 			const response = fetch('/saveCalculationMethod', {
 				method: 'POST',
@@ -533,7 +533,7 @@
 					'Content-Type': 'application/json; charset=utf-8'
 				},
 				body: generateJsonLDpayload(context, graph)
-			});
+			}).then (()=>resetInputs());
 
 			console.log('status:', response.status)
 		}
