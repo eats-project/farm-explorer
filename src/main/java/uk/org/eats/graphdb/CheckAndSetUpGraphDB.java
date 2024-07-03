@@ -17,6 +17,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Namespace;
@@ -48,7 +49,46 @@ import uk.org.eats.farmviewer.ServiceController;
 
 public class CheckAndSetUpGraphDB {
 
+private static  boolean configureRepository (String fileName) throws ClientProtocolException, IOException {
+	CloseableHttpClient httpClient = HttpClients.createDefault();
+	MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+	// This attaches the file to the POST:
+	File f = ResourceUtils.getFile("classpath:"+fileName);   	
+	builder.addBinaryBody(
+	    "config",
+	    new FileInputStream(f),
+	    ContentType.APPLICATION_OCTET_STREAM,
+	    f.getName()
+	);
+	HttpEntity multipart = builder.build();
+	HttpPost configureRepository = new HttpPost("http://localhost:7200/rest/repositories");
+	configureRepository.setEntity(multipart);
+	
 
+	CloseableHttpResponse response = httpClient.execute(configureRepository);
+	HttpEntity responseEntity = response.getEntity();
+	
+	
+	// Check the response status and log response details
+    int statusCode = response.getStatusLine().getStatusCode();
+    if (statusCode == 200 || statusCode == 201) {
+        System.out.println("Repository created successfully.");
+        // Close resources
+        EntityUtils.consume(responseEntity);
+        response.close();
+        httpClient.close();
+        return true;
+    } else {
+        // Close resources
+        EntityUtils.consume(responseEntity);
+        response.close();
+        httpClient.close();
+        return false;
+    }
+
+   
+	
+}
 
 public static void checkRepositorySetUp () throws ClientProtocolException, IOException {
 	
@@ -64,26 +104,22 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 		
     if (repository==null) {
       	//HAndle if there  is no repository
-    	System.out.println ("Creating  Farm Explorer Repository");
+    	System.out.println ("Creating  Farm Explorer Repository ...");
     	
-    	CloseableHttpClient httpClient = HttpClients.createDefault();
-    	HttpPost configureRepository = new HttpPost("http://localhost:7200/rest/repositories");
-    	MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+    	
+    	if (configureRepository("RepositoryConfig.ttl")) {
+    		System.out.println ("Farm Explorer Repository for GRAPH DB SE Created"); 	
+    	}
+    	else if (configureRepository("RepositoryConfigFree.ttl)")) {
+    		System.out.println ("Farm Explorer Repository for GRAPH DB Free Created");
+    	}
+    	
+    	else {
+    		System.out.println ("Could not create a GRAPH DB repository - check versions and Sail type in the config file.");
+    	}
 
-    	// This attaches the file to the POST:
-    	File f = ResourceUtils.getFile("classpath:RepositoryConfig.ttl");   	
-    	builder.addBinaryBody(
-    	    "config",
-    	    new FileInputStream(f),
-    	    ContentType.APPLICATION_OCTET_STREAM,
-    	    f.getName()
-    	);
-
-    	HttpEntity multipart = builder.build();
-    	configureRepository.setEntity(multipart);
-    	CloseableHttpResponse response = httpClient.execute(configureRepository);
-    	HttpEntity responseEntity = response.getEntity();
-    	//to do - check if it worked
+    	
+       
     	repository = GraphDBUtils.getFabricRepository(repositoryManager);
     	
     	

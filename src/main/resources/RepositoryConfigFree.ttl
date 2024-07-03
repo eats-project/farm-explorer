@@ -11,9 +11,9 @@
     rep:repositoryID "FarmExplorer" ;
     rdfs:label "" ;
     rep:repositoryImpl [
-        rep:repositoryType "graphdb:SailRepository" ;
+        rep:repositoryType "graphdb:FreeSailRepository" ;
         sr:sailImpl [
-            sail:sailType "graphdb:Sail" ;
+            sail:sailType "graphdb:FreeSail" ;
             
             owlim:base-URL "http://example.org/owlim#" ;
             owlim:defaultNS "" ;
