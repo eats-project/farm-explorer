@@ -1,4 +1,4 @@
-Note: This sopftware is work in progress/proof of concept. Expect messy code. Not production ready. 
+Note: This software is work in progress/proof of concept. Expect messy code. Not production ready. 
 
 # How to run
 
