@@ -27,4 +27,4 @@ Go to localhost:3600 and you should see the home page of the Farm Explorer
 
 ## Demo 
 
-https://rains-uoa.github.io/ISWC_2021_Demo/
+<a href="https://w3id.org/tec-toolkit/ISWC-2024-demo">https://w3id.org/tec-toolkit/ISWC-2024-demo</a>
