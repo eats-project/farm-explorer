@@ -1,7 +1,3 @@
-# farm-explorer
-
-# rains-workflow-builder
-
 # How to run
 
 Prerequisites
