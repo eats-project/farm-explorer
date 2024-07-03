@@ -1,3 +1,5 @@
+Note: This sopftware is work in progress/proof of concept. Expect messy code. Not production ready. 
+
 # How to run
 
 Prerequisites
