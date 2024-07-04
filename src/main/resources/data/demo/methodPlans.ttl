@@ -1,0 +1,153 @@
+
+<https://eats.org.uk/MethodPlans/> <http://www.w3.org/2000/01/rdf-schema#label> "Method Plans" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig> <https://eats.org.uk/hasAssignedMethod>
+    <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig>
+  a <https://w3id.org/ep-plan#Plan>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Electricity Footprint Irrigation Rig" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Conversion%20Factor>
+  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Constraint>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Constraint for Var Electricity Conversion Factor";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Conversion%20Factor:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Conversion%20Factor:Impl>
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> """PREFIX  ecfo: <https://w3id.org/ecfo#>
+PREFIX  ep-plan: <https://w3id.org/ep-plan#>
+
+Construct {
+    ?id ep-plan:correspondsToVariable ?var.
+    ?id ?p ?o. 
+	?o2 ?p3 ?o3.
+    ?o3 ?p4 ?o4.
+}
+WHERE {
+  ?id rdf:type ecfo:EmissionConversionFactor ;
+        ecfo:hasApplicableLocation/rdfs:label \"United Kingdom\"@en ;
+        ecfo:hasScope         ecfo:Scope2 ;
+        ecfo:hasTag           <https://w3id.org/ecfkg/i/UK%20electricity> ;
+        ecfo:hasEmissionTarget  <http://www.wikidata.org/entity/Q1933140>;
+        ecfo:hasTargetUnit  ?targetUnitInst .
+        ?id ecfo:hasEmissionTarget/rdfs:label ?emissionTargetSymbol.  
+        ?id ?p ?o.
+        Optional {
+                  ?id ecfo:hasApplicablePeriod ?o2.
+                  ?o2 ?p3 ?o3.
+                  ?o3 ?p4 ?o4.
+                 }
+    
+    
+    
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Electricity%20Conversion%20Factor>)}
+  }
+
+ORDER BY DESC(?applicablePeriodEnd)""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Usage>
+  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Constraint>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Constraint for Var Electricity Usage";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Usage:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Usage:Impl>
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> """Prefix sosa:<http://www.w3.org/ns/sosa/>
+Prefix ssn:<http://www.w3.org/ns/ssn/>
+Prefix qudt:<http://qudt.org/schema/qudt/>
+Prefix ep-plan: <https://w3id.org/ep-plan#>
+Prefix time:<http://www.w3.org/2006/time#>
+Prefix peco:<https://w3id.org/peco#>
+
+CONSTRUCT {
+  ?result qudt:value ?output.
+  ?property ssn:isPropertyOf ?asset.
+  ?sensor sosa:observes ?property.
+  ?observation sosa:madeBySensor ?sensor; sosa:hasResult ?result.
+  ?result a peco:EmissionCalculationEntitiy; a qudt:Quantity; a ep-plan:Entity.
+  ?result ep-plan:correspondsToVariable ?var.
+  ?result qudt:unit <http://www.wikidata.org/entity/Q182098>.
+  ?result qudt:hasQuantityKind <http://www.wikidata.org/entity/Q12725>.
+  ?observation sosa:phenomenonTime ?duration.
+  ?duration a time:Instant.
+  ?duration time:hasBegining ?min.
+  ?duration time:hasEnd ?max.
+}
+FROM <https://eats.org.uk/Assets/>
+FROM <https://eats.org.uk/Observations/>
+
+WHERE {
+{
+SELECT ?sensor ?property ?asset (MAX(?resultValue) - MIN(?resultValue) AS ?output) (MAX(?resultTime) AS ?max) (MIN(?resultTime) AS ?min)
+WHERE
+{
+?sensor sosa:observes ?property.
+?property ssn:isPropertyOf ?asset.
+?observation sosa:madeBySensor ?sensor; sosa:hasResult ?result.
+?result qudt:unit <http://www.wikidata.org/entity/Q182098>.
+?result qudt:hasQuantityKind <http://www.wikidata.org/entity/Q12725>.
+?result qudt:value ?resultValue.
+?observation sosa:resultTime ?resultTime.
+
+VALUES (?asset) { ($Asset) }
+}
+  GROUP BY ?property ?asset ?sensor
+} 
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:Observation:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?observation) 
+    BIND (IRI(CONCAT(STR(?observation), \":Result\")) AS ?result)
+    BIND (IRI(CONCAT(STR(?observation), \":Result:PhenomenonDuration\")) AS ?duration)
+    
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Electricity%20Usage>) }
+}""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Footprint%20Estimate>
+  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Constraint>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Constraint for Var Footprint Estimate";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Footprint%20Estimate:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Footprint%20Estimate:Impl>
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> """PREFIX  ep-plan: <https://w3id.org/ep-plan#>
+Prefix peco:<https://w3id.org/peco#>
+Prefix qudt:<http://qudt.org/schema/qudt/>
+
+Construct {
+    ?id ep-plan:correspondsToVariable ?var.
+    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id rdfs:label \"Electricity Footprint\".
+    ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q1933140>.
+    ?id qudt:value \"$Output\"^^<xsd:float>.
+}
+WHERE {
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:EmissionScore:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?id)
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Footprint%20Estimate>)}
+  }""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0>
+  a <http://www.openmath.org/cd/arith1#times>, <http://www.w3.org/2002/07/owl#NamedIndividual>,
+    <https://w3id.org/ep-plan#Step>;
+  <http://www.w3.org/2000/01/rdf-schema#comment> "Electricity Conversion Factor * Electricity Usage = Footprint Estimate ";
+  <http://www.w3.org/2000/01/rdf-schema#label> "Apply CF to Electricity Usage ";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Electricity%20Conversion%20Factor>
+  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Variable>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Electricity Conversion Factor";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Electricity%20Usage>
+  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Variable>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Electricity Usage";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Footprint%20Estimate>
+  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Variable>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Footprint Estimate";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig>;
+  <https://w3id.org/ep-plan#isOutputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0> .

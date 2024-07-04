@@ -388,10 +388,10 @@ function pupulateProvenanceTable (assetIRI) {
 					for (var prop in list) {
 						for (i = 0; i < data.length; i++) {
 							if (data[i].activityLabel == prop) {
-								let input = data[i].inputLabel + " - " + removeLiteralType(data[i].inputValue) + "" + removeLiteralType(data[i].inputUnitLabel) + " [" + removeLiteralType(data[i].inputQuantityKindL) + "]<hr>"
+								let input = data[i].inputLabel + " - " + removeLiteralType(data[i].inputValue.replace("\""," ")) + "" + removeLiteralType(data[i].inputUnitLabel) + " [" + removeLiteralType(data[i].inputQuantityKindL) + "]<hr>"
 								list[prop]["input"].push(input);
 
-								let output = data[i].outputLabel + " - " + removeLiteralType(data[i].outputValue) + "" + removeLiteralType(data[i].outputUnitLabel) + " [" + removeLiteralType(data[i].outputQuantityKindL) + "]<hr>"
+								let output = data[i].outputLabel + " - " + removeLiteralType(data[i].outputValue.replace("\""," ")) + "" + removeLiteralType(data[i].outputUnitLabel) + " [" + removeLiteralType(data[i].outputQuantityKindL) + "]<hr>"
 								if (!list[prop]["output"].includes(output)) {
 
 									list[prop]["output"].push(output);
@@ -473,19 +473,19 @@ fetch('/cf_info_all?', {
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].sourceUnit) + "</td>"
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].targetUnit) + "</td>"
 
-				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].applicablePeriodStart) + "</td>"
-				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].applicablePeriodEnd) + "</td>"
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].applicablePeriodStart.replace("\"","")) + "</td>"
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].applicablePeriodEnd.replace("\""," ")) + "</td>"
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].applicableLocation) + "</td>"
 
 
 
-				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].value) + "</td>"
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].value.replace("\""," ")) + "</td>"
 
 
                 html_string = html_string + "<td><a href=\"" + CF_data[i].id + "\">link</a></td>"
 				
 				if (CF_data[i].source) {
-				html_string = html_string + "<td><a href=\"" + CF_data[i].source + "\">link</a></td>"
+				html_string = html_string + "<td><a href=\"" + CF_data[i].source.replace("\"","") + "\">link</a></td>"
 				} else {
 					html_string = html_string + "<td>no value</td>"
 				}
@@ -524,7 +524,7 @@ fetch('/cf_info_all?', {
 				}
 
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].plan) + "</td>"
-				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].value) + "</td>"
+				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].value).replace("\"","") + "</td>"
 
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].unit) + " of " + removeLiteralType(CF_data[i].quantityKind) + "</td>"
 				

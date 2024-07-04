@@ -37,6 +37,7 @@ import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParseException;
 import org.eclipse.rdf4j.rio.Rio;
+import org.eclipse.rdf4j.rio.UnsupportedRDFormatException;
 import org.springframework.util.ResourceUtils;
 
 import uk.org.eats.farmviewer.ServiceController;
@@ -90,6 +91,46 @@ private static  boolean configureRepository (String fileName) throws ClientProto
 	
 }
 
+private static void loadFileIntoNamedGraph (String filepath, RepositoryConnection conn, ValueFactory f, String namedGraph) {
+	File file = null;
+	try {	 
+		
+		file = ResourceUtils.getFile("classpath:"+filepath);
+		InputStream input2 = new FileInputStream(file);
+	    Model model2 = Rio.parse(input2, "", RDFFormat.TURTLE);
+	    
+
+		
+	
+
+	            // Start a transaction to add the data to the named graph
+	            conn.begin();
+	            conn.add(model2, f.createIRI(namedGraph));
+	            conn.commit();
+	            
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (RDFParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (UnsupportedRDFormatException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+}
+
+private static void loadDemoFiles (RepositoryConnection conn, ValueFactory f) {
+	System.out.println ("Loading demo KG into the repository");	
+	loadFileIntoNamedGraph ("data/demo/assets.ttl",conn,f,ConstantsDB.ASSETS_NAMED_GRAPH_IRI);
+	loadFileIntoNamedGraph ("data/demo/observations.ttl",conn,f,ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI);
+	loadFileIntoNamedGraph ("data/demo/methodPlans.ttl",conn,f,ConstantsDB.METHOD_PLANS);
+
+}
+
 public static void checkRepositorySetUp () throws ClientProtocolException, IOException {
 	
 	RepositoryManager repositoryManager = new RemoteRepositoryManager( "http://localhost:7200" );
@@ -116,6 +157,8 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
     	
     	else {
     		System.out.println ("Could not create a GRAPH DB repository - check versions and Sail type in the config file.");
+    	
+    	    System.exit(0);
     	}
 
     	
@@ -123,7 +166,7 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
     	repository = GraphDBUtils.getFabricRepository(repositoryManager);
     	
     	
-    	
+    	loadDemoFiles(repository.getConnection(),repository.getValueFactory());
     }
 	
 	
@@ -139,7 +182,7 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 	// Open a connection to this repository
 	RepositoryConnection conn = repository.getConnection();	
 	
-	
+	/*
 	//add additional labels 
 	File file2 = ResourceUtils.getFile("classpath:data/sensor_labels.ttl");
 	 InputStream input2 = new FileInputStream(file2);
@@ -149,7 +192,7 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 	            conn.begin();
 	            conn.add(model2, f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI));
 	            conn.commit();  // Commit transaction to finalize changes
-	
+	*/
 	
 	if (!GraphDBUtils.checkResourcePresent (conn.getContextIDs(), ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI)) {
 		System.out.println ("Adding the default Observations named graph") ;

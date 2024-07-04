@@ -1,0 +1,362 @@
+
+<https://eats.org.uk/Observations/> <http://www.w3.org/2000/01/rdf-schema#label> "Observations" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-01T00:19:27>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-01T00:19:27:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-01T00:19:27" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-01T00:19:27:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "71.31995720952838"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-02T00:46:59>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-02T00:46:59:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-02T00:46:59" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-02T00:46:59:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "138.3255513220803"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-03T00:06:43>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-03T00:06:43:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-03T00:06:43" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-03T00:06:43:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "210.67130446425546"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-04T00:07:46>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-04T00:07:46:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-04T00:07:46" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-04T00:07:46:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "288.9645669370055"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-05T00:34:13>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-05T00:34:13:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-05T00:34:13" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-05T00:34:13:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "355.3186424387892"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-06T00:16:35>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-06T00:16:35:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-06T00:16:35" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-06T00:16:35:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "421.67282949119084"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-07T00:49:39>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-07T00:49:39:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-07T00:49:39" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-07T00:49:39:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "500.3478272556199"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-08T00:03:01>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-08T00:03:01:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-08T00:03:01" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-08T00:03:01:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "573.5071962681861"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-09T00:05:53>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-09T00:05:53:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-09T00:05:53" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-09T00:05:53:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "638.2623824217922"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-10T00:41:03>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-10T00:41:03:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-10T00:41:03" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-10T00:41:03:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "709.8938396785124"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-11T00:53:28>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-11T00:53:28:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-11T00:53:28" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-11T00:53:28:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "774.690178052521"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-12T00:17:25>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-12T00:17:25:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-12T00:17:25" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-12T00:17:25:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "839.4708071224647"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-13T00:43:33>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-13T00:43:33:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-13T00:43:33" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-13T00:43:33:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "909.0598518751167"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-14T00:09:35>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-14T00:09:35:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-14T00:09:35" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-14T00:09:35:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "964.0050945967165"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-15T00:13:30>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-15T00:13:30:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-15T00:13:30" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-15T00:13:30:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1020.2301663179651"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-16T00:47:14>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-16T00:47:14:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-16T00:47:14" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-16T00:47:14:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1084.3547332785004"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-17T00:07:13>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-17T00:07:13:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-17T00:07:13" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-17T00:07:13:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1145.4180803973393"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-18T00:22:59>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-18T00:22:59:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-18T00:22:59" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-18T00:22:59:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1215.498266223697"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-19T00:56:39>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-19T00:56:39:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-19T00:56:39" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-19T00:56:39:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1277.2737251369865"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-20T00:20:15>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-20T00:20:15:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-20T00:20:15" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-20T00:20:15:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1335.6228545522606"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-21T00:44:17>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-21T00:44:17:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-21T00:44:17" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-21T00:44:17:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1413.5262410462503"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-22T00:46:52>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-22T00:46:52:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-22T00:46:52" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-22T00:46:52:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1479.9372346051898"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-23T00:23:25>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-23T00:23:25:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-23T00:23:25" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-23T00:23:25:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1548.3410865437588"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-24T00:24:59>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-24T00:24:59:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-24T00:24:59" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-24T00:24:59:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1606.605661867527"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-25T00:59:59>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-25T00:59:59:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-25T00:59:59" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-25T00:59:59:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1670.8518830798175"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-26T00:44:40>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-26T00:44:40:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-26T00:44:40" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-26T00:44:40:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1739.550578303417"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-27T00:28:14>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-27T00:28:14:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-27T00:28:14" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-27T00:28:14:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1799.6751801745688"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-28T00:44:00>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-28T00:44:00:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-28T00:44:00" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-28T00:44:00:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1870.1728928778452"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-29T00:24:06>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-29T00:24:06:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-29T00:24:06" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-29T00:24:06:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "1934.0368827569616"^^<http://www.w3.org/2001/XMLSchema#float> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-30T00:08:23>
+  a <http://www.w3.org/ns/sosa/Observation>;
+  <http://www.w3.org/ns/sosa/hasResult> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-30T00:08:23:Result>;
+  <http://www.w3.org/ns/sosa/madeBySensor> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <http://www.w3.org/ns/sosa/resultTime> "2024-06-30T00:08:23" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:Electricity:Observation:2024-06-30T00:08:23:Result>
+  a <http://qudt.org/schema/qudt/>, <http://www.w3.org/ns/sosa/Result>;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://www.wikidata.org/entity/Q12725>;
+  <http://qudt.org/schema/qudt/unit> <http://www.wikidata.org/entity/Q182098>;
+  <http://qudt.org/schema/qudt/value> "2000.0"^^<http://www.w3.org/2001/XMLSchema#float> .

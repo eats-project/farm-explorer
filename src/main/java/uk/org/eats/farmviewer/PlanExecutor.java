@@ -222,7 +222,7 @@ public class PlanExecutor {
     	
     	Repository repo = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager());
 		RepositoryConnection global_conn = repo.getConnection();
-		System.out.println ("adding to named grpah "+ namedGraph);
+		System.out.println ("adding to named graph "+ namedGraph);
 		
 		System.out.println (executionTrace);
 		
@@ -247,7 +247,7 @@ public class PlanExecutor {
 				+ "    ?output a peco:EmissionCalculationEntity.\n"
 				+ "}\n"
 				+ "FROM <https://eats.org.uk/MethodPlans/>\n"
-				+ "FROM <urn:ngsi-ld:AgriFarm:Great%20Farm:Actuator:Irrigation%20Rig:CarbonExecutionTrace>\n"
+				+ "FROM <"+namedGraph+">\n"
 				+ "\n"
 				+ "WHERE {   \n"
 				+ "    ?step a ep-plan:Step;rdfs:label ?stepLabel.\n"

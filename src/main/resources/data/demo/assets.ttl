@@ -1,0 +1,59 @@
+
+<https://enless-wireless.com/en/products/pulse-sensor-led-optical-reader-lora/> <http://www.w3.org/2000/01/rdf-schema#label>
+    "Electricity Sensor"@en .
+
+<https://enless-wireless.com/en/products/temperature-sensor-embedded-sensor-lora/>
+  <http://www.w3.org/2000/01/rdf-schema#label> "Temperature Sensor"@en .
+
+<https://files.rileysurfaceworld.co.uk/live/machines2/25494.pdf> <http://www.w3.org/2000/01/rdf-schema#label>
+    "Lowara Hydrovar SCH 60.25"@en .
+
+<https://www.robeau.tech/en/> <http://www.w3.org/2000/01/rdf-schema#label> "Water Flow Sensor"@en .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm> a <https://smartdatamodels.org/dataModel.Agrifood/AgriFarm>;
+  <http://foodie-cloud.com/model/foodie#description> "Strawbery production";
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:geo>;
+  <https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025>;
+  <https://smartdatamodels.org/dataModel.Agrifood/hasDevice> <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig>,
+    <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>;
+  <https://smartdatamodels.org/name> "Example Farm" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig> a <http://www.w3.org/ns/sosa/Actuator>,
+    <http://www.w3.org/ns/sosa/FeatureOfInterest>, <https://files.rileysurfaceworld.co.uk/live/machines2/25494.pdf>;
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:geo>;
+  <http://www.w3.org/ns/sosa/actsOnProperty> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow>;
+  <https://smartdatamodels.org/name> "Irrigation Rig" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:Property:Electricity>
+  a <http://www.w3.org/ns/sosa/ObservableProperty>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Irrigation Rig Electricity Consumption"@en;
+  <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.2491, -2.652925)" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> a <http://www.w3.org/ns/sosa/FeatureOfInterest>,
+    <https://smartdatamodels.org/dataModel.Agrifood/AgriParcel>;
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:geo>;
+  <https://smartdatamodels.org/name> "Tunnel 25" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow>
+  a <http://www.w3.org/ns/sosa/ActuatableProperty>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Growing Table Waterflow Tunnel 25"@en;
+  <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249324, -2.6545)" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>
+  a <http://www.w3.org/ns/sosa/Sensor>, <https://enless-wireless.com/en/products/pulse-sensor-led-optical-reader-lora/>;
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:geo>;
+  <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:Property:Electricity>;
+  <https://smartdatamodels.org/name> "Irrigation Rig Electricity Meter" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:geo>
+  a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.2491, -2.652925)" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249325, -2.655502)" .

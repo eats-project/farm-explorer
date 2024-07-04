@@ -400,7 +400,7 @@ console.log("here");
     		<div class="tab-pane fade show " id="methods" role="tabpanel" aria-labelledby="methods-tab">
 				<!-- Table goes here -->
 				 <div id="loadingData" class="loading">Loading...</div>
-				<table class="table" id="data-table">
+					<table class="table"  id="data-table">
 					<thead>
 						<tr>
 							
@@ -416,7 +416,7 @@ console.log("here");
 			
 			<script>
 			
-			function pupulateAssetTable (id) {
+			function populateAssetTable (id) {
 				
 				
 			
@@ -431,23 +431,21 @@ console.log("here");
 			element.appendChild (td2)
 			
 			const td3 = document.createElement ("td");
-			td3.innerHTML = `<select id="select_${id}"></select> <button id="assign_${id}" onclick="assignMethod('${id}')"> Assign </button>`;
+			td3.innerHTML = `<select id="select_${id}"><option>Select option</option></select> <br><br><button id="assign_${id}" onclick="assignMethod('${id}')"> Assign </button>`;
 			
 			element.appendChild (td3)
-			
-			
-			
+
 			tableBody.appendChild (element);
 			
 				//fetch items for the select menu
 			fetchJsonLd("/getAvailableCalculationMethods", function (data) {
 				      
+				      let selectElement = document.getElementById ("select_"+id);
+				          
 			          data.forEach ((dataItem) => { 
 											const option = document.createElement ("option");
 											option.innerHTML = dataItem.label.replaceAll("\"","");
 											option.value = dataItem.method;
-											console.log("select_"+id)
-											let selectElement = document.getElementById ("select_"+id)
 											selectElement.appendChild(option);
 			                              }
 				                          );
@@ -485,15 +483,16 @@ console.log("here");
 	  let selectElement = document.getElementById ("select_"+assetIRI)
 	  
 	  
-	  fetch (`/linkMethodToAsset?assetIRI=${encodeURIComponent(assetIRI)}&methodIRI=${encodeURIComponent(selectElement.value)}`)
+	  fetch (`/linkMethodToAsset?assetIRI=${encodeURIComponent(assetIRI)}&methodIRI=${encodeURIComponent(selectElement.value)}`).then(()=>{
+		  populateAssetTable (getIdFromUrl()) ;
+		  
+	  })
 	  console.log(assetIRI);
-	  console.log(selectElement.value);
-	  
-	  pupulateAssetTable (getIdFromUrl()) ;
-}
+	  console.log(selectElement.value);	  
+     }
     
 			
-			pupulateAssetTable (getIdFromUrl()) ;
+			populateAssetTable (getIdFromUrl()) ;
 			</script>
     
     
