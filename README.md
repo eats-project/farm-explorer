@@ -53,6 +53,10 @@ Click on the farm name to view details and on the building icon to expand the li
 
 ![image](https://github.com/eats-project/farm-explorer/assets/4025828/5cdca76b-2c6c-4b46-a653-4c88d714d51c)
 
+![image](https://github.com/eats-project/farm-explorer/assets/4025828/8f3578e6-8a1d-4d4d-8063-c089fa2cfbcd)
+
+![image](https://github.com/eats-project/farm-explorer/assets/4025828/0033ff9c-f3a8-470f-8b38-ee8b1392dcd1)
+
 
 ## Demo 
 
