@@ -49,6 +49,9 @@ Click on the farm name to view details and on the building icon to expand the li
 
 ![image](https://github.com/eats-project/farm-explorer/assets/4025828/3b8c29cb-ce2b-4802-9879-38d421c45b49)
 
+![image](https://github.com/eats-project/farm-explorer/assets/4025828/5bded7ce-0dab-49c4-8b9f-150045f0a25d)
+
+
 ## Demo 
 
 <a href="https://w3id.org/tec-toolkit/ISWC-2024-demo">https://w3id.org/tec-toolkit/ISWC-2024-demo</a>
