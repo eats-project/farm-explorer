@@ -288,7 +288,7 @@ window.addEventListener('message', function(event) {
 	    let iframe = document.getElementById('iframe');
        
         if (assetType=="sensor") {
-        let newUrl = "sensorDashboard.html" +  "?id=" + encodeURIComponent(assetID);
+        let newUrl = "sensorDashBoard.html" +  "?id=" + encodeURIComponent(assetID);
         iframe.src = newUrl;
         }
         if (assetType=="farm") {
@@ -296,7 +296,7 @@ window.addEventListener('message', function(event) {
         iframe.src = newUrl;
         }
          if (assetType=="actuator") {
-        let newUrl = "actuatorDashboard.html" +  "?id=" + encodeURIComponent(assetID);
+        let newUrl = "actuatorDashBoard.html" +  "?id=" + encodeURIComponent(assetID);
         iframe.src = newUrl;
         }
         
