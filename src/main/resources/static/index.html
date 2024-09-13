@@ -191,7 +191,7 @@
 window.addEventListener('message', function(event) {
     // Check the origin of the data!
     console.log("Message recieved from" + event.origin);
-    if (event.origin !== "http://localhost:3060") { // Replace "http://example.com" with the actual origin of the iframe
+    if (event.origin !== "http://localhost:3060" && event.origin !== "http://eats.abdn.ac.uk" ) { // Replace "http://example.com" with the actual origin of the iframe
         return; // Stop processing the message if it's from an untrusted origin
     }
     
