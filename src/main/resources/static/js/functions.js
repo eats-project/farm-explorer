@@ -23,9 +23,9 @@ function createBrowserList(items ) {
 	  
 	   if (item['@type']&&item['@type'].includes("https://smartdatamodels.org/dataModel.Agrifood/AgriFarm")) {
 	   
-	   	itemNode = itemNode + `<li id="item-${item['@id']}"  onclick="getDetailsPane('farm','${item['@id']}');highlightSelected('item-${item['@id']}');" class="list-group-item"> 
-	   	                       <a href="#" data-bs-toggle="collapse" data-bs-target="#collapse-sublist-${counter}"><i class="fas fa-building"></i></a>  ${item['https://smartdatamodels.org/name'][0]['@value']}
-	   	                       </li><ul id="collapse-sublist-${counter}" class="list-group collapse">`
+	   	itemNode = itemNode + `<a href="#" data-bs-toggle="collapse" style="text-decoration: none;" data-bs-target="#collapse-sublist-${counter}"><li id="item-${item['@id']}"  onclick="getDetailsPane('farm','${item['@id']}');highlightSelected('item-${item['@id']}');" class="list-group-item"> 
+	   	                       <i class="fas fa-building"></i> ${item['https://smartdatamodels.org/name'][0]['@value']} 
+	   	                       </li></a><ul id="collapse-sublist-${counter}" class="list-group collapse">`
 	   	
 	   	 	itemNode = itemNode + `<div class="list-divider">Farm Emissions Sources</div>`
 	   	if (item['https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel']) {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenStreetMap - St Andrews, UK</title>
+    <title>Farm Viewer Demo</title>
     <!-- Include Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -123,65 +123,7 @@
 	  var graphLD=[];
 	  
 	  var baseIRI = "http://example.com/agriViewer/";
-	  
-	  
-	  
-		  function estimateFertiliserQuantity (waterQauntity, fertiliserPercentage) {
-		  	
-			  let result = waterQauntity * fertiliserPercentage; 
-			   
-			  return result;
-		  }	 
-		  
-		  function estimateWaterQuantity (tunnelJson, start, finish) {
-		  	
-		
-
-	
-			  let flow = 2000; 
-			 //To DO link to liv etriplestore with sensor data
-			 
-			 let observation = createObservation("https://www.wikidata.org/entity/Q167676", "Observe the flow rate for one growing table", "Irrigation", "tunnel 45", "https://www.wikidata.org/entity/Q145", graphLD)
-             let volumePerTableEntity = createObservationResult("Water Used (single table)", flow, "http://www.wikidata.org/entity/Q11582", "http://www.wikidata.org/entity/Q39297", graphLD, "")
-             linkResultToObservation(volumePerTableEntity, observation, graphLD)
-			 
-			 //look up number of tables per tunnel 
-			 let numbTables = 4; 	
-			 let observation2 = createObservation("https://www.wikidata.org/entity/Q5", "Observe the number of growing tables in a polytunnel", "Strawberry Production Tunnel 45", "tunnel 45", "https://www.wikidata.org/entity/Q145", graphLD)
-             let numberOfTables = createObservationResult("Number of Tables in Polytunnel", numbTables, "http://www.wikidata.org/entity/Q2360918", "http://www.wikidata.org/entity/Q107715", graphLD, "")
-             linkResultToObservation(numberOfTables, observation2, graphLD)
-			 
-					  
-			 let volumePerTunnel = createCalculationActivity(baseIRI, "Estimate Water Use Per Tunnel", graphLD)
-             linkInputEntityToActivity(volumePerTableEntity, volumePerTunnel, graphLD)
-	         linkInputEntityToActivity(numberOfTables, volumePerTunnel, graphLD)
-			
-			
-			 let result = flow*numbTables; 
-			 
-			 let resultEntity = createCalculationEntity("Water Used (tunnel)", result, "http://www.wikidata.org/entity/Q11582", "http://www.wikidata.org/entity/Q39297", graphLD, "")
-             linkOutputEntityToActivity(resultEntity, volumePerTunnel, graphLD)
-			   
-			  return {value:result, prov:resultEntity};
-		  }	 
-		  
-		  
-		  function estimateElectricity (tunnelJson, waterUsed) {
-		     //itterate trough the machines connected to the strawbery production activity
-			 
-			 //To DO calculate how much kWh/l from max push and max electricity use per hour
-		//	  let wattConsumption = createCalculationEntity("Watt Consumption", state.gpus[gpu].watt, "http://www.wikidata.org/entity/Q25236", "http://www.wikidata.org/entity/Q1053879", graphLD, "")
-
-			 
-			  //irrigation rig 
-			 // let irrigationRigCoeficient = 0.00028; 
-			  let irrigationRigCoeficient = 0.00108; 			  
-			  
-			  let result = irrigationRigCoeficient*waterUsed; 
-			   
-			  return result;
-		  }	  
-	  </script>	  
+</script>
 
 	  
   </head>
@@ -191,10 +133,13 @@
 window.addEventListener('message', function(event) {
     // Check the origin of the data!
     console.log("Message recieved from" + event.origin);
+  
+  /*
     if (event.origin !== "http://localhost:3060" && event.origin !== "http://eats.abdn.ac.uk" ) { // Replace "http://example.com" with the actual origin of the iframe
         return; // Stop processing the message if it's from an untrusted origin
     }
-    
+  */
+
     if (event.data.type === 'canceledFootprintCalcualtion') {
         
        document.getElementById('bottom-initial').style.display = "block";
@@ -334,6 +279,11 @@ Loading....
         <button class="nav-link" id="add-asset-tab" data-bs-toggle="tab" data-bs-target="#provenance"
                 type="button" role="tab" aria-controls="add" aria-selected="false">Provenance Report</button>
     </li>
+    
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="add-asset-tab" data-bs-toggle="tab" data-bs-target="#jsonld"
+                type="button" role="tab" aria-controls="add" aria-selected="false">JSON-LD Data</button>
+    </li>
 </ul>
     
 <!-- Tab Content -->
@@ -370,8 +320,7 @@ Loading....
     </h2>
     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
       <div class="accordion-body">
-        <strong>Calculation Steps</strong> Table below summarises all the emissions calculation steps, their inputs and outputs. Please review if the calculation assumptions are valid.
-     <table class="table table-striped">
+           <table class="table table-striped">
    <thead>
     <tr>
 						  <td>Calculation Step</td><td>Input</td><td>Output</td>
