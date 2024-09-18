@@ -1,5 +1,6 @@
 package uk.org.eats.graphdb;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -245,6 +246,37 @@ public static void dropGraph(String graph) {
    
 }
 
+public static String getGraphAsJsonLD(String graph) {
+    Repository repo = getFabricRepository(getRepositoryManager());
+    RepositoryConnection conn = null;
+    String jsonLdResult = "";
+
+    try {
+        conn = repo.getConnection();
+
+        // SPARQL CONSTRUCT query to get the graph content
+        String query = "CONSTRUCT { ?subject ?predicate ?object . } " +
+                       "FROM <" + graph + "> WHERE { ?subject ?predicate ?object . }";
+        
+        // Execute the query and get the results as an RDF Model
+        Model model = QueryResults.asModel(conn.prepareGraphQuery(query).evaluate());
+
+        // Serialize the Model into JSON-LD format
+        OutputStream output = new ByteArrayOutputStream();
+        Rio.write(model, output, RDFFormat.JSONLD);
+
+        // Convert the OutputStream to a String
+        jsonLdResult = output.toString();
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (conn != null) {
+            conn.close();
+        }
+    }
+
+    return jsonLdResult;
+}
 
  
 }

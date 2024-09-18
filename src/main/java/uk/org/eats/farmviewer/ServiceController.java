@@ -383,6 +383,13 @@ public class ServiceController {
 		return "{\"resul\":\""+new PlanExecutor().executeWorkflow(assetIri)+"\"}";
 
 	}
+	
+	@GetMapping("/getProvenanceTrace")
+	public String getProvenanceTrace(@RequestParam String assetIri) {
+		
+		return GraphDBUtils.getGraphAsJsonLD (assetIri+":CarbonExecutionTrace");
+
+	}
 
 	@PostMapping("/cf_info_all")
 	public String cf_info_all(@RequestBody String assetIRI) {

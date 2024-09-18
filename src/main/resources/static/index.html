@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   
     <!-- Include Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -111,6 +112,8 @@
 		ul.clickable-items li, ol.clickable-items li {
        cursor: pointer;
       }
+      
+      
       </style>
 	  
 	  
@@ -188,6 +191,13 @@ window.addEventListener('message', function(event) {
         console.log('Message received from iframe:', event.data.text);
         let table_body = document.getElementById('resultsTableBody');
 					table_body.innerHTML = event.data.text;
+    }
+    
+    if (event.data.type === 'provenanceJsonld') {
+        console.log('provenanceJsonld received from iframe:', event.data.text);
+        let jsonld = document.getElementById('jsonldPayload');
+					jsonld.textContent = JSON.stringify(event.data.text, null, 2);
+					Prism.highlightAll();
     }
     
     
@@ -291,7 +301,6 @@ Loading....
     <div class="tab-pane fade show active" id="footprint" role="tabpanel" aria-labelledby="footprint-tab">
        <div class="col-md-12" id="bottomPanel">
 
- 
  <table class="table" id="data-table"> 
   <thead>
   <th>Calcualtion Method</th>
@@ -366,25 +375,33 @@ Loading....
              </div>
     </div>
   </div>
+  
+ 
 </div>		             	 
+		 
+	 
 		             	 
   
 	  </p>
 	  
 	  <small><span> <a href="https://www.flaticon.com/">Icons attribution</a></span></small>
 	</div>     
+	
+    </div>
+
+
+
+<div class="tab-pane fade show active" id="jsonld" role="tabpanel" aria-labelledby="jsonld-tab">
+    <div class="col-md-12" id="jsonldPanel">
+        <h4>JSON-LD Data</h4>
+        <pre><code id="jsonldPayload" class="language-json"></code></pre>
     </div>
 </div>
-	</div>		
 
+<!--ENd  myTabcontent -->
+</div>
 
-
-
-
-
-
-
-	
+</div>	
 
 </div>
 
@@ -628,5 +645,7 @@ console.log("here");
 <script src="js/tec-context.js"></script>
 <script src="js/tec-lib.js"></script>
 <script src="js/functions.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-json.min.js"></script>
 </body>
 </html>

@@ -282,6 +282,19 @@ function linkObservationFoI (mapLayer, provTrace) {
 		pupulateProvenanceTable (assetIRI);
 			});
 			
+			
+			  fetch('/getProvenanceTrace?assetIri='+encodeURIComponent(assetIRI))
+		.then((response) =>
+			response.json()
+		)
+		.then((data) => {
+		console.log(data);
+			window.parent.postMessage({
+        type: 'provenanceJsonld',
+        text: data
+    }, '*'); 
+			});
+			
 			}
 			
 			else {
