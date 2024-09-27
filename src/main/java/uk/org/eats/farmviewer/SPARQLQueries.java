@@ -637,5 +637,17 @@ public class SPARQLQueries {
 		return runTupleQueryListResult(queryString);
 	}
 
+	public static ArrayList<HashMap<String, String>> getManualObservationsGroupings() {
+		String queryString = "Prefix foodie:<http://foodie-cloud.com/model/foodie#> \n"
+				+ "select distinct ?label "
+				+ "FROM <"+ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI+">\n"
+				+ "Where {\n"
+				+ " ?obs	<http://www.w3.org/ns/sosa/madeBySensor>  ?sensor.\n"
+				+ " ?sensor	a  <http://xmlns.com/foaf/0.1/Person>.\n"
+				+ " ?obs	<http://www.w3.org/2000/01/rdf-schema#label>  ?label.\n"
+				+ "} ";
+		return runTupleQueryListResult(queryString);
+	}
+
 	
 }

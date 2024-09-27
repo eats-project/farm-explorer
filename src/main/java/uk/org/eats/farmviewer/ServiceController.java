@@ -318,6 +318,17 @@ public class ServiceController {
 
 	}
 	
+	@GetMapping("/getManualObservationsGroupings")
+	@ResponseBody
+	public String getManualObservationsGroupings() throws Exception {
+		
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getManualObservationsGroupings ();
+		
+		Gson gson = new Gson();	
+		return gson.toJson(result);
+
+	}
+	
 	
 	@PostMapping("/getLinksToEmissionSources")
 	@ResponseBody

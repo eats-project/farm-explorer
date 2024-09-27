@@ -81,7 +81,20 @@ function createBrowserList(items ) {
 	   
 	  
 	   
-	  // itemNode = itemNode + `<div class="list-divider">Manual Observations</div>`
+	   itemNode = itemNode + `<div class="list-divider">Manual Observations</div><span id="manual_observations"></span>`
+	   
+	   fetchJsonLd('/getManualObservationsGroupings', function (jsonLdData) {
+	   console.log(jsonLdData);
+	   
+	   let manualObservationsHTML = ""
+	   jsonLdData.forEach(function (item) {
+	   manualObservationsHTML = manualObservationsHTML + `<li id="item-${item.label}" onclick="getAmnualObservationPane('sensor','${item.label}');highlightSelected('item-${item.label}');" class="list-group-item"> <i class="fas fa-user-edit"></i> ${item.label}</li>`
+			                      
+	   })
+	   document.getElementById("manual_observations").innerHTML = manualObservationsHTML
+	   
+	   })
+	   
 	   counter++;
 	   
 	   }
