@@ -88,7 +88,7 @@ function createBrowserList(items ) {
 	   
 	   let manualObservationsHTML = ""
 	   jsonLdData.forEach(function (item) {
-	   manualObservationsHTML = manualObservationsHTML + `<li id="item-${item.label}" onclick="getAmnualObservationPane('sensor','${item.label}');highlightSelected('item-${item.label}');" class="list-group-item"> <i class="fas fa-user-edit"></i> ${item.label}</li>`
+	   manualObservationsHTML = manualObservationsHTML + `<li id="item-${item.label}" onclick="getDetailsPane('manual','${item.label}');highlightSelected('item-${item.label}');" class="list-group-item"> <i class="fas fa-user-edit"></i> ${item.label}</li>`
 			                      
 	   })
 	   document.getElementById("manual_observations").innerHTML = manualObservationsHTML

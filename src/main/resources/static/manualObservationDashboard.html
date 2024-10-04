@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Manual Observations Result Dashboard</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+ <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<style>
+	
+	  #drop-area {
+            height: 150px; /* Increased height for better visibility */
+            border: 2px dashed #ccc; /* Dashed border for the drop area */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+        }
+        #drop-area.hover {
+            background-color: #f0f0f0; /* Light grey background on hover */
+        }
+	
+	#map {
+             
+  border: 1px solid black;
+  border-radius: 8px;
+  height: 25vh;  /* or as desired */
+  width: 100%;
+          }
+		.nav-item {
+			margin-right: 20px;
+			display: flex;
+			align-items: center;
+		}
+
+		.nav-icon {
+			margin-right: 5px;
+		}
+
+		#content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			font-family: Arial, sans-serif;
+		}
+
+		#addForm {
+			margin: 20px;
+		}
+
+		#mainForm {
+			margin: 20px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			flex-wrap: nowrap;
+		}
+
+		#mainForm label {
+			white-space: nowrap;
+			/* Prevents the label from breaking into multiple lines */
+		}
+
+
+		#itemList {
+			width: 60%;
+		}
+
+		input[type="text"] {
+			padding: 10px;
+			margin-right: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			width: 70%;
+		}
+
+		button {
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			background-color: #4CAF50;
+			color: white;
+			cursor: pointer;
+
+		}
+
+		#content.ul {
+			list-style-type: none;
+			padding: 0;
+		}
+
+		#content.li {
+			margin-top: 5px;
+			background-color: #f9f9f9;
+			padding: 10px;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+		}
+
+		.titleText {
+			cursor: pointer;
+			padding: 2px 4px;
+			margin: 0 2px;
+			color: brown;
+		}
+
+		.specialText {
+			cursor: pointer;
+			padding: 2px 4px;
+			margin: 0 2px;
+		}
+
+		.blink_me {
+			animation: blinker 1s linear infinite;
+		}
+
+		@keyframes blinker {
+			50% {
+				opacity: 0;
+			}
+		}
+
+		.next {
+			color: blue;
+		}
+
+		.incomplete {
+			color: red;
+		}
+
+		.complete {
+			color: green;
+		}
+
+		.resultMarker {
+			font-weight: bold;
+			text-decoration: underline;
+		}
+
+		/* Modal styles */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0, 0, 0, 0.4);
+			padding-top: 60px;
+		}
+
+		.modal-content {
+			background-color: #fefefe;
+			margin: 5% auto;
+			padding: 20px;
+			border: 1px solid #888;
+			width: 80%;
+			max-width: 500px;
+		}
+
+		.close {
+			color: #aaa;
+			float: right;
+			font-size: 28px;
+			font-weight: bold;
+		}
+
+		.close:hover,
+		.close:focus {
+			color: black;
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+		select {
+			width: 100%;
+			padding: 10px;
+			margin-top: 20px;
+		}
+
+		#sparqlBox {
+			display: block;
+			/* Initially hide the SPARQL box */
+		}
+
+		textarea {
+			width: 90%;
+			/* Adjusts the width of the text area */
+			height: 200px;
+			/* Sets a fixed height */
+			margin: 10px;
+			/* Adds some margin around the text area */
+			padding: 10px;
+			/* Adds internal padding for better text readability */
+			font-family: monospace;
+			/* Makes the font monospaced, which is better for coding */
+		}
+
+		#step2 {
+			display: none;
+		}
+		.loading {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: #000;
+}
+
+label {
+	
+	font-weight: bold;
+}
+	</style>
+</head>
+
+<body>
+
+<script>
+window.addEventListener('load', function() {
+   let id = getIdFromUrl();
+	
+loadSensorDetails ();
+
+});
+
+// Function to fetch JSON-LD data from a URL
+    function fetchJsonLd(url, callback) {
+        fetch(url)
+            .then(response => response.json())
+            .then(json => callback(json))
+            .catch(error => console.error('Error fetching JSON-LD:', error));
+    }
+</script>
+
+	<div class="container-fluid">
+		<!-- Tab Navigation -->
+		<!-- Tab Navigation -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details"
+                type="button" role="tab" aria-controls="details" aria-selected="true" onclick="loadSensorDetails ()">Sensor Details</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="view-asset-tab" data-bs-toggle="tab" data-bs-target="#view"
+                type="button" role="tab" aria-controls="add" aria-selected="false" onclick="loadSensorData()">View Data</button>
+             
+    </li>
+    
+  <!--   <li class="nav-item" role="presentation">
+        <button class="nav-link" id="add-asset-tab" data-bs-toggle="tab" data-bs-target="#add"
+                type="button" role="tab" aria-controls="add" aria-selected="false">Add Data</button>
+    </li>-->
+</ul>
+    
+<!-- Tab Content -->
+<div class="tab-content" id="myTabContent">
+
+  <div class="tab-pane fade active show" id="details" role="tabpanel" aria-labelledby="add-asset-tab">
+   <div class="container mt-3">
+        <div id="loading" class="loading">Loading...</div>
+        <div class="row">
+            <!-- Data Container -->
+            <div class="col-md-6" id="data-container">
+                <p>No Details available</p>
+            </div>
+            
+           
+        </div>
+    </div>
+    </div>
+
+    <script>
+    
+    function loadSensorDetails () {
+	
+	 let id = getIdFromUrl();
+	const loadingDiv = document.getElementById('loading');
+	
+    const dataContainer = document.getElementById('data-container');
+	
+	// Display the loading icon
+    loadingDiv.style.display = 'block';
+	
+	fetch('/getManualSensorDetails?label='+encodeURIComponent(id.replace(/%([^0-9A-Fa-f]{2})/g, "%25$1")))
+				.then((response) =>
+					response.json()
+				)
+				.then((data) => {
+
+					console.log(data)		
+					
+				 loadingDiv.style.display = 'none';
+				 dataContainer.innerHTML = `
+  
+         
+                <div class="mb-12">
+                    <label class="form-label">Feature of interest:</label>
+                    <p class="form-control">${data[0].foiLabel}</p>
+                </div>
+                <div class="mb-12">
+                    <label class="form-label">Observed property:</label>
+                    <p class="form-control">${data[0].propertyLabel}</p>
+                </div>
+          `
+     
+      }).catch(error => {
+            console.error('Fetch error:', error);
+            loadingDiv.style.display = 'none';
+            dataContainer.innerHTML = `<p>Error fetching data.</p>`;
+        })
+	
+    }
+    
+    
+   
+   
+
+    </script>
+    
+    
+    
+    <div class="tab-pane fade" id="view" role="tabpanel" aria-labelledby="add-asset-tab">
+     
+         <div id="loadingData" class="loading">Loading...</div>
+           <!-- Table goes here  -->
+	     <div > 
+	     
+	     <table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th>Value</th>
+        <th>Unit</th>
+        <th>Effective Period Start</th>
+        <th>Effective Period End</th>
+      </tr>
+    </thead>
+    <tbody id="observations_table">
+     
+    </tbody>
+  </table>
+	     
+	     
+	     </div>
+   
+  </div>
+
+    </div>
+    <script>
+    
+
+
+
+
+function getIdFromUrl() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const id = urlParams.get('id');
+    console.log('ID from URL:', id);
+    return id;
+}
+
+function loadSensorData() {
+	 let observation_label = getIdFromUrl();
+	const loadingDiv = document.getElementById('loadingData');
+	loadingDiv.style.display = 'block';
+
+    //this needs to be updated if manual observations with the sam elabel has mor ethan one FOI
+	fetch('/getManualObservationsData?label='+encodeURIComponent(observation_label.replace(/%([^0-9A-Fa-f]{2})/g, "%25$1")))
+            .then(response => response.json())
+            .then(json => {
+	  
+	  let rows = "";
+	  for (i = 0; i < json.length; i++) {
+	  let table_row = ` <tr>
+        <td>${json[i].result}</td>
+        <td>${json[i].unitLabel}</td>
+        <td>${json[i].beginning}</td>
+        <td>${json[i].end}</td>
+      </tr>`
+      
+      rows = rows + table_row
+      }
+      document.getElementById('observations_table').innerHTML=rows
+ console.log(json)
+
+ 	
+	  loadingDiv.style.display = 'none';  
+	
+})
+.catch(error => {
+	  loadingDiv.style.display = 'none';  
+console.error('Error fetching JSON-LD:', error)});
+        
+}
+
+        </script>
+    
+      
+    
+    
+    
+    
+</div>
+	
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>	
+
+</body>
+</html>			

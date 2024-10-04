@@ -1,4 +1,4 @@
-
+//NOTE: marked for deletion check if any functions still used in code 
 
 var  dataPrefix =  "https://github.com/mlco2/impact/provenance/i/";
 var  eoPrefix =  "https://w3id.org/okn/o/eo#";

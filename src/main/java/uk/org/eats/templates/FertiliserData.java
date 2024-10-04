@@ -33,7 +33,7 @@ public class FertiliserData {
 	            List<String> headers = parser.getHeaderNames();
 
 	            System.out.println (headers);
-	            String namespace = sensorIRI+":Electricity:Observation:";
+	            String namespace = sensorIRI+":Fertiliser:Observation:";
 	           
 	            for (CSVRecord record : parser) {
 	            
@@ -48,7 +48,10 @@ public class FertiliserData {
 	            	
 	             json = json + "{\"@id\":\""+namespace+timestamp+"\","
 		             		+ "    \"@type\": \"http://www.w3.org/ns/sosa/Observation\","
-		             		+ "     \"http://www.w3.org/ns/sosa/madeBySensor\":{\"@id\":\""+sensorIRI+"\","
+	            		    + "\"http://www.w3.org/ns/sosa/hasFeatureOfInterest\":{\"@id\":\"urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig\"},"
+	            		    + "\"http://www.w3.org/ns/sosa/observedProperty\":{\"@id\":\"urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:Property:Fertiliser\"},"
+			             	
+	            		    + "     \"http://www.w3.org/ns/sosa/madeBySensor\":{\"@id\":\""+sensorIRI+"\","
 		             		+ "	\"@type\":[\"http://xmlns.com/foaf/0.1/Person\"]"
 		             				+ "},"
 		             		+ "     \"http://www.w3.org/2000/01/rdf-schema#label\":\""+label+"\","

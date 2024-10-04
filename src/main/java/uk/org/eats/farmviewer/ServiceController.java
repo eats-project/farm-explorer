@@ -2,6 +2,7 @@ package uk.org.eats.farmviewer;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -353,6 +354,47 @@ public class ServiceController {
 		return gson.toJson(result);
 
 	}
+	
+	
+	
+	@GetMapping("/getManualObservationsData")
+	@ResponseBody
+	public String getManualObservationsData(@RequestParam String label) {
+
+		System.out.println("getManualObservationsData Called " + label);
+
+		ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>> ();
+		try {
+			result = SPARQLQueries.getManualObservationsData(label);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
+	
+	@GetMapping("/getManualSensorDetails")
+	@ResponseBody
+	public String getManualSensorDetails(@RequestParam String label) {
+
+		System.out.println("getManualSensorDetails Called " + label);
+
+		ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>> ();
+		try {
+			result = SPARQLQueries.getManualSensorDetails(label);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
+	
 	
 	/*
 	@PostMapping("/evaluateTrace")

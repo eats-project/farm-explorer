@@ -182,8 +182,9 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 	// Open a connection to this repository
 	RepositoryConnection conn = repository.getConnection();	
 	
-	/*
+	/* Comment out later*/
 	//add additional labels 
+	/*
 	File file2 = ResourceUtils.getFile("classpath:data/sensor_labels.ttl");
 	 InputStream input2 = new FileInputStream(file2);
 	    Model model2 = Rio.parse(input2, "", RDFFormat.TURTLE);

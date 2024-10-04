@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -649,5 +651,38 @@ public class SPARQLQueries {
 		return runTupleQueryListResult(queryString);
 	}
 
-	
+	public static ArrayList<HashMap<String, String>> getManualObservationsData(String label) throws UnsupportedEncodingException {
+		String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/>  Prefix ssn:<http://www.w3.org/ns/ssn/> Prefix time:<http://www.w3.org/2006/time#>"
+				+ "Prefix qudt:<http://qudt.org/schema/qudt/>"
+				+ "Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> "
+				+ "Prefix smart_base:<https://smartdatamodels.org/> "
+				+ "Select Distinct * "
+				+ "Where {\n"
+				+ " ?obs	<http://www.w3.org/ns/sosa/madeBySensor>  ?sensor.\n"
+				+ " ?sensor	a  <http://xmlns.com/foaf/0.1/Person>.\n"
+				+ " ?obs	<http://www.w3.org/2000/01/rdf-schema#label>  \""+URLDecoder.decode(label, "UTF-8")+"\"; sosa:hasResult ?resultObj; sosa:resultTime ?time. ?resultObj qudt:value ?result.\n"
+				+ " ?obs sosa:phenomenonTime ?phenTime. "
+				+ " ?phenTime time:hasBeginning/time:inXSDDate ?beginning;time:hasEnd/time:inXSDDate ?end. "
+				+ " ?resultObj qudt:unit/qudt:abbreviation ?unitLabel."
+				+ "} ";
+		System.out.println(queryString);
+		return runTupleQueryListResult(queryString);
+	}
+
+	public static ArrayList<HashMap<String, String>> getManualSensorDetails(String label) throws UnsupportedEncodingException {
+		String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/>  Prefix ssn:<http://www.w3.org/ns/ssn/> Prefix time:<http://www.w3.org/2006/time#>"
+				+ "Prefix qudt:<http://qudt.org/schema/qudt/>"
+				+ "Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> "
+				+ "Prefix smart_base:<https://smartdatamodels.org/> "
+				+ "Select Distinct ?foiLabel ?propertyLabel "
+				+ "Where {\n"
+				+ " ?obs	<http://www.w3.org/ns/sosa/madeBySensor>  ?sensor.\n"
+				+ " ?sensor	a  <http://xmlns.com/foaf/0.1/Person>.\n"
+				+ " ?obs	<http://www.w3.org/2000/01/rdf-schema#label>  \""+URLDecoder.decode(label, "UTF-8")+"\"; sosa:hasResult ?resultObj; sosa:resultTime ?time. ?resultObj qudt:value ?result.\n"
+				+ " ?obs sosa:hasFeatureOfInterest/smart_base:name ?foiLabel. "
+				+ " ?obs sosa:observedProperty/rdfs:label ?propertyLabel. "
+				+ "} ";
+		System.out.println(queryString);
+		return runTupleQueryListResult(queryString);
+	}
 }
