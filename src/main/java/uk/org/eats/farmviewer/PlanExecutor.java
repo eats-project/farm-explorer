@@ -51,7 +51,7 @@ public class PlanExecutor {
         //new PlanExecutor().executeWorkflow();
     	 Logger rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
          rootLogger.setLevel(Level.INFO);
-    	new PlanExecutor().executeWorkflow( "urn:ngsi-ld:AgriFarm:Great%20Farm:Actuator:Irrigation%20Rig");
+    	new PlanExecutor().executeWorkflow( "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025");
     }
     
     private void inputDataRetrieval () {
@@ -83,9 +83,12 @@ public class PlanExecutor {
     	 HashSet <Value> assignedPlans = new HashSet <Value> ();
      	
     	//get all the plans associated with the asset
-    	 Iterable<Statement> statements = plans_repo.getStatements(null, hasAssignedMethodPredicate, null, vf.createIRI(ConstantsDB.METHOD_PLANS)); 
+    	 Iterable<Statement> statements = plans_repo.getStatements(assetIRI, hasAssignedMethodPredicate, null, vf.createIRI(ConstantsDB.METHOD_PLANS)); 
     			 // Iterate over the statements
+    	 System.out.println(assetIRI);
+    	 System.out.println("Found Assigned Plans");
     	 for (Statement statement : statements) {
+    		 System.out.println(statement.getObject());
             	 assignedPlans.add(statement.getObject());
              }
     	 
@@ -111,12 +114,19 @@ public class PlanExecutor {
     	ValueFactory vf = SimpleValueFactory.getInstance();
     	IRI isElementOfPlan = vf.createIRI("https://w3id.org/ep-plan#isElementOfPlan");
     	
-    	 Iterable<Statement> statements = plans_repo.getStatements(null, isElementOfPlan, null, vf.createIRI(ConstantsDB.METHOD_PLANS));
+    	 Iterable<Statement> statements = plans_repo.getStatements(null, isElementOfPlan, methodPlan, vf.createIRI(ConstantsDB.METHOD_PLANS));
 			 // Iterate over the statements
     	 for (Statement statement : statements) {
-       	
+    		 
+           /*
+            if (methodPlan!=statement.getObject()) {
+            	System.out.println("Plan: " + statement.getObject());
+                System.out.println("Plan checked: " + methodPlan);
+            	continue;
+            }*/
             System.out.println("Asset: " + statement.getSubject());
             System.out.println("Plan: " + statement.getObject());
+            System.out.println("Plan checked: " + methodPlan);
             
             //find sparql queries
             IRI hasConstraintImplementation = vf.createIRI("https://w3id.org/ep-plan#hasConstraintImplementation");
@@ -226,6 +236,11 @@ public class PlanExecutor {
 		
 		System.out.println (executionTrace);
 		
+		// Step 1: Clear the named graph
+	    System.out.println("Clearing the named graph: " + namedGraph);
+	    String clearQuery = "CLEAR GRAPH <" + namedGraph + ">";
+	    global_conn.prepareUpdate(QueryLanguage.SPARQL, clearQuery).execute();
+		
 		global_conn.add(executionTrace, namedGraph);
 		
 		//infer missing prov links 
@@ -255,11 +270,11 @@ public class PlanExecutor {
 				+ "    ?inputVariable ep-plan:isInputVariableOf ?step; \n"
 				+ "                   rdfs:label ?inputVarLabel.\n"
 				+ "    ?input ep-plan:correspondsToVariable ?inputVariable. \n"
-				+ "    ?outputVariable ep-plan:isOutputVariableOf ?step.\n"
-				+ "    ?output ep-plan:correspondsToVariable ?outputVariable; \n"
-				+ "            rdfs:label ?outputVarLabel.\n"
+				+ "    ?outputVariable ep-plan:isOutputVariableOf ?step;rdfs:label ?outputVarLabel.\n"
+				+ "    ?output ep-plan:correspondsToVariable ?outputVariable. \n"
+				+ "            \n"
 				+ "    \n"
-				+ "    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:EmissionCalculationActivity:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?activity)     \n"
+				+ "    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:EmissionCalculationActivity:\", ENCODE_FOR_URI(?stepLabel))) AS ?activity)     \n"
 				+ "}\n"
 				+ "\n"
 				+ "";

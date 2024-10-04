@@ -6,6 +6,9 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix schema: <https://schema.org/> .
 
+<http://www.wikidata.org/entity/Q4263534> rdfs:label "litres"@en;
+qudt:abbreviation "l"@en .
+
 <http://www.wikidata.org/entity/Q844211> rdfs:label "kilogram per cubic metre"@en;
 qudt:abbreviation "kg/m³"@en .
 
