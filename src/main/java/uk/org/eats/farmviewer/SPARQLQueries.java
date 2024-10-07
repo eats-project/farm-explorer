@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +43,10 @@ import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.query.Update;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.sail.SailRepository;
+import org.eclipse.rdf4j.repository.sail.SailRepositoryConnection;
 import org.eclipse.rdf4j.repository.util.Repositories;
+import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -58,25 +62,33 @@ import uk.org.eats.graphdb.GraphDBUtils;
 
 public class SPARQLQueries {
 
-	public static void executeQueriesFromCSV(Model modelResults, String payload) {
+	public static void executeQueriesFromCSV(Model modelResults, String assetIRI) {
 
 		ResourceLoader resourceLoader = new DefaultResourceLoader();
 		Resource queriesFile = resourceLoader.getResource("/validation/queries.csv");
+		
 
 
 		
 		Repository repo = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager());
 		RepositoryConnection connection = repo.getConnection();
-		 String sparqlQuery = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/namedGraph> { ?s ?p ?o } }";
+		System.out.println(assetIRI);
+		//get the specific prov trace
+		String sparqlQuery = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <"+assetIRI.replace(" ", "%20")+":CarbonExecutionTrace> { ?s ?p ?o } }";
+		 System.out.println(sparqlQuery);
 		 org.eclipse.rdf4j.model.Model model = Repositories.graphQuery(repo, sparqlQuery, r -> QueryResults.asModel(r));
 		
          System.out.println("Prov trace model size: " + model.size());
         
         // Optionally, add the model to a named graph within the repository
-        connection.begin();
-        connection.add(model, connection.getValueFactory().createIRI("http://example.org/namedGraph"));
-        connection.commit();
-        
+       // connection.begin();
+       // connection.add(model, connection.getValueFactory().createIRI("http://example.org/namedGraph"));
+       // connection.commit();
+         SailRepository inMemoryRepo = new SailRepository(new MemoryStore());
+         try (SailRepositoryConnection memoryConnection = inMemoryRepo.getConnection()) {
+             memoryConnection.add(model);  // Add the model to the in-memory repository
+             
+            
         // Read queries from CSV and execute them
         try (InputStreamReader reader = new InputStreamReader(queriesFile.getInputStream());
              CSVReader csvReader = new CSVReader(reader)) {
@@ -84,7 +96,9 @@ public class SPARQLQueries {
             System.out.println("Running validation queries");
             for (String[] row : r) {
                 System.out.println("Evaluating: " + row[1]);
-                TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, Constants.PREFIXES + " " + row[1].replaceAll("\uFEFF", ""));
+            //    TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, Constants.PREFIXES + " " + row[1].replaceAll("\uFEFF", ""));
+                TupleQuery tupleQuery = memoryConnection.prepareTupleQuery(QueryLanguage.SPARQL, Constants.PREFIXES + " " + row[1].replaceAll("\uFEFF", ""));
+                
                 try (TupleQueryResult result = tupleQuery.evaluate()) {
                     ArrayList<HashMap<String, String>> list = new ArrayList<>();
                     while (result.hasNext()) {
@@ -105,7 +119,7 @@ public class SPARQLQueries {
         }
      catch (Exception e) {
         e.printStackTrace();
-    
+     }
 }
 		
 		
@@ -242,9 +256,9 @@ public class SPARQLQueries {
 				+ "            ?targetUnitInst    rdfs:label \"kilogram\"@en.\n"
 				+ "            ?id    ecfo:hasEmissionTarget/rdfs:label ?emissionTargetSymbol. \n"
 				+ "            ?id ecfo:hasApplicableLocation/rdfs:label ?applicableLocation .\n"
-				+ "            ?id  ecfo:hasScope ecfo:Scope2.\n"
-				+ "            ?id ecfo:hasTag <https://w3id.org/ecfkg/i/UK%20electricity>. \n"
-				+ "            ?id ecfo:hasEmissionTarget <http://www.wikidata.org/entity/Q1933140>.         \n"
+			//	+ "            ?id  ecfo:hasScope ecfo:Scope2.\n"
+			//	+ "            ?id ecfo:hasTag <https://w3id.org/ecfkg/i/UK%20electricity>. \n"
+			//	+ "            ?id ecfo:hasEmissionTarget <http://www.wikidata.org/entity/Q1933140>.         \n"
 				+ "      \n"
 				+ "        ?id ecfo:hasSourceUnit ?sourceUnitInst.\n"
 				+ "        \n"

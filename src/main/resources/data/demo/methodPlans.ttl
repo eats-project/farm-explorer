@@ -1,22 +1,230 @@
-
-<https://eats.org.uk/MethodPlans/> <http://www.w3.org/2000/01/rdf-schema#label> "Method Plans" .
-
-<urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig> <https://eats.org.uk/hasAssignedMethod>
-    <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
+@prefix agg: <http://jena.apache.org/ARQ/function/aggregate#> .
+@prefix sail: <http://www.openrdf.org/config/sail#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix geof: <http://www.opengis.net/def/function/geosparql/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix fn: <http://www.w3.org/2005/xpath-functions> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix spif: <http://spinrdf.org/spif#> .
+@prefix path: <http://www.ontotext.com/path#> .
+@prefix array: <http://www.w3.org/2005/xpath-functions/array> .
+@prefix apf: <http://jena.apache.org/ARQ/property#> .
+@prefix rep: <http://www.openrdf.org/config/repository#> .
+@prefix map: <http://www.w3.org/2005/xpath-functions/map> .
+@prefix sr: <http://www.openrdf.org/config/repository/sail#> .
+@prefix rdf4j: <http://rdf4j.org/schema/rdf4j#> .
+@prefix wgs: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix gn: <http://www.geonames.org/ontology#> .
+@prefix afn: <http://jena.apache.org/ARQ/function#> .
+@prefix list: <http://jena.apache.org/ARQ/list#> .
+@prefix eats: <https://eats.org.uk/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ofn: <http://www.ontotext.com/sparql/functions/> .
+@prefix geoext: <http://rdf.useekm.com/ext#> .
+@prefix graphdb: <http://www.ontotext.com/config/graphdb#> .
+@prefix sesame: <http://www.openrdf.org/schema/sesame#> .
+@prefix math: <http://www.w3.org/2005/xpath-functions/math> .
+@prefix omgeo: <http://www.ontotext.com/owlim/geo#> .
 
 <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig>
   a <https://w3id.org/ep-plan#Plan>;
-  <http://www.w3.org/2000/01/rdf-schema#label> "Electricity Footprint Irrigation Rig" .
+  rdfs:label "Electricity Footprint Irrigation Rig" .
 
 <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Conversion%20Factor>
-  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Constraint>;
-  <http://www.w3.org/2000/01/rdf-schema#label> "Constraint for Var Electricity Conversion Factor";
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var Electricity Conversion Factor";
   <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0>;
   <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Conversion%20Factor:Impl>;
   <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
 
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0>
+  a owl:NamedIndividual, <http://www.openmath.org/cd/arith1#times>, <https://w3id.org/ep-plan#Step>;
+  rdfs:comment "Electricity Conversion Factor * Electricity Usage = Footprint Estimate ";
+  rdfs:label "Apply CF to Electricity Usage ";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Usage>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var Electricity Usage";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Usage:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Footprint%20Estimate>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var Footprint Estimate";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Footprint%20Estimate:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Electricity%20Conversion%20Factor>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "Electricity Conversion Factor";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Electricity%20Usage>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "Electricity Usage";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Footprint%20Estimate>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "Footprint Estimate";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig>;
+  <https://w3id.org/ep-plan#isOutputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:0>
+  a owl:NamedIndividual, <http://www.openmath.org/cd/arith1#times>, <https://w3id.org/ep-plan#Step>;
+  rdfs:comment "Flow meter readings * Number of growing tables = Total water intake ";
+  rdfs:label "Calculate tunnel's water intake";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> a
+    <https://w3id.org/ep-plan#Plan>;
+  rdfs:label "Calculate fertiliser emissions" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Flow%20meter%20readings>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "Flow meter readings";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:0> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Number%20of%20growing%20tables>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "Number of growing tables";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:0> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Total%20water%20intake>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "Total water intake";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:1>;
+  <https://w3id.org/ep-plan#isOutputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:0> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:1>
+  a owl:NamedIndividual, <http://www.openmath.org/cd/arith1#times>, <https://w3id.org/ep-plan#Step>;
+  rdfs:comment "Total water intake * Fertiliser coefficient = Total fertiliser used";
+  rdfs:label "Calculate fertiliser use";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Fertiliser%20coefficient>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "Fertiliser coefficient";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:1> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Total%20fertiliser%20used>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "Total fertiliser used";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:2>;
+  <https://w3id.org/ep-plan#isOutputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:1> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:2>
+  a owl:NamedIndividual, <http://www.openmath.org/cd/arith1#times>, <https://w3id.org/ep-plan#Step>;
+  rdfs:comment "Total fertiliser used * N% = Total N used";
+  rdfs:label "Calculate synthetic N used ";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:N%25>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "N%";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:2> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Total%20N%20used>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "Total N used";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:3>;
+  <https://w3id.org/ep-plan#isOutputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:2> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:3>
+  a owl:NamedIndividual, <http://www.openmath.org/cd/arith1#times>, <https://w3id.org/ep-plan#Step>;
+  rdfs:comment "Total N used * EF1 = N2O-N Emissions ";
+  rdfs:label "Calculate N2O-N emissions ";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:EF1>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "EF1";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:3> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:N2O-N%20Emissions>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "N2O-N Emissions";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isOutputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:3> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step0:Constraint:Flow%20meter%20readings>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var Flow meter readings";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:0>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step0:Constraint:Flow%20meter%20readings:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step0:Constraint:Number%20of%20growing%20tables>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var Number of growing tables";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:0>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step0:Constraint:Number%20of%20growing%20tables:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step0:Constraint:Total%20water%20intake>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var Total water intake";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:0>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step0:Constraint:Total%20water%20intake:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step1:Constraint:Fertiliser%20coefficient>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var Fertiliser coefficient";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:1>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step1:Constraint:Fertiliser%20coefficient:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step1:Constraint:Total%20fertiliser%20used>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var Total fertiliser used";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:1>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step1:Constraint:Total%20fertiliser%20used:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step2:Constraint:N%25>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var N%";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:2>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step2:Constraint:N%25:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step2:Constraint:Total%20N%20used>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var Total N used";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:2>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step2:Constraint:Total%20N%20used:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step3:Constraint:EF1>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var EF1";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:3>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step3:Constraint:EF1:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step3:Constraint:N2O-N%20Emissions>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var N2O-N Emissions";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:3>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step3:Constraint:N2O-N%20Emissions:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
 <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Conversion%20Factor:Impl>
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> """PREFIX  ecfo: <https://w3id.org/ecfo#>
+  rdf:value """PREFIX  ecfo: <https://w3id.org/ecfo#>
 PREFIX  ep-plan: <https://w3id.org/ep-plan#>
 
 Construct {
@@ -47,15 +255,8 @@ WHERE {
 
 ORDER BY DESC(?applicablePeriodEnd)""" .
 
-<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Usage>
-  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Constraint>;
-  <http://www.w3.org/2000/01/rdf-schema#label> "Constraint for Var Electricity Usage";
-  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0>;
-  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Usage:Impl>;
-  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
-
 <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Electricity%20Usage:Impl>
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> """Prefix sosa:<http://www.w3.org/ns/sosa/>
+  rdf:value """Prefix sosa:<http://www.w3.org/ns/sosa/>
 Prefix ssn:<http://www.w3.org/ns/ssn/>
 Prefix qudt:<http://qudt.org/schema/qudt/>
 Prefix ep-plan: <https://w3id.org/ep-plan#>
@@ -103,22 +304,15 @@ VALUES (?asset) { ($Asset) }
     VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Electricity%20Usage>) }
 }""" .
 
-<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Footprint%20Estimate>
-  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Constraint>;
-  <http://www.w3.org/2000/01/rdf-schema#label> "Constraint for Var Footprint Estimate";
-  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0>;
-  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Footprint%20Estimate:Impl>;
-  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
-
 <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step0:Constraint:Footprint%20Estimate:Impl>
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> """PREFIX  ep-plan: <https://w3id.org/ep-plan#>
+  rdf:value """PREFIX  ep-plan: <https://w3id.org/ep-plan#>
 Prefix peco:<https://w3id.org/peco#>
 Prefix qudt:<http://qudt.org/schema/qudt/>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
     ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity.
-    ?id rdfs:label \"Electricity Footprint\".
+
     ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q1933140>.
     ?id qudt:value \"$Output\"^^<xsd:float>.
 }
@@ -127,27 +321,227 @@ WHERE {
     VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Footprint%20Estimate>)}
   }""" .
 
-<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0>
-  a <http://www.openmath.org/cd/arith1#times>, <http://www.w3.org/2002/07/owl#NamedIndividual>,
-    <https://w3id.org/ep-plan#Step>;
-  <http://www.w3.org/2000/01/rdf-schema#comment> "Electricity Conversion Factor * Electricity Usage = Footprint Estimate ";
-  <http://www.w3.org/2000/01/rdf-schema#label> "Apply CF to Electricity Usage ";
-  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step0:Constraint:Flow%20meter%20readings:Impl>
+  rdf:value """Prefix sosa:<http://www.w3.org/ns/sosa/>
+Prefix ssn:<http://www.w3.org/ns/ssn/>
+Prefix qudt:<http://qudt.org/schema/qudt/>
+Prefix ep-plan: <https://w3id.org/ep-plan#>
+Prefix time:<http://www.w3.org/2006/time#>
+Prefix peco:<https://w3id.org/peco#>
 
-<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Electricity%20Conversion%20Factor>
-  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Variable>;
-  <http://www.w3.org/2000/01/rdf-schema#label> "Electricity Conversion Factor";
-  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig>;
-  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0> .
+CONSTRUCT {
+  ?result qudt:value ?output.
+  ?property ssn:isPropertyOf ?asset.
+  ?sensor sosa:observes ?property.
+  ?observation sosa:madeBySensor ?sensor; sosa:hasResult ?result.
+  ?result a peco:EmissionCalculationEntitiy; a qudt:Quantity; a ep-plan:Entity.
+  ?result ep-plan:correspondsToVariable ?var.
+  ?result qudt:unit <http://www.wikidata.org/entity/Q11582>.
+  ?result qudt:hasQuantityKind <http://www.wikidata.org/entity/Q283>.
+  ?observation sosa:phenomenonTime ?duration.
+  ?duration a time:Instant.
+  ?duration time:hasBegining ?min.
+  ?duration time:hasEnd ?max.
+}
+FROM <https://eats.org.uk/Assets/>
+FROM <https://eats.org.uk/Observations/>
 
-<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Electricity%20Usage>
-  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Variable>;
-  <http://www.w3.org/2000/01/rdf-schema#label> "Electricity Usage";
-  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig>;
-  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0> .
+WHERE {
+{
+SELECT ?sensor ?property ?asset (SUM(?resultValue) AS ?output) (MAX(?resultTime) AS ?max) (MIN(?resultTime) AS ?min)
+WHERE
+{
+?sensor sosa:observes ?property.
+?property ssn:isPropertyOf ?asset.
+?observation sosa:madeBySensor ?sensor; sosa:hasResult ?result.
+?result qudt:unit <http://www.wikidata.org/entity/Q4263534>.
+?result qudt:hasQuantityKind <http://www.wikidata.org/entity/Q39297>.
+?result qudt:value ?resultValue.
+?observation sosa:resultTime ?resultTime.
 
-<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Footprint%20Estimate>
-  a <http://www.w3.org/2002/07/owl#NamedIndividual>, <https://w3id.org/ep-plan#Variable>;
-  <http://www.w3.org/2000/01/rdf-schema#label> "Footprint Estimate";
-  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig>;
-  <https://w3id.org/ep-plan#isOutputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Step:0> .
+VALUES (?asset) { ($Asset) }
+}
+  GROUP BY ?property ?asset ?sensor
+} 
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:Observation:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?observation) 
+    BIND (IRI(CONCAT(STR(?observation), \":Result\")) AS ?result)
+    BIND (IRI(CONCAT(STR(?observation), \":Result:PhenomenonDuration\")) AS ?duration)
+    
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Flow%20meter%20readings>) }
+}""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step0:Constraint:Number%20of%20growing%20tables:Impl>
+  rdf:value """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+Prefix sosa:<http://www.w3.org/ns/sosa/>
+Prefix ssn:<http://www.w3.org/ns/ssn/>
+Prefix qudt:<http://qudt.org/schema/qudt/>
+Prefix ep-plan: <https://w3id.org/ep-plan#>
+Prefix time:<http://www.w3.org/2006/time#>
+Prefix peco:<https://w3id.org/peco#>
+
+CONSTRUCT {
+  ?coefficient qudt:value \"4.0\".
+  ?coefficient a peco:EmissionCalculationEntitiy; a qudt:Quantity; a ep-plan:Entity.
+  ?coefficient ep-plan:correspondsToVariable ?var.
+  ?coefficient qudt:unit <http://www.wikidata.org/entity/Q2360918>.
+  ?coefficient qudt:hasQuantityKind <http://www.wikidata.org/entity/Q107715>.
+}
+where {
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:Coeficient:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?coefficient) 
+    
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Number%20of%20growing%20tables>) }
+}
+""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step0:Constraint:Total%20water%20intake:Impl>
+  rdf:value """PREFIX  ep-plan: <https://w3id.org/ep-plan#>
+Prefix peco:<https://w3id.org/peco#>
+Prefix qudt:<http://qudt.org/schema/qudt/>
+
+Construct {
+    ?id ep-plan:correspondsToVariable ?var.
+
+    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id qudt:unit <http://www.wikidata.org/entity/Q25517>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q283>.
+    ?id qudt:value ?waterIncubicMetres.
+}
+WHERE {
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:Observation:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?id)
+    BIND (xsd:float(\"$Output\") AS ?waterInlitres)
+    BIND (xsd:float(?waterInlitres / 1000) AS ?waterIncubicMetres)
+          
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Total%20water%20intake>)}
+  }""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step1:Constraint:Fertiliser%20coefficient:Impl>
+  rdf:value """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+Prefix sosa:<http://www.w3.org/ns/sosa/>
+Prefix ssn:<http://www.w3.org/ns/ssn/>
+Prefix qudt:<http://qudt.org/schema/qudt/>
+Prefix ep-plan: <https://w3id.org/ep-plan#>
+Prefix time:<http://www.w3.org/2006/time#>
+Prefix peco:<https://w3id.org/peco#>
+
+CONSTRUCT {
+  ?coefficient qudt:value \"0.67\".
+  ?coefficient a peco:EmissionCalculationEntitiy; a qudt:Quantity; a ep-plan:Entity.
+  ?coefficient ep-plan:correspondsToVariable ?var.
+  ?coefficient qudt:unit <http://www.wikidata.org/entity/Q844211>.
+  ?coefficient qudt:hasQuantityKind <http://www.wikidata.org/entity/Q83323>.
+}
+where {
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:Coeficient:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?coefficient) 
+    
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Fertiliser%20coefficient>) }
+}
+""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step1:Constraint:Total%20fertiliser%20used:Impl>
+  rdf:value """PREFIX  ep-plan: <https://w3id.org/ep-plan#>
+Prefix peco:<https://w3id.org/peco#>
+Prefix qudt:<http://qudt.org/schema/qudt/>
+
+Construct {
+    ?id ep-plan:correspondsToVariable ?var.
+    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity.
+  
+    ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q83323>.
+    ?id qudt:value \"$Output\"^^<xsd:float>.
+}
+WHERE {
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:Observation:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?id)
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Total%20fertiliser%20used>)}
+  }""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step2:Constraint:N%25:Impl>
+  rdf:value """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+Prefix sosa:<http://www.w3.org/ns/sosa/>
+Prefix ssn:<http://www.w3.org/ns/ssn/>
+Prefix qudt:<http://qudt.org/schema/qudt/>
+Prefix ep-plan: <https://w3id.org/ep-plan#>
+Prefix time:<http://www.w3.org/2006/time#>
+Prefix peco:<https://w3id.org/peco#>
+
+CONSTRUCT {
+  ?coefficient qudt:value \"0.15\".
+  ?coefficient a peco:EmissionCalculationEntitiy; a qudt:Quantity; a ep-plan:Entity.
+  ?coefficient ep-plan:correspondsToVariable ?var.
+  ?coefficient qudt:unit <http://www.wikidata.org/entity/Q11229>.
+  ?coefficient qudt:hasQuantityKind <http://www.wikidata.org/entity/Q182329>.
+}
+where {
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:Coeficient:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?coefficient) 
+    
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:N%25>) }
+}""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step2:Constraint:Total%20N%20used:Impl>
+  rdf:value """PREFIX  ep-plan: <https://w3id.org/ep-plan#>
+Prefix peco:<https://w3id.org/peco#>
+Prefix qudt:<http://qudt.org/schema/qudt/>
+
+Construct {
+    ?id ep-plan:correspondsToVariable ?var.
+
+    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q182329>.
+    ?id qudt:value ?kgN.
+}
+WHERE {
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:Observation:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?id)
+    BIND (xsd:float(\"$Output\") AS ?kgN)
+          
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Total%20N%20used>)}
+  }""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step3:Constraint:EF1:Impl>
+  rdf:value """PREFIX  ecfo: <https://w3id.org/ecfo#>
+PREFIX  ep-plan: <https://w3id.org/ep-plan#>
+
+Construct {
+    ?id ep-plan:correspondsToVariable ?var.
+    ?id ?p ?o. 
+	?o2 ?p3 ?o3.
+    ?o3 ?p4 ?o4.
+}
+WHERE {
+  ?id rdf:type ecfo:EmissionConversionFactor ;
+       
+        ecfo:hasTag           <https://w3id.org/ecfkg/i/AmmoniumNitrate> .
+
+        ?id ?p ?o.
+        Optional {
+                  ?id ecfo:hasApplicablePeriod ?o2.
+                  ?o2 ?p3 ?o3.
+                  ?o3 ?p4 ?o4.
+                 }
+    
+    
+    
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:EF1>)}
+  }""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step3:Constraint:N2O-N%20Emissions:Impl>
+  rdf:value """PREFIX  ep-plan: <https://w3id.org/ep-plan#>
+Prefix peco:<https://w3id.org/peco#>
+Prefix qudt:<http://qudt.org/schema/qudt/>
+
+Construct {
+    ?id ep-plan:correspondsToVariable ?var.
+    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity.
+ 
+    ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <https://w3id.org/ecfkg/i/UNIT/N20-N>.
+    ?id qudt:value \"$Output\"^^<xsd:float>.
+}
+WHERE {
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:EmissionScore:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?id)
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:N2O-N%20Emissions>)}
+  }""" .
+
+<https://eats.org.uk/MethodPlans/> rdfs:label "Method Plans" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> eats:hasAssignedMethod
+    <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig> eats:hasAssignedMethod
+    <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig> .

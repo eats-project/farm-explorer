@@ -508,10 +508,10 @@ fetch('/cf_info_all?', {
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].value.replace("\""," ")) + "</td>"
 
 
-                html_string = html_string + "<td><a href=\"" + CF_data[i].id + "\">link</a></td>"
+                html_string = html_string + "<td><a target=\"_blank\" href=\"" + CF_data[i].id + "\">link</a></td>"
 				
 				if (CF_data[i].source) {
-				html_string = html_string + "<td><a href=\"" + CF_data[i].source.replace("\"","") + "\">link</a></td>"
+				html_string = html_string + "<td><a target=\"_blank\" href=\"" + CF_data[i].source.replace("\"", "").split("^^")[0] + "\">link</a></td>"
 				} else {
 					html_string = html_string + "<td>no value</td>"
 				}

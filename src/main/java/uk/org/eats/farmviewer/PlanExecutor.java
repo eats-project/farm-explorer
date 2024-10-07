@@ -191,7 +191,7 @@ public class PlanExecutor {
     	
             boolean workflowActive = true;
             
-            namedGraph = vf.createIRI(assetIRI +":CarbonExecutionTrace");
+            namedGraph = vf.createIRI(assetIRI + ":CarbonExecutionTrace");
             
             inputDataRetrieval ();
            
