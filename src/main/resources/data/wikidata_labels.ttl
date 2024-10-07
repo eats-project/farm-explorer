@@ -6,6 +6,27 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix schema: <https://schema.org/> .
 
+
+<http://www.wikidata.org/entity/Q182329> rdfs:label "ammonium nitrate"@en.
+
+<http://www.wikidata.org/entity/Q83323> rdfs:label "fertilizer"@en.
+
+<http://www.wikidata.org/entity/Q283> rdfs:label "water"@en.
+
+<http://www.wikidata.org/entity/Q10273457> rdfs:label "equipment"@en.
+
+<http://www.wikidata.org/entity/Q2360918> rdfs:label "piece"@en;
+qudt:abbreviation "pc"@en .
+
+<http://www.wikidata.org/entity/Q25517> rdfs:label "cubic metre"@en;
+qudt:abbreviation "m³"@en .
+
+<http://www.wikidata.org/entity/Q11229> rdfs:label "percent"@en;
+qudt:abbreviation "%"@en .
+
+<https://w3id.org/ecfkg/i/UNIT/N20-N> rdfs:label "N₂0-N"@en;
+qudt:abbreviation "N₂0-N"@en .
+
 <http://www.wikidata.org/entity/Q4263534> rdfs:label "litres"@en;
 qudt:abbreviation "l"@en .
 
