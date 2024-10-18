@@ -483,12 +483,38 @@ console.log("here");
 	  let selectElement = document.getElementById ("select_"+assetIRI)
 	  
 	  
-	  fetch (`/linkMethodToAsset?assetIRI=${encodeURIComponent(assetIRI)}&methodIRI=${encodeURIComponent(selectElement.value)}`).then(()=>{
-		  populateAssetTable (getIdFromUrl()) ;
-		  
-	  })
-	  console.log(assetIRI);
-	  console.log(selectElement.value);	  
+	  fetch (`/linkMethodToAsset?assetIRI=${encodeURIComponent(assetIRI)}&methodIRI=${encodeURIComponent(selectElement.value)}`)
+	   .then((response) => {
+        // Check if the response is successful (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        console.log(assetIRI);
+	  console.log(selectElement.value);
+	  
+	  populateAssetTable (getIdFromUrl()) ;
+        return response.json(); // Parse the response body as JSON
+    })
+    .then((data) => {
+        console.log('Response data:', data);
+
+        // Check if there is a warning in the response
+        if (data.warning) {
+            console.warn('Warning:', data.warning);
+            alert(data.warning); // Optionally, alert the user
+        } else {
+            console.log('Operation result:', data);
+            // Handle the result as needed, for example:
+            resetInputs();
+        }
+    })
+    .catch((error) => {
+        console.error('Error during fetch:', error);
+    });
+	  
+	  
+	  
+	  
      }
     
 			

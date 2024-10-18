@@ -1,6 +1,8 @@
 package uk.org.eats.farmviewer;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -9,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,6 +68,28 @@ public class ServiceController {
 		semModel.read(Constants.PECO);	
 		System.out.println ("Set Up Repositor Complete");
 	}
+	
+	 public boolean isDemoMode() {
+	        Properties properties = new Properties();
+	        String propertyFileName = "application.properties";
+
+	        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propertyFileName)) {
+	            if (inputStream != null) {
+	                properties.load(inputStream);
+	                String demoModeValue = properties.getProperty("demo.mode");
+	                // Return true if the value is "true" (case insensitive), otherwise false
+	                
+	                return Boolean.parseBoolean(demoModeValue);
+	            } else {
+	                System.err.println("Property file '" + propertyFileName + "' not found in the classpath.");
+	            }
+	        } catch (IOException e) {
+	            System.err.println("Exception: " + e.getMessage());
+	        }
+
+	        // Return false by default if there was an issue reading the property
+	        return false;
+	    }
 
 	
 	@PostMapping("/upload")
@@ -112,6 +137,10 @@ public class ServiceController {
 	@ResponseBody
 	public String saveCalculationMethod(@RequestBody String payload) {
 		
+		if (isDemoMode()) {
+			return "{\"warning\":\"operation not allowed in demo mode\"}";
+		}
+		
 		System.out.println(payload);
 
 		String result = GraphDBUtils.addJsonLD(payload, ConstantsDB.METHOD_PLANS);
@@ -122,7 +151,11 @@ public class ServiceController {
 	
 	@PostMapping("/saveQueryUpdate")
 	@ResponseBody
-	public void saveQueryUpdate(@RequestBody String query) {
+	public String saveQueryUpdate(@RequestBody String query) {
+		
+		if (isDemoMode()) {
+			return "{\"warning\":\"operation not allowed in demo mode\"}";
+		}
 		
 		System.out.println(query);
 		Gson gson = new Gson();
@@ -130,6 +163,7 @@ public class ServiceController {
 		GraphDBUtils.updateConstraint(update, ConstantsDB.METHOD_PLANS);
 		//
 		//returnConstraintQueryUpdate gson.toJson(result);
+		return "{\"result\":\"update saved\"}";
 		
 	}
 	
@@ -169,6 +203,10 @@ public class ServiceController {
 	@ResponseBody
 	public String runSparqlQuery(@RequestBody String payload) {
 
+		if (isDemoMode()) {
+			return "{\"warning\":\"operation not allowed in demo mode\"}";
+		}
+		
 		HashMap<String, String> result = SPARQLQueries.runSparqlQuery(payload);
 		Gson gson = new Gson();
 		return gson.toJson(result);
@@ -306,6 +344,11 @@ public class ServiceController {
 	@GetMapping("/linkMethodToAsset")
 	@ResponseBody
 	public String linkMethodToAsset(@RequestParam String assetIRI, String methodIRI) throws Exception {
+		
+		if (isDemoMode()) {
+			return "{\"warning\":\"operation not allowed in demo mode\"}";
+		}
+		
 		String result = SPARQLQueries.linkMethodToAsset (assetIRI, methodIRI);
 		
 		return result;

@@ -291,15 +291,21 @@
 
 			let html_string = "";
             let newTable = true;
+            
 			for (i = 0; i < data.length; i++) {
 				if (newTable) {
+				//	aggregatedStepComments= "";
 					html_string = html_string + `<h2>${data[i].planLabel}</h2>`;
-					html_string = html_string + `<h4>Formula:${data[i].stepComment}</h4>`;
+				//	html_string = html_string + `<h4>Formula:${data[i].stepComment}</h4>`;
+				html_string = html_string + `<h4>Formula:</h4>`;
+				  html_string += `<textarea id="${data[i].plan}" class="formula-display" readonly  style="width: 100%;"></textarea>`;
+    
 					html_string = html_string + '<table class="table"><thead><th>Constraint</th><th>Constraint Implementation</th></thead><tbody>';
 				    newTable= false;
 				}
 				
                 html_string = html_string + `<tr><td>${data[i].constraintLabel}<br><br> <button onclick="saveQueryUpdate('${data[i].impl}')">Save Edits</button></td><td><textarea id="${data[i].impl}" class="sparql-editor">${data[i].query}</textarea></td></tr>`
+		        
 		
 				if (i+1<data.length&& data[i].plan != data[i+1].plan) {
 					html_string = html_string + "</tbody></table>"
@@ -313,9 +319,24 @@
 
 			}
 			
-			
 			resultsDiv.innerHTML = html_string;
 			
+			let lastAddedStepComment = "";
+
+for (let i = 0; i < data.length; i++) {
+    // Check if the current stepComment is different from the last added one
+    if (data[i].stepComment !== lastAddedStepComment) {
+        // Find the element by the plan ID and append the new comment
+        const textarea = document.getElementById(data[i].plan);
+        if (textarea) {
+            // Append the stepComment with a newline to the textarea's current value
+            textarea.value += data[i].stepComment + "\n";
+        }
+
+        // Update lastAddedStepComment to the current one
+        lastAddedStepComment = data[i].stepComment;
+    }
+}
 			
 
         // Initialize editors and store references
@@ -341,7 +362,29 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data)
-            })
+            }).then((response) => {
+        // Check if the response is successful (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json(); // Parse the response body as JSON
+    })
+    .then((data) => {
+        console.log('Response data:', data);
+
+        // Check if there is a warning in the response
+        if (data.warning) {
+            console.warn('Warning:', data.warning);
+            alert(data.warning); // Optionally, alert the user
+        } else {
+            console.log('Operation result:', data);
+            // Handle the result as needed, for example:
+            resetInputs();
+        }
+    })
+    .catch((error) => {
+        console.error('Error during fetch:', error);
+    });
             
             
             }
@@ -533,9 +576,29 @@
 					'Content-Type': 'application/json; charset=utf-8'
 				},
 				body: generateJsonLDpayload(context, graph)
-			}).then (()=>resetInputs());
+			}).then((response) => {
+        // Check if the response is successful (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json(); // Parse the response body as JSON
+    })
+    .then((data) => {
+        console.log('Response data:', data);
 
-			console.log('status:', response.status)
+        // Check if there is a warning in the response
+        if (data.warning) {
+            console.warn('Warning:', data.warning);
+            alert(data.warning); // Optionally, alert the user
+        } else {
+            console.log('Operation result:', data);
+            // Handle the result as needed, for example:
+            resetInputs();
+        }
+    })
+    .catch((error) => {
+        console.error('Error during fetch:', error);
+    });
 		}
 
 		function generateJsonLDpayload(context, graph) {

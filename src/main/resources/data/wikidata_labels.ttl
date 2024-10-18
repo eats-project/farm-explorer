@@ -6,7 +6,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix schema: <https://schema.org/> .
 
-
+<http://www.wikidata.org/entity/Q906629> rdfs:label "nitrogen fertilizer"@en .
 <http://www.wikidata.org/entity/Q182329> rdfs:label "ammonium nitrate"@en.
 
 <http://www.wikidata.org/entity/Q83323> rdfs:label "fertilizer"@en.

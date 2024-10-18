@@ -200,7 +200,6 @@ WHERE {
 
 Fertiliser ratio 
 
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 Prefix sosa:<http://www.w3.org/ns/sosa/>
 Prefix ssn:<http://www.w3.org/ns/ssn/>
 Prefix qudt:<http://qudt.org/schema/qudt/>
@@ -209,16 +208,41 @@ Prefix time:<http://www.w3.org/2006/time#>
 Prefix peco:<https://w3id.org/peco#>
 
 CONSTRUCT {
-  ?coefficient qudt:value "0.67".
-  ?coefficient a peco:EmissionCalculationEntitiy; a qudt:Quantity; a ep-plan:Entity.
-  ?coefficient ep-plan:correspondsToVariable ?var.
-  ?coefficient qudt:unit <http://www.wikidata.org/entity/Q844211>.
-  ?coefficient qudt:hasQuantityKind <http://www.wikidata.org/entity/Q83323>.
+  ?result qudt:value ?output.
+  ?property ssn:isPropertyOf ?asset.
+  ?sensor sosa:observes ?property.
+  ?observation sosa:madeBySensor ?sensor; sosa:hasResult ?result.
+  ?result a peco:EmissionCalculationEntitiy; a qudt:Quantity; a ep-plan:Entity.
+  ?result ep-plan:correspondsToVariable ?var.
+  ?result qudt:unit <http://www.wikidata.org/entity/Q844211>.
+  ?result qudt:hasQuantityKind <http://www.wikidata.org/entity/Q906629>.
+  ?observation sosa:phenomenonTime ?duration.
+  ?duration a time:Instant.
+  ?duration time:hasBegining ?min.
+  ?duration time:hasEnd ?max.
 }
-where {
-    BIND (IRI(CONCAT("urn:ngsi-ld:AgriFarm:Coeficient:", STRAFTER(STR(UUID()), "uuid:"))) AS ?coefficient) 
-    
-    VALUES (?var) { ($Variable) }
+FROM <https://eats.org.uk/Assets/>
+FROM <https://eats.org.uk/Observations/>
+
+WHERE {
+{
+SELECT  ?property ?asset (SUM(?resultValue) AS ?output) (MAX(?resultTime) AS ?max) (MIN(?resultTime) AS ?min)
+WHERE
+{
+?observation sosa:hasFeatureOfInterest ?asset; sosa:hasResult ?result; sosa:observedProperty ?property.
+?result qudt:unit <http://www.wikidata.org/entity/Q844211>.
+?result qudt:hasQuantityKind <http://www.wikidata.org/entity/Q906629>.
+?result qudt:value ?resultValue.
+?observation sosa:resultTime ?resultTime.
+VALUES (?asset) { (<urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig>) }
+}
+  GROUP BY ?property ?asset 
+} 
+    BIND (IRI(CONCAT("urn:ngsi-ld:AgriFarm:Observation:", STRAFTER(STR(UUID()), "uuid:"))) AS ?observation) 
+    BIND (IRI(CONCAT(STR(?observation), ":Result")) AS ?result)
+    BIND (IRI(CONCAT(STR(?observation), ":Result:PhenomenonDuration")) AS ?duration)
+       
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Fertiliser%20coefficient>) }
 }
 
 Total fertiliser used
@@ -231,7 +255,7 @@ Construct {
     ?id ep-plan:correspondsToVariable ?var.
     ?id a peco:EmissionCalcuationEntity; a qudt:Quantity.
   
-    ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q83323>.
+    ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q906629>.
     ?id qudt:value "$Output"^^<xsd:float>.
 }
 WHERE {
