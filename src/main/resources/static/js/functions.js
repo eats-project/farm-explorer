@@ -344,42 +344,7 @@ function linkObservationFoI (mapLayer, provTrace) {
  }      
        
        
- function calculateTunnelFootprint () {
-	
-	console.log('calculating')
-	
-		let waterQuantity = estimateWaterQuantity(); 
-	    let fertiliserQuantitiy = estimateFertiliserQuantity(waterQuantity.value, 0.01); 
-		let electricity = estimateElectricity ({}, waterQuantity.value); 
-			
-	fetch('/cf_info_all?region=United Kingdom')
-		.then((response) =>
-			response.json()
-		)
-		.then((CF_data) => {
-			console.log(CF_data)
-			if (!CF_data[0].value) {
-				alert ("Sorry we could not retrieve Conversion Factor matching this location.")				
-			}
-			
-			const electricity_cf = removeLiteralType(CF_data[0].value);
-			let carbonFootprintPanel = document.getElementById('carbonFootprint');
-			console.log(electricity_cf);	
-			carbonFootprintPanel.innerHTML  = `		
-	<img src='./img/water.png'> ${waterQuantity.value} liters <br><br>
-    <img src='./img/fertiliser.png'> ${fertiliserQuantitiy} liters ( 448 kg CO2e ) <br><br>
-	<img src='./img/electricity.png'> ${roundTwoDecimal(electricity)} kWh ( ${roundTwoDecimal(electricity*electricity_cf)} kg CO2e ) <br><br>	<hr>
-	<img src='./img/co2.png'> ${roundTwoDecimal(electricity*electricity_cf)+ 448} kg CO2e  <br><br>
-			`;		
-			
-			pupulateProvenanceTable ();	
-			});
-			
-			console.log ("linking"); 
-			
-			linkObservationFoI (lineLayer, generateJsonLDstring(graphLD))		
-	
-	}
+
 	
 function pupulateProvenanceTable (assetIRI) {
 	
@@ -414,10 +379,10 @@ function pupulateProvenanceTable (assetIRI) {
 					for (var prop in list) {
 						for (i = 0; i < data.length; i++) {
 							if (data[i].activityLabel == prop) {
-								let input = data[i].inputLabel + " - " + removeLiteralType(data[i].inputValue.replace("\""," ")) + "" + removeLiteralType(data[i].inputUnitLabel) + " [" + removeLiteralType(data[i].inputQuantityKindL) + "]<hr>"
+								let input = data[i].inputLabel + " - " + roundTwoDecimal(Number(removeLiteralType(data[i].inputValue.replace("\""," ")))) + "" + removeLiteralType(data[i].inputUnitLabel) + " [" + removeLiteralType(data[i].inputQuantityKindL) + "]<hr>"
 								list[prop]["input"].push(input);
 
-								let output = data[i].outputLabel + " - " + removeLiteralType(data[i].outputValue.replace("\""," ")) + "" + removeLiteralType(data[i].outputUnitLabel) + " [" + removeLiteralType(data[i].outputQuantityKindL) + "]<hr>"
+								let output = data[i].outputLabel + " - " + roundTwoDecimal(Number(removeLiteralType(data[i].outputValue.replace("\""," ")))) + "" + removeLiteralType(data[i].outputUnitLabel) + " [" + removeLiteralType(data[i].outputQuantityKindL) + "]<hr>"
 								if (!list[prop]["output"].includes(output)) {
 
 									list[prop]["output"].push(output);
@@ -550,7 +515,7 @@ fetch('/cf_info_all?', {
 				}
 
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].plan) + "</td>"
-				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].value).replace("\"","") + "</td>"
+				html_string = html_string + "<td>" + roundTwoDecimal(Number(removeLiteralType(CF_data[i].value).replace("\"",""))) + "</td>"
 
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].unit) + " of " + removeLiteralType(CF_data[i].quantityKind) + "</td>"
 				
