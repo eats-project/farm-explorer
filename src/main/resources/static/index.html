@@ -24,11 +24,7 @@
 	 padding-left:20px;
 	 font-weight: bold;
       }
-       .chart-container {
-      width: 100%;
-      height: 100%;
-      
-    }
+    
     
       .list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
         background-color: #dee3e0; /* Bootstrap's light gray color, adjust as needed */
@@ -113,7 +109,21 @@
        cursor: pointer;
       }
       
-      
+        .iframe-container {
+            width: 100%; /* Full width */
+           
+          
+            overflow: hidden; /* Prevent overflow */
+            margin: auto; /* Center the container */
+            border: 1px solid #ccc; /* Optional border for visibility */
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block; /* Prevents any inline-block space */
+        }
       </style>
 	  
 	  
@@ -235,8 +245,25 @@ window.addEventListener('message', function(event) {
     <div class="col-md-8" >
       <!-- Map container -->
      <!--  <div id="map"></div> -->
+     <div class="iframe-container">
      <iframe id="iframe" src="/select.html" width="100%" height="100%"></iframe>
+     </div>
      <script>
+     
+            var frame = document.getElementById("iframe");
+            
+            // Adjusting the iframe height onload event
+            frame.onload = function() {
+                // set the height of the iframe as 
+                // the height of the iframe content
+                frame.style.height = frame.contentWindow.document.body.scrollHeight + 'px';
+
+                // set the width of the iframe as the 
+                // width of the iframe content
+                frame.style.width  = frame.contentWindow.document.body.scrollWidth + 'px';
+            }
+
+     
      function getDetailsPane (assetType, assetID) {
 	    console.log("changing iframe")
 	     console.log(assetType)
