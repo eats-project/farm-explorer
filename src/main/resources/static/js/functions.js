@@ -463,9 +463,21 @@ fetch('/cf_info_all?', {
 
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].sourceUnit) + "</td>"
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].targetUnit) + "</td>"
-
+                if (CF_data[i].applicablePeriodStart) {
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].applicablePeriodStart.replace("\"","")) + "</td>"
+				}
+				else {
+						html_string = html_string + "<td> Unknown </td>"
+			
+				}
+				if (CF_data[i].applicablePeriodEnd) {
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].applicablePeriodEnd.replace("\""," ")) + "</td>"
+				}
+				else {
+						html_string = html_string + "<td> Unknown </td>"
+			
+				}
+				
 				html_string = html_string + "<td>" + removeLiteralType(CF_data[i].applicableLocation) + "</td>"
 
 

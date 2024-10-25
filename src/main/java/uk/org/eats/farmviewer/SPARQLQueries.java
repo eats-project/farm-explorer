@@ -576,8 +576,30 @@ public class SPARQLQueries {
 		/* if (input.startsWith("\"") && input.endsWith("\"")) {
 	            input = input.substring(1, input.length() - 1);
 	        }*/
-		   input = input.replaceAll("^\"|\"(@[a-zA-Z\\-]+)?$|(@[a-zA-Z\\-]+)$", "");
+		   //input = input.replaceAll("^\"|\"(@[a-zA-Z\\-]+)?$|(@[a-zA-Z\\-]+)$", "");
 	       
+		// Remove the first character if it is a quote
+        if (input.startsWith("\"")) {
+            input = input.substring(1);
+        }
+        
+        if(input.contains("0.65")) {
+       	 System.out.println(input);
+        }
+    
+        input = input.split("[\\^@]")[0];
+
+
+        if(input.contains("0.65")) {
+       	 System.out.println(input);
+        }
+        // Trim any remaining quote at the end (in case it wasn't properly matched before)
+        if (input.endsWith("\"")) {
+            input = input.substring(0, input.length() - 1);
+        }
+         if(input.contains("0.65")) {
+        	 System.out.println(input);
+         }
 	    
 	       return input;
 

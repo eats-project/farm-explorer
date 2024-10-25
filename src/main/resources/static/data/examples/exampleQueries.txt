@@ -64,16 +64,13 @@ WHERE {
         ecfo:hasScope         ecfo:Scope2 ;
         ecfo:hasTag           <https://w3id.org/ecfkg/i/UK%20electricity> ;
         ecfo:hasEmissionTarget  <http://www.wikidata.org/entity/Q1933140>;
-        ecfo:hasTargetUnit  ?targetUnitInst .
-        ?id ecfo:hasEmissionTarget/rdfs:label ?emissionTargetSymbol.  
+        ecfo:hasTargetUnit  <http://www.wikidata.org/entity/Q11570> . 
         ?id ?p ?o.
         Optional {
                   ?id ecfo:hasApplicablePeriod ?o2.
                   ?o2 ?p3 ?o3.
                   ?o3 ?p4 ?o4.
                  }
-    
-    
     
     VALUES (?var) { ($Variable)}
   }
