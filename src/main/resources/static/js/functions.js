@@ -455,7 +455,7 @@ fetch('/cf_info_all?', {
 
 			for (i = 0; i < CF_data.length; i++) {
 				if (i == 0) {
-					html_string = html_string + '<tr style="background-color:#CCF6D3 ;">'
+					html_string = html_string + '<tr >'
 				}
 				else {
 					html_string = html_string + "<tr>"
@@ -490,10 +490,12 @@ fetch('/cf_info_all?', {
 				if (CF_data[i].source) {
 				html_string = html_string + "<td><a target=\"_blank\" href=\"" + CF_data[i].source.replace("\"", "").split("^^")[0] + "\">link</a></td>"
 				} else {
-					html_string = html_string + "<td>no value</td>"
+					html_string = html_string + "<td>Unknown</td>"
 				}
 				
 				//html_string = html_string + "<td>" + twoDigits(energy * twoDigits(CF_data[i].value.split("^")[0])) + "" + removeLiteralType(CF_data[i].targetUnit) + " ["+removeLiteralType(CF_data[i].emissionTargetSymbol)+"]</td>"
+				html_string = html_string + `<td><span id = "${CF_data[i].id}">None</span></td>`
+				
 				html_string = html_string + "</tr>"
 
 
@@ -559,6 +561,16 @@ fetch('/cf_info_all?', {
   
 }
 
+function setWarning (elementID, messageString) {
+	let message = `<div class="alert alert-warning" role="alert">${messageString}</div>`
+	let current = document.getElementById(elementID).innerHTML
+	if (current == "None") {
+		document.getElementById(elementID).innerHTML = message
+	}
+	else {
+		document.getElementById(elementID).insertAdjacentHTML('beforeend', message)
+	}
+}
 
 function validateProvenanceTrace (assetIRI) {
 	
@@ -567,7 +579,7 @@ function validateProvenanceTrace (assetIRI) {
 					response.json()
 				)
 				.then((data) => {					
-					
+				/*	
 					let defaultString = '<div class="alert alert-success" role="alert">No constraints violations were detected</div>'
 					
 					let resultString = ""; 
@@ -592,7 +604,7 @@ function validateProvenanceTrace (assetIRI) {
 
 						for (i = 0; i < data["CF-No-ApplicablePeriod-Start-Violation"].length; i++) {
 							resultString = resultString + '<div class="alert alert-warning" role="alert">No Start: The Emission conversion factor with value ' + removeLiteralType(data["CF-No-ApplicablePeriod-Start-Violation"][i].cf_value) + ' has an unknown start of the applicable period </div>'
-						}
+							}
 						
 					}
 					
@@ -616,10 +628,17 @@ function validateProvenanceTrace (assetIRI) {
 						
 						 window.parent.postMessage({
         type: 'provEvaluationResults',
-        text: resultString
+      //  text: resultString
+      text:data
     }, '*'); 
 					//document.getElementById('evaluation').innerHTML = resultString
-					}
+					}*/
+					
+					window.parent.postMessage({
+        type: 'provEvaluationResults',
+      
+      text:data
+    }, '*'); 
 				}
 				)
 				 .catch(function(error) {    

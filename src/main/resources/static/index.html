@@ -163,11 +163,26 @@ window.addEventListener('message', function(event) {
     
     if (event.data.type === 'provEvaluationResults') {
         
-       document.getElementById('evaluation').innerHTML= event.data.text;
+       //document.getElementById('evaluation').innerHTML= event.data.text;
       
+      let evalResults = event.data.text;
+ // Iterate over the keys of the object
+for (let key in evalResults) {
+    if (evalResults.hasOwnProperty(key)) {
+        // Log the key and its corresponding array
+        console.log(`Key: ${key}`);
+        console.log(`Value:`, evalResults[key]);
+
+        // If you want to iterate over the array values:
+        evalResults[key].forEach((item, index) => {
+            console.log(`  Item ${index}:`, item);
+            
+            setWarning (item.cf, key)
+        });
+    }
 	    
     }
-    
+    }
     
     if (event.data.type === 'startedFootprintCalcualtion') {
         
@@ -388,7 +403,7 @@ Loading....
        <table class="table table-bordered" style="table-layout:fixed;width:100%; ">
 						  <thead>
 						  <tr>
-						  <th class="col-1">Source Unit</th><th>Target Unit</th><th>Applicable Period Start</th><th>Applicable Period End</th><th>Applicable Location</th><th>CF Value</th><th>CF IRI</th><th>Source</th></span></th>
+						  <th class="col-1">Source Unit</th><th>Target Unit</th><th>Applicable Period Start</th><th>Applicable Period End</th><th>Applicable Location</th><th>CF Value</th><th>CF IRI</th><th>Source</th><th>Warnings</th></span></th>
 						  </tr>
 						  </thead>
 						  <tbody  id="cf_table_body">
@@ -397,6 +412,8 @@ Loading....
 						  </table>      </div>
     </div>
   </div>
+  
+  <!---
   <div class="accordion-item">
     <h2 class="accordion-header" id="headingThree">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -409,7 +426,7 @@ Loading....
              </div>
     </div>
   </div>
-  
+  -->
  
 </div>		             	 
 		 
