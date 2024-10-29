@@ -24,7 +24,7 @@ qudt:abbreviation "m³"@en .
 <http://www.wikidata.org/entity/Q11229> rdfs:label "percent"@en;
 qudt:abbreviation "%"@en .
 
-<https://w3id.org/ecfkg/i/CHEMICALCOMPOUND/N20-N> rdfs:label "N₂0-N"@en;
+<https://w3id.org/ecfkg/i/CHEMICALCOMPOUND/N20-N> rdfs:label "nitrogen equivalent"@en;
 qudt:abbreviation "N₂0-N"@en .
 
 <http://www.wikidata.org/entity/Q4263534> rdfs:label "litres"@en;

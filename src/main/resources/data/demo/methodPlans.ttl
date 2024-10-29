@@ -151,11 +151,44 @@
   rdfs:label "Calculate N2O emissions";
   <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
 
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:5>
+  a owl:NamedIndividual, <http://www.openmath.org/cd/arith1#times>, <https://w3id.org/ep-plan#Step>;
+  rdfs:comment "N2O Emissions * N2O GWP = CO2e Emissions ";
+  rdfs:label "Calculate CO2e Emissions";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
 <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:N2O%20Emissions>
   a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
   rdfs:label "N2O Emissions";
   <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:5>;
   <https://w3id.org/ep-plan#isOutputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:4> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:GWP%20N2O>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "GWP N2O";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isInputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:5> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step5:Constraint:GWP%20N2O>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var GWP N2O";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:5>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step5:Constraint:GWP%20N2O:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step5:Constraint:CO2e%20Emissions>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Constraint>;
+  rdfs:label "Constraint for Var CO2e Emissions";
+  <https://w3id.org/ep-plan#constrains> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:5>;
+  <https://w3id.org/ep-plan#hasConstraintImplementation> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step5:Constraint:CO2e%20Emissions:Impl>;
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions> .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:CO2e%20Emissions>
+  a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
+  rdfs:label "CO2e Emissions";
+  <https://w3id.org/ep-plan#isElementOfPlan> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions>;
+  <https://w3id.org/ep-plan#isOutputVariableOf> <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step:5> .
 
 <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:N2O/N2O-N%20ratio>
   a owl:NamedIndividual, <https://w3id.org/ep-plan#Variable>;
@@ -351,6 +384,54 @@ WHERE {
     VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Electricity%20Footprint%20Irrigation%20Rig:Var:Footprint%20Estimate>)}
   }""" .
 
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step5:Constraint:GWP%20N2O:Impl>
+  rdf:value """PREFIX  ecfo: <https://w3id.org/ecfo#>
+PREFIX  ep-plan: <https://w3id.org/ep-plan#>
+
+Construct {
+    ?id ep-plan:correspondsToVariable ?var.
+    ?id ?p ?o. 
+	?o2 ?p3 ?o3.
+    ?o3 ?p4 ?o4.
+}
+WHERE {
+  ?id rdf:type ecfo:EmissionConversionFactor ;
+       
+        ecfo:hasTag           <http://www.wikidata.org/entity/Q901028>; 
+       ecfo:hasTag           <http://www.wikidata.org/entity/Q905750>;  
+      ecfo:hasTargetUnit           <http://www.wikidata.org/entity/Q11570>.
+
+        ?id ?p ?o.
+        Optional {
+                  ?id ecfo:hasApplicablePeriod ?o2.
+                  ?o2 ?p3 ?o3.
+                  ?o3 ?p4 ?o4.
+                 }
+    
+    
+    
+   VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:GWP%20N2O>)}
+  }
+""" .
+
+<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step5:Constraint:CO2e%20Emissions:Impl>
+  rdf:value """Prefix peco:<https://w3id.org/peco#>
+Prefix qudt:<http://qudt.org/schema/qudt/>
+PREFIX  ep-plan: <https://w3id.org/ep-plan#>
+
+Construct {
+    ?id ep-plan:correspondsToVariable ?var.
+    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity.
+
+    ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q1933140>.
+    ?id qudt:value \"$Output\"^^<xsd:float>.
+}
+WHERE {
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:EmissionScore:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?id)
+     
+    VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:CO2e%20Emissions>)}
+  }""" .
+
 <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step4:Constraint:N2O/N2O-N%20ratio:Impl>
   rdf:value """PREFIX  ecfo: <https://w3id.org/ecfo#>
 PREFIX  ep-plan: <https://w3id.org/ep-plan#>
@@ -392,7 +473,7 @@ Prefix qudt:<http://qudt.org/schema/qudt/>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
-    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id  a peco:EmissionCalcuationEntity; a qudt:Quantity.
  
     ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q905750>.
     ?id qudt:value \"$Output\"^^<xsd:float>.
@@ -612,7 +693,7 @@ Construct {
     ?id ep-plan:correspondsToVariable ?var.
     ?id a  peco:EmissionCalcuationEntity; a qudt:Quantity.
  
-    ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <https://w3id.org/ecfkg/i/UNIT/N20-N>.
+    ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <https://w3id.org/ecfkg/i/CHEMICALCOMPOUND/N20-N>.
     ?id qudt:value \"$Output\"^^<xsd:float>.
 }
 WHERE {

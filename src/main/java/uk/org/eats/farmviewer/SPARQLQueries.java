@@ -299,7 +299,8 @@ public class SPARQLQueries {
 				"WHERE\n" + 
 				"  { ?activity  rdf:type   peco:EmissionCalculationActivity ;\n" + 
 				"              rdfs:label  ?activityLabel ;\n" + 
-				"              prov:used   ?input\n" + 
+				"              prov:used   ?input;\n"
+				+ "    ep-plan:correspondsToStep ?step.\n" + 
 				"      { ?input  rdf:type              peco:EmissionCalculationEntity ;\n" + 
 				"                rdfs:label            ?inputLabel ;\n" + 
 				"                qudt:value            ?inputValue ;\n" + 
@@ -335,8 +336,8 @@ public class SPARQLQueries {
 				"                      rdfs:label  ?outputQuantityKindL\n" + 
 				"            FILTER ( lang(?outputUnitLabel) = \"en\" )\n" + 
 				"          }\n" + 
-				"     \n" + 
-				"  } ";
+				"      \n" + 
+				"  } order by ?step";
         System.out.println(queryString);
 		return  runTupleQueryListResult(queryString);
 	}
