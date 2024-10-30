@@ -301,6 +301,7 @@ public class ServiceController {
 
 		ArrayList<HashMap<String, String>> result = SPARQLQueries.getCalculationFromulas();
 		Gson gson = new Gson();
+	
 		return gson.toJson(result);
 
 	}

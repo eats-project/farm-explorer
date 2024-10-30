@@ -436,6 +436,36 @@ public class SPARQLQueries {
 			
 		}
 
+	private static ArrayList<HashMap <String,String>> runTupleQueryListResultOnlystartEndQuotesRemoval (String query) {
+		
+	      Repository repo = GraphDBUtils.getFabricRepository(GraphDBUtils.getRepositoryManager());
+		  RepositoryConnection conn = repo.getConnection();
+			
+	     
+	      ArrayList<HashMap <String,String>> list = new ArrayList<HashMap <String,String>> ();
+			
+		    System.out.println(query);
+			TupleQuery tupleQuery = conn.prepareTupleQuery(query);
+				   try (TupleQueryResult result = tupleQuery.evaluate()) {
+					      while (result.hasNext()) {  // iterate over the result
+					    	 HashMap <String,String > map = new  HashMap <String,String >  ();
+					         BindingSet bindingSet = result.next();
+					         Set <String> bindings = bindingSet.getBindingNames();  
+						    	
+						    	Iterator it2 = bindings.iterator();
+						    	while (it2.hasNext()) {
+						    		String key = (String) it2.next();
+						    		if (bindingSet.getValue(key)!=null)
+						    		map.put(key, removeStartAndEndQuotes(bindingSet.getValue(key).toString())) ;
+						    		
+						    	}  
+						    	list.add(map);
+					      }
+					   
+				   }
+			return list;
+			
+		}
 
 	public static ArrayList<HashMap <String,String>> getSensors() {
 	     String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/> Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/> SELECT DISTINCT ?iri ?label FROM <"+ConstantsDB.ASSETS_NAMED_GRAPH_IRI+"> WHERE {?iri a sosa:Sensor;smart_base:name ?label }  ";
@@ -584,28 +614,48 @@ public class SPARQLQueries {
             input = input.substring(1);
         }
         
-        if(input.contains("0.65")) {
-       	 System.out.println(input);
-        }
+
     
         input = input.split("[\\^@]")[0];
 
 
-        if(input.contains("0.65")) {
-       	 System.out.println(input);
-        }
+        
         // Trim any remaining quote at the end (in case it wasn't properly matched before)
         if (input.endsWith("\"")) {
             input = input.substring(0, input.length() - 1);
         }
-         if(input.contains("0.65")) {
-        	 System.out.println(input);
-         }
+        
 	    
 	       return input;
 
 	  
 	}
+	
+	
+	private static String removeStartAndEndQuotes  (String input) {
+
+		/* if (input.startsWith("\"") && input.endsWith("\"")) {
+	            input = input.substring(1, input.length() - 1);
+	        }*/
+		   //input = input.replaceAll("^\"|\"(@[a-zA-Z\\-]+)?$|(@[a-zA-Z\\-]+)$", "");
+	       
+		// Remove the first character if it is a quote
+        if (input.startsWith("\"")) {
+            input = input.substring(1);
+        }
+
+        
+        // Trim any remaining quote at the end (in case it wasn't properly matched before)
+        if (input.endsWith("\"")) {
+            input = input.substring(0, input.length() - 1);
+        }
+        
+	    
+	       return input;
+
+	  
+	}
+	
 
 	public static ArrayList<HashMap<String, String>> getSensorCoordinates(String sensorIri) {
 		String queryString = "Prefix sosa:<http://www.w3.org/ns/sosa/>  \n"
@@ -653,7 +703,7 @@ public class SPARQLQueries {
 				+ "}\n"
 				+ "\n"
 				+ "Order BY ?plan";
-		return runTupleQueryListResult(queryString);
+		return runTupleQueryListResultOnlystartEndQuotesRemoval(queryString);
 	}
 
 	public static ArrayList<HashMap<String, String>> getFarmDetails(String farmIri) {
