@@ -292,6 +292,7 @@ PREFIX  ep-plan: <https://w3id.org/ep-plan#>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
+    ?id a ep-plan:Entity.
     ?id ?p ?o. 
 	?o2 ?p3 ?o3.
     ?o3 ?p4 ?o4.
@@ -374,7 +375,7 @@ Prefix qudt:<http://qudt.org/schema/qudt/>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
-    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity; a ep-plan:Entity.
 
     ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q1933140>.
     ?id qudt:value \"$Output\"^^<xsd:float>.
@@ -390,6 +391,7 @@ PREFIX  ep-plan: <https://w3id.org/ep-plan#>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
+    ?id a ep-plan:Entity.
     ?id ?p ?o. 
 	?o2 ?p3 ?o3.
     ?o3 ?p4 ?o4.
@@ -421,7 +423,7 @@ PREFIX  ep-plan: <https://w3id.org/ep-plan#>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
-    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity; a ep-plan:Entity.
 
     ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q1933140>.
     ?id qudt:value \"$Output\"^^<xsd:float>.
@@ -438,6 +440,7 @@ PREFIX  ep-plan: <https://w3id.org/ep-plan#>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
+    ?id a ep-plan:Entity.
     ?id ?p ?o. 
 	?o2 ?p3 ?o3.
     ?o3 ?p4 ?o4.
@@ -473,7 +476,7 @@ Prefix qudt:<http://qudt.org/schema/qudt/>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
-    ?id  a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id  a peco:EmissionCalcuationEntity; a qudt:Quantity; a ep-plan:Entity.
  
     ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q905750>.
     ?id qudt:value \"$Output\"^^<xsd:float>.
@@ -564,7 +567,7 @@ Prefix qudt:<http://qudt.org/schema/qudt/>
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
 
-    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity; a ep-plan:Entity.
     ?id qudt:unit <http://www.wikidata.org/entity/Q25517>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q283>.
     ?id qudt:value ?waterIncubicMetres.
 }
@@ -577,8 +580,7 @@ WHERE {
   }""" .
 
 <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step1:Constraint:Fertiliser%20coefficient:Impl>
-  rdf:value """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-Prefix sosa:<http://www.w3.org/ns/sosa/>
+  rdf:value """Prefix sosa:<http://www.w3.org/ns/sosa/>
 Prefix ssn:<http://www.w3.org/ns/ssn/>
 Prefix qudt:<http://qudt.org/schema/qudt/>
 Prefix ep-plan: <https://w3id.org/ep-plan#>
@@ -586,18 +588,42 @@ Prefix time:<http://www.w3.org/2006/time#>
 Prefix peco:<https://w3id.org/peco#>
 
 CONSTRUCT {
-  ?coefficient qudt:value \"0.67\".
-  ?coefficient a peco:EmissionCalculationEntitiy; a qudt:Quantity; a ep-plan:Entity.
-  ?coefficient ep-plan:correspondsToVariable ?var.
-  ?coefficient qudt:unit <http://www.wikidata.org/entity/Q844211>.
-  ?coefficient qudt:hasQuantityKind <http://www.wikidata.org/entity/Q83323>.
+  ?result qudt:value ?output.
+  ?property ssn:isPropertyOf ?asset.
+  ?sensor sosa:observes ?property.
+  ?observation sosa:madeBySensor ?sensor; sosa:hasResult ?result.
+  ?result a peco:EmissionCalculationEntitiy; a qudt:Quantity; a ep-plan:Entity.
+  ?result ep-plan:correspondsToVariable ?var.
+  ?result qudt:unit <http://www.wikidata.org/entity/Q844211>.
+  ?result qudt:hasQuantityKind <http://www.wikidata.org/entity/Q906629>.
+  ?observation sosa:phenomenonTime ?duration.
+  ?duration a time:Instant.
+  ?duration time:hasBegining ?min.
+  ?duration time:hasEnd ?max.
 }
-where {
-    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:Coeficient:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?coefficient) 
-    
+FROM <https://eats.org.uk/Assets/>
+FROM <https://eats.org.uk/Observations/>
+
+WHERE {
+{
+SELECT  ?property ?asset (SUM(?resultValue) AS ?output) (MAX(?resultTime) AS ?max) (MIN(?resultTime) AS ?min)
+WHERE
+{
+?observation sosa:hasFeatureOfInterest ?asset; sosa:hasResult ?result; sosa:observedProperty ?property.
+?result qudt:unit <http://www.wikidata.org/entity/Q844211>.
+?result qudt:hasQuantityKind <http://www.wikidata.org/entity/Q906629>.
+?result qudt:value ?resultValue.
+?observation sosa:resultTime ?resultTime.
+VALUES (?asset) { (<urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig>) }
+}
+  GROUP BY ?property ?asset 
+} 
+    BIND (IRI(CONCAT(\"urn:ngsi-ld:AgriFarm:Observation:\", STRAFTER(STR(UUID()), \"uuid:\"))) AS ?observation) 
+    BIND (IRI(CONCAT(STR(?observation), \":Result\")) AS ?result)
+    BIND (IRI(CONCAT(STR(?observation), \":Result:PhenomenonDuration\")) AS ?duration)
+       
     VALUES (?var) { (<urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Var:Fertiliser%20coefficient>) }
-}
-""" .
+}""" .
 
 <urn:ngsi-ld:EmissionCalcualtionMethod:Plan:Calculate%20fertiliser%20emissions:Step1:Constraint:Total%20fertiliser%20used:Impl>
   rdf:value """PREFIX  ep-plan: <https://w3id.org/ep-plan#>
@@ -606,9 +632,9 @@ Prefix qudt:<http://qudt.org/schema/qudt/>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
-    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity; a ep-plan:Entity.
   
-    ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q83323>.
+    ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q906629>.
     ?id qudt:value \"$Output\"^^<xsd:float>.
 }
 WHERE {
@@ -646,7 +672,7 @@ Prefix qudt:<http://qudt.org/schema/qudt/>
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
 
-    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity; a ep-plan:Entity.
     ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q182329>.
     ?id qudt:value ?kgN.
 }
@@ -663,6 +689,7 @@ PREFIX  ep-plan: <https://w3id.org/ep-plan#>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
+    ?id a ep-plan:Entity.
     ?id ?p ?o. 
 	?o2 ?p3 ?o3.
     ?o3 ?p4 ?o4.
@@ -691,7 +718,7 @@ Prefix qudt:<http://qudt.org/schema/qudt/>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
-    ?id a  peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id a  peco:EmissionCalcuationEntity; a qudt:Quantity; a ep-plan:Entity.
  
     ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <https://w3id.org/ecfkg/i/CHEMICALCOMPOUND/N20-N>.
     ?id qudt:value \"$Output\"^^<xsd:float>.

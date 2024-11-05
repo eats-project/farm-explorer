@@ -54,6 +54,7 @@ PREFIX  ep-plan: <https://w3id.org/ep-plan#>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
+    ?id a ep-plan:Entity.
     ?id ?p ?o. 
 	?o2 ?p3 ?o3.
     ?o3 ?p4 ?o4.
@@ -86,7 +87,7 @@ Prefix qudt:<http://qudt.org/schema/qudt/>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
-    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity; a ep-plan:Entity.
    
     ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q1933140>.
     ?id qudt:value "$Output"^^<xsd:float>.
@@ -250,7 +251,7 @@ Prefix qudt:<http://qudt.org/schema/qudt/>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
-    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity; a ep-plan:Entity.
   
     ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q906629>.
     ?id qudt:value "$Output"^^<xsd:float>.
@@ -292,7 +293,7 @@ Prefix qudt:<http://qudt.org/schema/qudt/>
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
 
-    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id a peco:EmissionCalcuationEntity; a qudt:Quantity; a ep-plan:Entity.
     ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <http://www.wikidata.org/entity/Q182329>.
     ?id qudt:value ?kgN.
 }
@@ -310,6 +311,7 @@ PREFIX  ep-plan: <https://w3id.org/ep-plan#>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
+    ?id a ep-plan:Entity.
     ?id ?p ?o. 
 	?o2 ?p3 ?o3.
     ?o3 ?p4 ?o4.
@@ -339,7 +341,7 @@ Prefix qudt:<http://qudt.org/schema/qudt/>
 
 Construct {
     ?id ep-plan:correspondsToVariable ?var.
-    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity.
+    ?id a peco:EmissionScore; a peco:EmissionCalcuationEntity; a qudt:Quantity; a ep-plan:Entity.
  
     ?id qudt:unit <http://www.wikidata.org/entity/Q11570>; qudt:hasQuantityKind <https://w3id.org/ecfkg/i/UNIT/N20-N>.
     ?id qudt:value "$Output"^^<xsd:float>.
