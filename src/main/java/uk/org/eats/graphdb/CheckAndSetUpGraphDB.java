@@ -202,6 +202,8 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 		conn.add(f.createIRI(ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI), RDFS.LABEL, f.createLiteral("Observations"), context); 		
 	}
 	
+	
+	
 	if (!GraphDBUtils.checkResourcePresent (conn.getContextIDs(), ConstantsDB.ASSETS_NAMED_GRAPH_IRI)) {
 		System.out.println ("Adding the default Assets named graph") ;
 		
@@ -249,7 +251,6 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 	}
 	
 
-	
 	
 	
 	

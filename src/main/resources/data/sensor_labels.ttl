@@ -5,6 +5,25 @@
 <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:Property:Fertiliser> rdfs:label "Irrigation Rig Fertiliser"@en .
 <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow> rdfs:label "Growing Table Waterflow Tunnel 25"@en .
 
+ <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideHumidity> rdfs:label "Outdoor Humidity Tunnel 45"@en .
+		    <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideHumidity> rdfs:label "Inside Humidity Tunnel 45"@en .
+		     <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideLight> rdfs:label "Inside Light Tunnel 45"@en .  
+		     <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideTemperature> rdfs:label "Outdoor Temperature Tunnel 45"@en .
+		     <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideTemperature> rdfs:label "Indoor Temperature Tunnel 45"@en .
+		   <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilTemperature> rdfs:label "Soil Temperature Tunnel 45"@en .
+		   <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilMoisture> rdfs:label "Soil Moisture Tunnel 45"@en .
+
+
+
+<urn:ngsi-ld:Sensor:TemperatureSensor> rdfs:label "Temperature Sensor"@en .
+		<urn:ngsi-ld:Sensor:HumiditySensor> rdfs:label "Humidity Sensor"@en .
+		<urn:ngsi-ld:Sensor:LightSensor> rdfs:label "Light Sensor"@en .
+		<urn:ngsi-ld:Sensor:SoilMoistureSensor> rdfs:label "Soil Moisture Sensor"@en .
+		<urn:ngsi-ld:Sensor:SoilTemperatureSensor> rdfs:label "Soil Temperature Sensor"@en .
+
+
+
+
 <https://www.robeau.tech/en/> rdfs:label "Water Flow Sensor"@en .
 
 <https://enless-wireless.com/en/products/temperature-sensor-embedded-sensor-lora/> rdfs:label "Temperature Sensor"@en .

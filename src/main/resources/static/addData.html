@@ -152,8 +152,13 @@
 			<select id="sensorType">
 		      <option value="">Please select sensor type</option>
 		      <option value="https://www.robeau.tech/en/">Water Flow Sensor (need to load dynamically)</option>
-		      <option value="https://enless-wireless.com/en/products/temperature-sensor-embedded-sensor-lora/">Temperature Sensor (need to load dynamically)</option>
-		       <option value="https://enless-wireless.com/en/products/pulse-sensor-led-optical-reader-lora/">Electricity Sensor (need to load dynamically)</option>
+<option value="urn:ngsi-ld:Sensor:TemperatureSensor">Temperature Sensor (need to load dynamically)</option>
+<option value="urn:ngsi-ld:Sensor:HumiditySensor">Humidity Sensor (need to load dynamically)</option>		
+<option value="urn:ngsi-ld:Sensor:LightSensor">Light Sensor (need to load dynamically)</option>		    		      
+<option value="urn:ngsi-ld:Sensor:SoilMoistureSensor">Soil Moisture Sensor (need to load dynamically)</option>		    		      
+<option value="urn:ngsi-ld:Sensor:SoilTemperatureSensor">Soil Temp Sensor (need to load dynamically)</option>		    		      
+ 		      
+   <option value="https://enless-wireless.com/en/products/pulse-sensor-led-optical-reader-lora/">Electricity Sensor (need to load dynamically)</option>
 	        </select>
 	        <select id="sensorFOI">
 		      <option value="">Please select sensor feature of interest</option>
@@ -166,7 +171,14 @@
 		      <option value="">Please select the observed property</option>
 		      <option value="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow">Grow Table Waterflow Tunel 25</option>
 		      <option value="urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:Property:Electricity">Irrigation Rig Electricity Consumption</option>
-		      
+		      <option value="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideHumidity">Outdoor Humidity</option>
+		     <option value="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideHumidity">Inside Humidity</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideLight">Inside Light</option>  
+		      <option value="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideTemperature">Outdoor Temperature</option>
+		      <option value="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideTemperature">Indoor Temperature</option>
+		    <option value="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilTemperature">Soil Temperature</option>
+		    <option value="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilMoisture">Soil Moisture</option>
+		    
 		      
 		      
 	        </select>
@@ -179,6 +191,14 @@
 
 		<button onclick="populateSensorWithExampleFlow()">Populate with Flow Meter Example</button>
 		<button onclick="populateSensorWithExampleElectricity()">Populate with Electricity Meter Example</button>
+		<button onclick="populateSensorWithExampleInsideTemp()">Populate with Inside Temp Sensor Example</button>
+	<button onclick="populateSensorWithExampleOutsideTemp()">Populate with Ouitside Temp Sensor Example</button>
+	<button onclick="populateSensorWithExampleSoilTemp()">Populate with Soil Temp Sensor Example</button>
+	<button onclick="populateSensorWithExampleSoilMoisture()">Populate with Soil Moisture Sensor Example</button>
+	<button onclick="populateSensorWithExampleInsideHumidity()">Populate with Inside Humidity Sensor Example</button>
+	<button onclick="populateSensorWithExampleOutsideHumidity()">Populate with Outside Humidity Sensor Example</button>
+	<button onclick="populateSensorWithExampleInsideLight()">Populate with Inside Light Sensor Example</button>
+	
 		
 	</div>
 	
@@ -645,8 +665,70 @@ console.log(payload)
 			document.getElementById('sensorName').value = "Tunnel 25 Flow Meter";
 			document.getElementById('sensorType').value = "https://www.robeau.tech/en/";
 			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025";
-			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow";
-			
+			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow";		
+		}
+		
+		function populateSensorWithExampleOutsideTemp() {
+			document.getElementById('sensorLat').value = 56.249324;
+			document.getElementById('sensorLong').value = -2.6545;
+			document.getElementById('sensorName').value = "Tunnel 45 Temp Outside";
+			document.getElementById('sensorType').value = "urn:ngsi-ld:Sensor:TemperatureSensor";
+			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025";
+			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideTemperature";		
+		}
+		
+		function populateSensorWithExampleInsideTemp() {
+			document.getElementById('sensorLat').value = 56.249324;
+			document.getElementById('sensorLong').value = -2.6545;
+			document.getElementById('sensorName').value = "Tunnel 45 Temp Inside";
+			document.getElementById('sensorType').value = "urn:ngsi-ld:Sensor:TemperatureSensor";
+			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025";
+			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideTemperature";		
+		}
+		
+		function populateSensorWithExampleSoilTemp() {
+			document.getElementById('sensorLat').value = 56.249324;
+			document.getElementById('sensorLong').value = -2.6545;
+			document.getElementById('sensorName').value = "Tunnel 45 Soil Temp";
+			document.getElementById('sensorType').value = "urn:ngsi-ld:Sensor:SoilTemperatureSensor";
+			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025";
+			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilTemperature";		
+		}
+		
+		function populateSensorWithExampleSoilMoisture() {
+			document.getElementById('sensorLat').value = 56.249324;
+			document.getElementById('sensorLong').value = -2.6545;
+			document.getElementById('sensorName').value = "Tunnel 45 Soil Moisture";
+			document.getElementById('sensorType').value = "urn:ngsi-ld:Sensor:SoilMoistureSensor";
+			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025";
+			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilMoisture";		
+		}
+		
+		function populateSensorWithExampleInsideHumidity() {
+			document.getElementById('sensorLat').value = 56.249324;
+			document.getElementById('sensorLong').value = -2.6545;
+			document.getElementById('sensorName').value = "Tunnel 45 Inside Humidity";
+			document.getElementById('sensorType').value = "urn:ngsi-ld:Sensor:HumiditySensor";
+			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025";
+			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideHumidity";		
+		}
+		
+		function populateSensorWithExampleOutsideHumidity() {
+			document.getElementById('sensorLat').value = 56.249324;
+			document.getElementById('sensorLong').value = -2.6545;
+			document.getElementById('sensorName').value = "Tunnel 45 Outside Humidity";
+			document.getElementById('sensorType').value = "urn:ngsi-ld:Sensor:HumiditySensor";
+			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025";
+			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideHumidity";		
+		}
+		
+		function populateSensorWithExampleInsideLight() {
+			document.getElementById('sensorLat').value = 56.249324;
+			document.getElementById('sensorLong').value = -2.6545;
+			document.getElementById('sensorName').value = "Tunnel 45 Inside Light";
+			document.getElementById('sensorType').value = "urn:ngsi-ld:Sensor:LightSensor";
+			document.getElementById('sensorFOI').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025";
+			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideLight";		
 		}
 		
 		function populateSensorWithExampleElectricity() {
@@ -658,6 +740,10 @@ console.log(payload)
 			document.getElementById('sensorProperty').value = "urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:Property:Electricity";
 			
 		}
+		
+		
+		
+		
 		
 		function populateAuctuatorWithExampleIrrigation() {
 			document.getElementById('actuatorLat').value = 56.249100;
