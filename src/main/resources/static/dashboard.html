@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainability Dashboard</title>
+    
+    <script>
+		async function populateTunnelDropdown() {
+    const dropdown = document.getElementById("tunnelSelection");
+
+    try {
+        // Fetch the data from /getAgriParcels
+        const response = await fetch("/getAgriParcels");
+        const data = await response.json();
+
+        
+
+        // Populate dropdown with options
+        data.forEach(parcel => {
+            let option = document.createElement("option");
+            option.value = parcel.foi; // Use foi as value
+            option.textContent = parcel.label; // Use label as option text
+            dropdown.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error("Error fetching AgriParcels:", error);
+    }
+}
+		async function fetchTimeRangeData(foi) {
+    try {
+        const response = await fetch(`/getTimeRangeForFOIsensorData?foi=${encodeURIComponent(foi)}`);
+        const timeRangeData = await response.json();
+        
+        console.log("Time Range Data:", timeRangeData); // Handle response data here\
+        generateTimeRangeOptions(timeRangeData[0].minTime, timeRangeData[0].maxTime)
+    } catch (error) {
+        console.error("Error fetching time range data:", error);
+    }
+}
+
+function generateTimeRangeOptions(minTime, maxTime) {
+	
+	
+    const selectElement = document.getElementById("timeranges");
+    selectElement.innerHTML = ""; // Clear existing options
+    selectElement.disabled = false;
+
+    // Convert RDF timestamps to Date objects while preserving timezone offsets
+    let startDate = new Date(minTime);
+    let endDate = new Date(maxTime);
+
+    // Ensure valid dates
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        console.error("Invalid RDF timestamps provided.");
+        return;
+    }
+
+    // Generate 7-day intervals
+    let current = new Date(startDate);
+    while (current < endDate) {
+        let next = new Date(current);
+        next.setUTCDate(next.getUTCDate() + 7); // Add 7 days
+
+        // Ensure we don't exceed maxTime
+        if (next > endDate) {
+            next = new Date(endDate);
+        }
+
+        // Format timestamps with timezones preserved
+        let startISO = current.toISOString();
+        let endISO = next.toISOString();
+
+        // Create option element
+        let option = document.createElement("option");
+        option.value = `${startISO}/${endISO}`;
+        option.textContent = `${startISO.split('T')[0]} to ${endISO.split('T')[0]}`;
+
+        selectElement.appendChild(option);
+
+        // Move to the next interval
+        current = new Date(next);
+        current.setUTCDate(current.getUTCDate() + 1); // Move to the next day after the last interval
+    }
+}
+
+	</script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .panel {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f9f9f9;
+            width: 70%;
+        }
+
+        .legend {
+            width: 25%;
+            padding: 20px;
+        }
+
+        select, input {
+            padding: 5px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        .yellow { background-color: #ffeb3b; }
+        .pink { background-color: #e91e63; color: white; }
+        .green { background-color: #4caf50; color: white; }
+        .orange { background-color: #ff9800; color: white; }
+
+        .legend-box {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .input-group {
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+<script>
+	
+document.addEventListener("DOMContentLoaded", populateTunnelDropdown);
+
+
+</script>
+<h2>Sustainability Dashboard</h2>
+
+<div class="dashboard">
+    <div class="panel">
+        <label>Select Tunnel:</label>
+        <select id="tunnelSelection">
+			<option>Select Option</option>
+          
+        </select>
+        <label>Select Date Range:</label>
+        
+        <select id="timeranges" disabled>
+            <option>Select Option</option>
+        </select>
+
+        
+        
+
+        <table>
+            <tr>
+                <th>Days</th>
+                <th>Outside Temperature (°C)</th>
+                <th>Outside Humidity (%)</th>
+                <th>Inside Temperature (°C)</th>
+                <th>Inside Humidity (%)</th>
+                <th>Soil Moisture (kPa)</th>
+                <th>Soil Temperature (°C)</th>
+                <th>PAR (µmol)</th>
+                <th>Water Flow (L)</th>
+            </tr>
+            <tr>
+                <td>Tue</td>
+                <td class="yellow">7.23</td>
+                <td class="yellow">86.00</td>
+                <td class="pink">15.95</td>
+                <td class="pink">85.15</td>
+                <td class="pink">51.35</td>
+                <td class="pink">18.97</td>
+                <td class="pink">203.69</td>
+                <td class="pink">188.57</td>
+            </tr>
+            <tr>
+                <td>Wed</td>
+                <td class="yellow">5.56</td>
+                <td class="yellow">74.00</td>
+                <td class="pink">15.85</td>
+                <td class="pink">83.94</td>
+                <td class="pink">51.27</td>
+                <td class="pink">19.14</td>
+                <td class="pink">200.98</td>
+                <td class="pink">191.89</td>
+            </tr>
+            <tr>
+                <td>Thu</td>
+                <td class="yellow">5.18</td>
+                <td class="yellow">74.00</td>
+                <td class="pink">15.68</td>
+                <td class="pink">83.63</td>
+                <td class="pink">51.2</td>
+                <td class="pink">18.85</td>
+                <td class="pink">203.25</td>
+                <td class="pink">191.77</td>
+            </tr>
+            <tr>
+                <td>Fri</td>
+                <td class="yellow">4.85</td>
+                <td class="yellow">72.00</td>
+                <td class="pink">15.35</td>
+                <td class="pink">85.12</td>
+                <td class="pink">51.35</td>
+                <td class="pink">18.57</td>
+                <td class="pink">172.81</td>
+                <td class="pink">186.35</td>
+            </tr>
+            <tr>
+                <td>Sat</td>
+                <td class="yellow">4.05</td>
+                <td class="yellow">64.00</td>
+                <td class="pink">15.30</td>
+                <td class="pink">85.29</td>
+                <td class="pink">51.50</td>
+                <td class="pink">18.35</td>
+                <td class="pink">157.33</td>
+                <td class="pink">169.98</td>
+            </tr>
+            <tr>
+                <td>Sun</td>
+                <td class="yellow">4.75</td>
+                <td class="yellow">72.00</td>
+                <td class="pink">14.89</td>
+                <td class="pink">82.67</td>
+                <td class="pink">51.2</td>
+                <td class="pink">18.19</td>
+                <td class="pink">174.61</td>
+                <td class="pink">169.69</td>
+            </tr>
+            <tr>
+                <td>Mon</td>
+                <td class="yellow">5.09</td>
+                <td class="yellow">77.00</td>
+                <td class="pink">14.71</td>
+                <td class="pink">84.08</td>
+                <td class="pink">50.78</td>
+                <td class="pink">18.02</td>
+                <td class="pink">167.09</td>
+                <td class="pink">178.86</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="legend">
+        <h3>Data Source Legend</h3>
+        <div class="legend-box"><span class="legend-color yellow"></span> OpenWeather API</div>
+        <div class="legend-box"><span class="legend-color pink"></span> Predicted Sensor</div>
+        <div class="legend-box"><span class="legend-color green"></span> Actual Sensor</div>
+        <div class="legend-box"><span class="legend-color orange"></span> Altered By User</div>
+
+        <div class="input-group">
+            <label>Predicted Class 1 yield (kg per field)</label>
+            <input type="text" value="0.5" readonly>
+        </div>
+        <div class="input-group">
+            <label>Actual Class 1 yield (kg per field)</label>
+            <input type="text">
+        </div>
+        <div class="input-group">
+            <label>Optimal Weekly Water flow (L)</label>
+            <input type="text" value="1200">
+        </div>
+        <div class="input-group">
+            <label>Carbon footprint (KgCO2e)</label>
+            <input type="text" value="30.5">
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+	// Event listener for dropdown change
+document.getElementById("tunnelSelection").addEventListener("change", function () {
+    const selectedFoi = this.value;
+    fetchTimeRangeData(selectedFoi);
+});
+</script>
+</html>

@@ -29,7 +29,10 @@
   <https://smartdatamodels.org/dataModel.Agrifood/hasAgriParcel> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025>;
   <https://smartdatamodels.org/dataModel.Agrifood/hasDevice> <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig>,
     <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter>,
-    <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2025%20Flow%20Meter>;
+    <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2025%20Flow%20Meter>, <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Temp%20Inside>,
+    <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Temp%20Outside>, <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Soil%20Moisture>,
+    <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Inside%20Humidity>, <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Outside%20Humidity>,
+    <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Inside%20Light>, <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Soil%20Temp>;
   <https://smartdatamodels.org/name> "Example Farm" .
 
 <urn:ngsi-ld:AgriFarm:Example%20Farm:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
@@ -38,10 +41,10 @@
 <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> a <http://www.w3.org/ns/sosa/FeatureOfInterest>,
     <https://smartdatamodels.org/dataModel.Agrifood/AgriParcel>;
   <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:geo>;
-  <https://smartdatamodels.org/name> "Tunnel 25" .
+  <https://smartdatamodels.org/name> "Tunnel 45" .
 
-<urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig> a <https://files.rileysurfaceworld.co.uk/live/machines2/25494.pdf>,
-    <http://www.w3.org/ns/sosa/Actuator>, <http://www.w3.org/ns/sosa/FeatureOfInterest>;
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig> a <http://www.w3.org/ns/sosa/FeatureOfInterest>,
+    <https://files.rileysurfaceworld.co.uk/live/machines2/25494.pdf>, <http://www.w3.org/ns/sosa/Actuator>;
   <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:geo>;
   <https://smartdatamodels.org/name> "Irrigation Rig";
   <http://www.w3.org/ns/sosa/actsOnProperty> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow> .
@@ -53,6 +56,15 @@
   <https://smartdatamodels.org/name> "Irrigation Rig Electricity Meter";
   <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:Property:Electricity> .
 
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2025%20Flow%20Meter> a <http://www.w3.org/ns/sosa/Sensor>,
+    <https://www.robeau.tech/en/>;
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2025%20Flow%20Meter:geo>;
+  <https://smartdatamodels.org/name> "Tunnel 25 Flow Meter";
+  <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249324, -2.6545)" .
+
 <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
   <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.2491, -2.652925)" .
 
@@ -61,36 +73,137 @@
   rdfs:label "Growing Table Waterflow Tunnel 25"@en;
   <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> .
 
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:geo>
+  a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.2491, -2.652925)" .
+
 <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:Property:Electricity>
   a <http://www.w3.org/ns/sosa/ObservableProperty>;
   rdfs:label "Irrigation Rig Electricity Consumption"@en;
   <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig> .
 
-<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
-  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249324, -2.6545)" .
-
-<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:geo>
-  a <http://www.opengis.net/ont/geosparql#Feature>;
-  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.2491, -2.652925)" .
-
-<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2025%20Flow%20Meter> a <https://www.robeau.tech/en/>,
-    <http://www.w3.org/ns/sosa/Sensor>;
-  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2025%20Flow%20Meter:geo>;
-  <https://smartdatamodels.org/name> "Tunnel 25 Flow Meter";
-  <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow> .
-
 <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2025%20Flow%20Meter:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
   <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249324, -2.6545)" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Temp%20Inside> a <http://www.w3.org/ns/sosa/Sensor>,
+    <urn:ngsi-ld:Sensor:TemperatureSensor>;
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Temp%20Inside:geo>;
+  <https://smartdatamodels.org/name> "Tunnel 45 Temp Inside";
+  <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideTemperature> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Temp%20Inside:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249324, -2.6545)" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideTemperature>
+  a <http://www.w3.org/ns/sosa/ObservableProperty>;
+  rdfs:label "Indoor Temperature Tunnel 45"@en;
+  <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Temp%20Outside> a <http://www.w3.org/ns/sosa/Sensor>,
+    <urn:ngsi-ld:Sensor:TemperatureSensor>;
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Temp%20Outside:geo>;
+  <https://smartdatamodels.org/name> "Tunnel 45 Temp Outside";
+  <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideTemperature> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Temp%20Outside:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249324, -2.6545)" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideTemperature>
+  a <http://www.w3.org/ns/sosa/ObservableProperty>;
+  rdfs:label "Outdoor Temperature Tunnel 45"@en;
+  <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Soil%20Moisture> a <http://www.w3.org/ns/sosa/Sensor>,
+    <urn:ngsi-ld:Sensor:SoilMoistureSensor>;
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Soil%20Moisture:geo>;
+  <https://smartdatamodels.org/name> "Tunnel 45 Soil Moisture";
+  <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilMoisture> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Soil%20Moisture:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249324, -2.6545)" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilMoisture>
+  a <http://www.w3.org/ns/sosa/ObservableProperty>;
+  rdfs:label "Soil Moisture Tunnel 45"@en;
+  <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Inside%20Humidity> a <http://www.w3.org/ns/sosa/Sensor>,
+    <urn:ngsi-ld:Sensor:HumiditySensor>;
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Inside%20Humidity:geo>;
+  <https://smartdatamodels.org/name> "Tunnel 45 Inside Humidity";
+  <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideHumidity> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Inside%20Humidity:geo> a
+    <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249324, -2.6545)" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideHumidity>
+  a <http://www.w3.org/ns/sosa/ObservableProperty>;
+  rdfs:label "Inside Humidity Tunnel 45"@en;
+  <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Outside%20Humidity> a <http://www.w3.org/ns/sosa/Sensor>,
+    <urn:ngsi-ld:Sensor:HumiditySensor>;
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Outside%20Humidity:geo>;
+  <https://smartdatamodels.org/name> "Tunnel 45 Outside Humidity";
+  <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideHumidity> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Outside%20Humidity:geo>
+  a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249324, -2.6545)" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideHumidity>
+  a <http://www.w3.org/ns/sosa/ObservableProperty>;
+  rdfs:label "Outdoor Humidity Tunnel 45"@en;
+  <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Inside%20Light> a <http://www.w3.org/ns/sosa/Sensor>,
+    <urn:ngsi-ld:Sensor:LightSensor>;
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Inside%20Light:geo>;
+  <https://smartdatamodels.org/name> "Tunnel 45 Inside Light";
+  <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideLight> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Inside%20Light:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249324, -2.6545)" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideLight>
+  a <http://www.w3.org/ns/sosa/ObservableProperty>;
+  rdfs:label "Inside Light Tunnel 45"@en;
+  <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Soil%20Temp> a <http://www.w3.org/ns/sosa/Sensor>,
+    <urn:ngsi-ld:Sensor:SoilTemperatureSensor>;
+  <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Soil%20Temp:geo>;
+  <https://smartdatamodels.org/name> "Tunnel 45 Soil Temp";
+  <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilTemperature> .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2045%20Soil%20Temp:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
+  <http://www.opengis.net/ont/geosparql#asWKT> "POINT (56.249324, -2.6545)" .
+
+<urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilTemperature>
+  a <http://www.w3.org/ns/sosa/ObservableProperty>;
+  rdfs:label "Soil Temperature Tunnel 45"@en;
+  <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> .
+
+<https://files.rileysurfaceworld.co.uk/live/machines2/25494.pdf> rdfs:label "Lowara Hydrovar SCH 60.25"@en .
 
 <https://enless-wireless.com/en/products/pulse-sensor-led-optical-reader-lora/> rdfs:label
     "Electricity Sensor"@en .
 
+<https://www.robeau.tech/en/> rdfs:label "Water Flow Sensor"@en .
+
 <https://enless-wireless.com/en/products/temperature-sensor-embedded-sensor-lora/>
   rdfs:label "Temperature Sensor"@en .
 
-<https://files.rileysurfaceworld.co.uk/live/machines2/25494.pdf> rdfs:label "Lowara Hydrovar SCH 60.25"@en .
-
-<https://www.robeau.tech/en/> rdfs:label "Water Flow Sensor"@en .
-
 <urn:ngsi-ld:AgriFarm:Example%20Farm:Actuator:Irrigation%20Rig:Property:Fertiliser>
   rdfs:label "Irrigation Rig Fertiliser"@en .
+
+<urn:ngsi-ld:Sensor:TemperatureSensor> rdfs:label "Temperature Sensor"@en .
+
+<urn:ngsi-ld:Sensor:SoilMoistureSensor> rdfs:label "Soil Moisture Sensor"@en .
+
+<urn:ngsi-ld:Sensor:HumiditySensor> rdfs:label "Humidity Sensor"@en .
+
+<urn:ngsi-ld:Sensor:LightSensor> rdfs:label "Light Sensor"@en .
+
+<urn:ngsi-ld:Sensor:SoilTemperatureSensor> rdfs:label "Soil Temperature Sensor"@en .

@@ -772,4 +772,31 @@ public class SPARQLQueries {
 		System.out.println(queryString);
 		return runTupleQueryListResult(queryString);
 	}
+
+	public static ArrayList<HashMap<String, String>> getAgriParcels() {
+		String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/>  Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/>"
+				+ "Select * FROM <"+ConstantsDB.ASSETS_NAMED_GRAPH_IRI+"> where {"
+				+ "    ?foi a sosa:FeatureOfInterest, smart:AgriParcel ."
+				+ "    ?foi smart_base:name ?label.\n"
+				+ "}";
+		System.out.println(queryString);
+		return runTupleQueryListResult(queryString);
+	}
+
+	public static ArrayList<HashMap<String, String>> getTimeRangeForFOIsensorData(String foi) {
+		String queryString = " Prefix sosa:<http://www.w3.org/ns/sosa/> Prefix ssn:<http://www.w3.org/ns/ssn/> Prefix smart:<https://smartdatamodels.org/dataModel.Agrifood/> Prefix smart_base:<https://smartdatamodels.org/>"
+				+ "SELECT (MIN(?obsTime) AS ?minTime) (MAX(?obsTime) AS ?maxTime)\n"
+				+ "WHERE {  \n"
+				+ "    GRAPH <https://eats.org.uk/Observations/> {  \n"
+				+ "        ?obs sosa:madeBySensor ?sensor.  \n"
+				+ "        ?obs sosa:resultTime ?obsTime.  \n"
+				+ "    }  \n"
+				+ "    GRAPH <https://eats.org.uk/Assets/> {  \n"
+				+ "        ?sensor sosa:observes ?property.  \n"
+				+ "        ?property ssn:isPropertyOf <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025>.  \n"
+				+ "    }  \n"
+				+ "}";
+		System.out.println(queryString);
+		return runTupleQueryListResult(queryString);
+	}
 }

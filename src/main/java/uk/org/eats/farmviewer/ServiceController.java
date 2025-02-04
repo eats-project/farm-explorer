@@ -44,6 +44,11 @@ import uk.org.eats.graphdb.ConstantsDB;
 import uk.org.eats.graphdb.ConstraintQueryUpdate;
 import uk.org.eats.graphdb.GraphDBUtils;
 import uk.org.eats.templates.ElectricityData;
+import uk.org.eats.templates.HumidityData;
+import uk.org.eats.templates.LightData;
+import uk.org.eats.templates.SoilMoistureData;
+import uk.org.eats.templates.SoilTempData;
+import uk.org.eats.templates.TempData;
 import uk.org.eats.templates.WaterFlowData;
 
 
@@ -103,6 +108,34 @@ public class ServiceController {
        
 		String payload = null;
 		
+		System.out.println(list);
+		
+if (checkIfTypePresent(list,"urn:ngsi-ld:Sensor:LightSensor")) {
+			
+	        payload = LightData.parseDataInJSONLD(file,dataType);
+			
+			}
+if (checkIfTypePresent(list,"urn:ngsi-ld:Sensor:SoilMoistureSensor")) {
+			
+	        payload = SoilMoistureData.parseDataInJSONLD(file,dataType);
+			
+			}
+		
+if (checkIfTypePresent(list,"urn:ngsi-ld:Sensor:SoilTemperatureSensor")) {
+			
+	        payload = SoilTempData.parseDataInJSONLD(file,dataType);
+			
+			}
+if (checkIfTypePresent(list,"urn:ngsi-ld:Sensor:HumiditySensor")) {
+			
+	        payload = HumidityData.parseDataInJSONLD(file,dataType);
+			
+			}
+		if (checkIfTypePresent(list,"urn:ngsi-ld:Sensor:TemperatureSensor")) {
+			
+	        payload = TempData.parseDataInJSONLD(file,dataType);
+			
+			}
 		if (checkIfTypePresent(list,"https://www.robeau.tech/en/")) {
 		
         payload = WaterFlowData.parseDataInJSONLD(file,dataType);
@@ -394,6 +427,26 @@ public class ServiceController {
 		System.out.println("getSensorData Called " + sensorIRI);
 
 		ArrayList<HashMap<String, String>> result = SPARQLQueries.getSensorData(sensorIRI);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
+	@GetMapping("/getAgriParcels")
+	@ResponseBody
+	public String getAgriParcels() {
+
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getAgriParcels();
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
+	
+	@GetMapping("/getTimeRangeForFOIsensorData")
+	@ResponseBody
+	public String getTimeRangeForFOIsensorData(@RequestParam String foi) {
+
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getTimeRangeForFOIsensorData(foi);
 		Gson gson = new Gson();
 		return gson.toJson(result);
 
