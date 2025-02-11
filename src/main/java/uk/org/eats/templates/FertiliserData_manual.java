@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.org.eats.graphdb.ConstantsDB;
 import uk.org.eats.graphdb.GraphDBUtils;
 
-public class FertiliserData {
+public class FertiliserData_manual {
 
 	public static String parseDataInJSONLD (MultipartFile file , String sensorIRI) {
 		String json = "{\"@graph\":[";

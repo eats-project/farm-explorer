@@ -6,6 +6,46 @@
     <title>Sustainability Dashboard</title>
     
     <script>
+	var selectedFOI= "";	
+	var totalWaterFlowForSelectedWeek = 0;
+	var flowReductionValue = 1;
+	var originalValues = {};
+
+	
+		
+// Function to initialize and store original values
+function storeOriginalValues() {
+    document.querySelectorAll("td.dynamic").forEach(cell => {
+        originalValues[cell.id] = parseFloat(cell.textContent.trim()) || 0; // Store original value
+    });
+    console.log(originalValues)
+}
+
+// Function to update table cells based on the slider value
+function updateDynamicTableCells() {
+
+    document.querySelectorAll("td.dynamic").forEach(cell => {
+		counter++;
+		console.log("flow"+counter)
+		console.log(cell.id)
+        let originalValue = originalValues[cell.id]; // Retrieve stored original value
+
+        // Ensure original value exists
+        if (originalValue !== undefined) {
+            let newValue = (originalValue * flowReductionValue).toFixed(1);
+            cell.textContent = newValue;
+
+            // Update class based on flowReductionValue
+            if (flowReductionValue < 1) {
+                cell.classList.remove("green");
+                cell.classList.add("brown");
+            } else {
+                cell.classList.remove("brown");
+                cell.classList.add("green");
+            }
+        }
+    });
+}		
 		async function populateTunnelDropdown() {
     const dropdown = document.getElementById("tunnelSelection");
 
@@ -40,16 +80,133 @@
     }
 }
 
+
+
+async function fetchDailyAverage(tunnelFOI, minTime, maxTime, isPrediction) {
+    const tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = ""; // Clear previous data
+
+    try {
+        // Fetch SPARQL query results
+        const response = await fetch(`/getDailySensorDataAverageForTimeRange?foi=${encodeURIComponent(tunnelFOI)}&min=${encodeURIComponent(minTime)}&max=${encodeURIComponent(maxTime)}`);
+        const data = await response.json();
+
+        if (!data || data.length === 0) {
+            console.warn("No data returned.");
+            return;
+        }
+
+        // Group data by date
+        let groupedData = {};
+        let counter = 0;
+        data.forEach(entry => {
+			
+            let date = entry.date;
+            if (!groupedData[date]) {
+                groupedData[date] = {};
+            }
+            groupedData[date][entry.property] =  parseFloat(entry.dailyAvg).toFixed(1);
+        });
+console.log(groupedData);
+        // Iterate through grouped data and create table rows
+        Object.keys(groupedData).forEach(date => {
+			counter++;
+            let row = document.createElement("tr");
+
+            // Convert ISO Date to Human-readable format (e.g., Tue, 01 Jun)
+            let dateObject = new Date(date);
+            let dayName = dateObject.toLocaleDateString("en-US", { weekday: "short" });
+            let formattedDate = `${dayName}, ${dateObject.getDate()} ${dateObject.toLocaleString('en-US', { month: 'short' })}`;
+
+            let dateCell = document.createElement("td");
+            dateCell.textContent = formattedDate;
+            row.appendChild(dateCell);
+
+            // Define sensors expected in table columns
+            let observedProperties = [
+                "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideTemperature", "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideHumidity", "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideTemperature",
+                "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideHumidity", "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilMoisture", "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:SoilTemperature",
+                "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:InsideLight", "urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow"
+            ];
+            //reset cached value
+            totalWaterFlowForSelectedWeek =0;
+            console.log(groupedData);
+            observedProperties.forEach(observedProperty => {
+                let cell = document.createElement("td");
+                let value = groupedData[date][observedProperty] || "--"; // Default if missing data
+                
+                if (observedProperty=="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow") {
+					totalWaterFlowForSelectedWeek =totalWaterFlowForSelectedWeek+ value;
+				}
+                
+                
+                if (isPrediction) {
+					if (observedProperty=="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideTemperature"||sensorType=="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideHumidity")
+					{
+						cell.classList.add("yellow");
+						}
+					else {
+						cell.classList.add("orange");
+
+					}
+					
+				}
+				else{
+                
+                cell.classList.add("green");
+                }
+if (observedProperty=="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow")
+					{
+						cell.classList.add("dynamic");
+						cell.id = "flow"+counter;
+						}
+					
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+
+            tableBody.appendChild(row);
+        });
+  calculateSeatonFootprint ();
+    } catch (error) {
+        console.error("Error fetching observations:", error);
+    }
+    
+    storeOriginalValues();
+}
+
+// TO DO: This is hardcoded for demo but needs to be linked to the calculation method (need to add restriuctions on time ranges as currently the main calculation method takes all available obseravtiuons in the named graph)
+function calculateSeatonFootprint () {
+	//fertiliser + electricity - it looks like 0.0028 kWh is needed to pump 1l to the tunnel on average
+	
+	let waterFlow = totalWaterFlowForSelectedWeek * flowReductionValue;
+	let footprint =  ((waterFlow * 4)/1000 * 0.65 * 0.15*0.01* 1.57*298)+(0.0028*waterFlow);
+	
+	console.log("calculated footprint" +footprint );
+	document.getElementById("footprint").value = footprint.toFixed(2);
+}
+
 function generateTimeRangeOptions(minTime, maxTime) {
-	
-	
     const selectElement = document.getElementById("timeranges");
     selectElement.innerHTML = ""; // Clear existing options
+    let defaultOption = document.createElement("option");
+        defaultOption.value = `default`;
+        defaultOption.textContent = `Select week`;
+        selectElement.appendChild(defaultOption);
     selectElement.disabled = false;
 
     // Convert RDF timestamps to Date objects while preserving timezone offsets
     let startDate = new Date(minTime);
     let endDate = new Date(maxTime);
+
+    // Ensure we correctly adjust for the timezone offset in calculations
+    let startOffset = startDate.getTimezoneOffset(); // Offset in minutes
+    let endOffset = endDate.getTimezoneOffset();
+
+    // Normalize to local timezone by adjusting for the offset difference
+   // startDate = new Date(startDate.getTime() + startOffset * 60000);
+   // endDate = new Date(endDate.getTime() + endOffset * 60000);
+
 
     // Ensure valid dates
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
@@ -59,9 +216,13 @@ function generateTimeRangeOptions(minTime, maxTime) {
 
     // Generate 7-day intervals
     let current = new Date(startDate);
+    let startISO ;
+    let endISO ;
+    counter = 0;
     while (current < endDate) {
+		counter++;
         let next = new Date(current);
-        next.setUTCDate(next.getUTCDate() + 7); // Add 7 days
+        next.setDate(next.getDate() + 6); // Add 7 days
 
         // Ensure we don't exceed maxTime
         if (next > endDate) {
@@ -69,20 +230,47 @@ function generateTimeRangeOptions(minTime, maxTime) {
         }
 
         // Format timestamps with timezones preserved
-        let startISO = current.toISOString();
-        let endISO = next.toISOString();
-
+         startISO = formatBST (current);
+         endISO = formatBST (next);
+       //skip first two weeks as we need two weeks for yield prediction
+        if (counter >2) {
         // Create option element
         let option = document.createElement("option");
         option.value = `${startISO}/${endISO}`;
         option.textContent = `${startISO.split('T')[0]} to ${endISO.split('T')[0]}`;
 
         selectElement.appendChild(option);
-
+        }
         // Move to the next interval
         current = new Date(next);
+        endPreviousISO = endISO;
         current.setUTCDate(current.getUTCDate() + 1); // Move to the next day after the last interval
     }
+    
+     
+     let option = document.createElement("option");
+         option.value = `${startISO}/${endISO}`;
+         option.textContent = `next week prediction`;
+    selectElement.appendChild(option);
+}
+
+// Helper function to format date in BST (British Summer Time)
+function formatBST(date) {
+    let bstFormatter = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/London",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23"
+    });
+
+    let parts = bstFormatter.formatToParts(date);
+    let formattedDate = `${parts[4].value}-${parts[2].value}-${parts[0].value}T${parts[6].value}:${parts[8].value}:${parts[10].value}+01:00`;
+    
+    return formattedDate;
 }
 
 	</script>
@@ -137,6 +325,7 @@ function generateTimeRangeOptions(minTime, maxTime) {
         .pink { background-color: #e91e63; color: white; }
         .green { background-color: #4caf50; color: white; }
         .orange { background-color: #ff9800; color: white; }
+        .brown {background-color: #964B00; color: white;}
 
         .legend-box {
             display: flex;
@@ -183,121 +372,59 @@ document.addEventListener("DOMContentLoaded", populateTunnelDropdown);
         
         
 
-        <table>
-            <tr>
-                <th>Days</th>
-                <th>Outside Temperature (°C)</th>
-                <th>Outside Humidity (%)</th>
-                <th>Inside Temperature (°C)</th>
-                <th>Inside Humidity (%)</th>
-                <th>Soil Moisture (kPa)</th>
-                <th>Soil Temperature (°C)</th>
-                <th>PAR (µmol)</th>
-                <th>Water Flow (L)</th>
-            </tr>
-            <tr>
-                <td>Tue</td>
-                <td class="yellow">7.23</td>
-                <td class="yellow">86.00</td>
-                <td class="pink">15.95</td>
-                <td class="pink">85.15</td>
-                <td class="pink">51.35</td>
-                <td class="pink">18.97</td>
-                <td class="pink">203.69</td>
-                <td class="pink">188.57</td>
-            </tr>
-            <tr>
-                <td>Wed</td>
-                <td class="yellow">5.56</td>
-                <td class="yellow">74.00</td>
-                <td class="pink">15.85</td>
-                <td class="pink">83.94</td>
-                <td class="pink">51.27</td>
-                <td class="pink">19.14</td>
-                <td class="pink">200.98</td>
-                <td class="pink">191.89</td>
-            </tr>
-            <tr>
-                <td>Thu</td>
-                <td class="yellow">5.18</td>
-                <td class="yellow">74.00</td>
-                <td class="pink">15.68</td>
-                <td class="pink">83.63</td>
-                <td class="pink">51.2</td>
-                <td class="pink">18.85</td>
-                <td class="pink">203.25</td>
-                <td class="pink">191.77</td>
-            </tr>
-            <tr>
-                <td>Fri</td>
-                <td class="yellow">4.85</td>
-                <td class="yellow">72.00</td>
-                <td class="pink">15.35</td>
-                <td class="pink">85.12</td>
-                <td class="pink">51.35</td>
-                <td class="pink">18.57</td>
-                <td class="pink">172.81</td>
-                <td class="pink">186.35</td>
-            </tr>
-            <tr>
-                <td>Sat</td>
-                <td class="yellow">4.05</td>
-                <td class="yellow">64.00</td>
-                <td class="pink">15.30</td>
-                <td class="pink">85.29</td>
-                <td class="pink">51.50</td>
-                <td class="pink">18.35</td>
-                <td class="pink">157.33</td>
-                <td class="pink">169.98</td>
-            </tr>
-            <tr>
-                <td>Sun</td>
-                <td class="yellow">4.75</td>
-                <td class="yellow">72.00</td>
-                <td class="pink">14.89</td>
-                <td class="pink">82.67</td>
-                <td class="pink">51.2</td>
-                <td class="pink">18.19</td>
-                <td class="pink">174.61</td>
-                <td class="pink">169.69</td>
-            </tr>
-            <tr>
-                <td>Mon</td>
-                <td class="yellow">5.09</td>
-                <td class="yellow">77.00</td>
-                <td class="pink">14.71</td>
-                <td class="pink">84.08</td>
-                <td class="pink">50.78</td>
-                <td class="pink">18.02</td>
-                <td class="pink">167.09</td>
-                <td class="pink">178.86</td>
-            </tr>
-        </table>
-    </div>
+<table>
+            <thead>
+                <tr>
+                    <th>Days</th>
+                    <th>Outside Temperature (°C)</th>
+                    <th>Outside Humidity (%)</th>
+                    <th>Inside Temperature (°C)</th>
+                    <th>Inside Humidity (%)</th>
+                    <th>Soil Moisture (kPa)</th>
+                    <th>Soil Temperature (°C)</th>
+                    <th>PAR (µmol)</th>
+                    <th>Water Flow (L)</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Data will be inserted dynamically -->
+            </tbody>
+        </table>    </div>
 
     <div class="legend">
         <h3>Data Source Legend</h3>
-        <div class="legend-box"><span class="legend-color yellow"></span> OpenWeather API</div>
-        <div class="legend-box"><span class="legend-color pink"></span> Predicted Sensor</div>
-        <div class="legend-box"><span class="legend-color green"></span> Actual Sensor</div>
-        <div class="legend-box"><span class="legend-color orange"></span> Altered By User</div>
+        <div class="legend-box"><span class="legend-color yellow"></span> Weather Forecast</div>
+        <div class="legend-box"><span class="legend-color orange"></span> Predicted Internal Sensor Data</div>
+        <div class="legend-box"><span class="legend-color green"></span>  Actual Sensor Data</div>
+        <div class="legend-box"><span class="legend-color brown"></span>  Alered by User</div>
+       
 
         <div class="input-group">
-            <label>Predicted Class 1 yield (kg per field)</label>
-            <input type="text" value="0.5" readonly>
+            <label>Predicted Class 1 yield (kg/m)</label>
+            <input type="text" value="0" readonly>
         </div>
         <div class="input-group">
-            <label>Actual Class 1 yield (kg per field)</label>
-            <input type="text">
+            <label>Actual Class 1 yield (kg/m)</label>
+            <input type="text" value="0" readonly>
         </div>
-        <div class="input-group">
-            <label>Optimal Weekly Water flow (L)</label>
-            <input type="text" value="1200">
-        </div>
+        
         <div class="input-group">
             <label>Carbon footprint (KgCO2e)</label>
-            <input type="text" value="30.5">
+            <input id ="footprint" type="text" value="0" readonly>
         </div>
+<div class="input-group">
+    <label>Reduce Waterflow (<span id="waterflowValue">100</span>%):</label>
+    <input type="range" id="waterflowRange" min="1" max="100" value="100">
+</div>
+
+<script>
+    document.getElementById("waterflowRange").addEventListener("input", function () {
+        document.getElementById("waterflowValue").textContent = this.value;
+        flowReductionValue = this.value/100;
+        calculateSeatonFootprint();
+        updateDynamicTableCells();
+    });
+</script>
     </div>
 </div>
 
@@ -308,6 +435,26 @@ document.addEventListener("DOMContentLoaded", populateTunnelDropdown);
 document.getElementById("tunnelSelection").addEventListener("change", function () {
     const selectedFoi = this.value;
     fetchTimeRangeData(selectedFoi);
+    selectedFOI = selectedFoi;
 });
+
+// Event listener for date range selection
+document.getElementById("timeranges").addEventListener("change", function () {
+    let selectedFOI = document.getElementById("tunnelSelection").value;
+    let selectedTimeRange = this.value.split("/");
+    
+    // Get the selected option's text
+    let selectedText = this.options[this.selectedIndex].text;
+
+    // Check if the text is "Next Week Prediction"
+    let isPrediction = selectedText.trim().toLowerCase() === "next week prediction";
+
+    if (selectedFOI && selectedTimeRange.length === 2) {
+        fetchDailyAverage(selectedFOI, selectedTimeRange[0], selectedTimeRange[1],isPrediction);
+      
+    }
+});
+
+
 </script>
 </html>

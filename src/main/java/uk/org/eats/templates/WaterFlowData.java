@@ -34,8 +34,11 @@ public class WaterFlowData {
 	           
 	            for (CSVRecord record : parser) {
 	            
-	             String reading = record.get("Reading");
-	             String timestamp =record.get("Timestamp");
+	              
+	             String timestamp =Utils.convertTimestamp(record.get(headers.get(0)));
+		            
+	             String reading = record.get("Water Flow").replaceAll("[^0-9.]", "");
+	           
 	            	
 	             json = json + "{\"@id\":\""+namespace+timestamp+"\","
 	             		+ "    \"@type\": \"http://www.w3.org/ns/sosa/Observation\","

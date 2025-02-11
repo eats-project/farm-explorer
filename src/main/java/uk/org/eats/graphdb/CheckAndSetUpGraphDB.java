@@ -184,7 +184,7 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 	
 	/* Comment out later*/
 	//add additional labels 
-	/*
+	
 	File file2 = ResourceUtils.getFile("classpath:data/sensor_labels.ttl");
 	 InputStream input2 = new FileInputStream(file2);
 	    Model model2 = Rio.parse(input2, "", RDFFormat.TURTLE);
@@ -193,7 +193,7 @@ public static void checkRepositorySetUp () throws ClientProtocolException, IOExc
 	            conn.begin();
 	            conn.add(model2, f.createIRI(ConstantsDB.ASSETS_NAMED_GRAPH_IRI));
 	            conn.commit();  // Commit transaction to finalize changes
-	*/
+	
 	
 	if (!GraphDBUtils.checkResourcePresent (conn.getContextIDs(), ConstantsDB.OBSERVATIONS_NAMED_GRAPH_IRI)) {
 		System.out.println ("Adding the default Observations named graph") ;

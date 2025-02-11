@@ -793,9 +793,50 @@ public class SPARQLQueries {
 				+ "    }  \n"
 				+ "    GRAPH <https://eats.org.uk/Assets/> {  \n"
 				+ "        ?sensor sosa:observes ?property.  \n"
-				+ "        ?property ssn:isPropertyOf <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025>.  \n"
+				+ "        ?property ssn:isPropertyOf <"+foi+">.  \n"
 				+ "    }  \n"
 				+ "}";
+		System.out.println(queryString);
+		return runTupleQueryListResult(queryString);
+	}
+
+	public static ArrayList<HashMap<String, String>> getDailySensorDataAverageForTimeRange(String min, String max, String foi) {
+		String [] minOnlyDate = min.split("T");
+		String [] maxOnlyDate = max.split("T");
+		
+		String queryString = " PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+				+ "PREFIX sosa: <http://www.w3.org/ns/sosa/>  \n"
+				+ "PREFIX smart: <https://smartdatamodels.org/dataModel.Agrifood/>  \n"
+				+ "PREFIX smart_base: <https://smartdatamodels.org/>  \n"
+				+ "PREFIX ssn: <http://www.w3.org/ns/ssn/>  \n"
+				+ "PREFIX qudt: <http://qudt.org/schema/qudt/>  \n"
+				+ "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n"
+				+ "\n"
+				+ "SELECT ?property ?date ?propertyLabel  (AVG(xsd:decimal(?value)) AS ?dailyAvg)\n"
+				+ "WHERE {  \n"
+				+ "    GRAPH <https://eats.org.uk/Observations/> {  \n"
+				+ "        ?obs sosa:madeBySensor ?sensor.  \n"
+				+ "        ?obs sosa:resultTime ?obsTime.  \n"
+				+ "        ?obs sosa:hasResult ?result.\n"
+				+ "        ?result qudt:value ?value.  \n"
+				+ "        \n"
+				+ "        # Filter by time range\n"
+				+ "       FILTER ("
+				+ "    STRDT(STRBEFORE(STR(?obsTime), \"T\"), xsd:date) >= \""+minOnlyDate[0]+"\"^^xsd:date &&\n"
+				+ "    STRDT(STRBEFORE(STR(?obsTime), \"T\"), xsd:date) <= \""+maxOnlyDate[0]+"\"^^xsd:date"
+				+ ")"
+				+ "    }  \n"
+				+ "    GRAPH <https://eats.org.uk/Assets/> {  \n"
+				+ "        ?sensor sosa:observes ?property.  \n"
+				+ "        ?property ssn:isPropertyOf <"+foi+">. \n"
+				+ "        ?property rdfs:label ?propertyLabel.\n"
+				+ "    }  \n"
+				+ "\n"
+				+ "    # Extract the date part (YYYY-MM-DD) for grouping\n"
+				+ "    BIND(STRDT(STRBEFORE(STR(?obsTime), \"T\"), xsd:date) AS ?date)\n"
+				+ "}  \n"
+				+ "GROUP BY ?property ?date  ?propertyLabel\n"
+				+ "ORDER BY  ?date ?property";
 		System.out.println(queryString);
 		return runTupleQueryListResult(queryString);
 	}

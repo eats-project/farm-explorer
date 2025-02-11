@@ -452,6 +452,15 @@ if (checkIfTypePresent(list,"urn:ngsi-ld:Sensor:HumiditySensor")) {
 
 	}
 	
+	@GetMapping("/getDailySensorDataAverageForTimeRange")
+	@ResponseBody
+	public String getDailySensorDataAverageForTimeRange(@RequestParam String min,String max,String foi) {
+
+		ArrayList<HashMap<String, String>> result = SPARQLQueries.getDailySensorDataAverageForTimeRange(min,max,foi);
+		Gson gson = new Gson();
+		return gson.toJson(result);
+
+	}
 	
 	
 	@GetMapping("/getManualObservationsData")

@@ -59,7 +59,7 @@
 <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2025%20Flow%20Meter> a <http://www.w3.org/ns/sosa/Sensor>,
     <https://www.robeau.tech/en/>;
   <http://www.opengis.net/ont/geosparql#hasGeometry> <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Tunnel%2025%20Flow%20Meter:geo>;
-  <https://smartdatamodels.org/name> "Tunnel 25 Flow Meter";
+  <https://smartdatamodels.org/name> "Tunnel 45 Flow Meter";
   <http://www.w3.org/ns/sosa/observes> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow> .
 
 <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:geo> a <http://www.opengis.net/ont/geosparql#Feature>;
@@ -70,7 +70,7 @@
 
 <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow>
   a <http://www.w3.org/ns/sosa/ObservableProperty>, <http://www.w3.org/ns/sosa/ActuatableProperty>;
-  rdfs:label "Growing Table Waterflow Tunnel 25"@en;
+  rdfs:label "Growing Table Waterflow Tunnel 45"@en;
   <http://www.w3.org/ns/ssn/isPropertyOf> <urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025> .
 
 <urn:ngsi-ld:AgriFarm:Example%20Farm:Sensor:Irrigation%20Rig%20Electricity%20Meter:geo>

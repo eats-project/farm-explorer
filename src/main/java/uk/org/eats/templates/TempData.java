@@ -33,7 +33,7 @@ public class TempData {
 	            String namespace = sensorIRI+":Temp:Observation:";
 	           
 	            for (CSVRecord record : parser) {
-	            System.out.println ("[" +record+"]");
+	            //System.out.println ("[" +record+"]");
 	            String timestamp =Utils.convertTimestamp(record.get(headers.get(0)));
 	            
 	             String reading = record.get("Temperature").replaceAll("[^0-9.]", "");;
