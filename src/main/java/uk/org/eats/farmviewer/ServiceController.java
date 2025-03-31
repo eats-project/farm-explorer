@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,6 +30,12 @@ import  org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,8 +43,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import uk.org.eats.graphdb.ConstantsDB;
@@ -480,6 +489,45 @@ if (checkIfTypePresent(list,"urn:ngsi-ld:Sensor:HumiditySensor")) {
 		return gson.toJson(result);
 
 	}
+	
+	
+	@PostMapping("/yieldPrediction")
+    @ResponseBody
+    public ResponseEntity<String> yieldPrediction(@RequestBody Map<String, Object> payload) {
+        try {
+            // Convert Map to properly formatted JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonPayload = objectMapper.writeValueAsString(payload);
+
+            // Print for debugging
+            System.out.println("Formatted JSON Payload: " + jsonPayload);
+
+            // Create RestTemplate instance
+            RestTemplate restTemplate = new RestTemplate();
+
+            // Create headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // Create request entity with properly formatted JSON
+            HttpEntity<String> requestEntity = new HttpEntity<>(jsonPayload, headers);
+
+            // Send POST request to external API
+            ResponseEntity<String> response = restTemplate.exchange(
+            		"http://localhost:3061/getYieldPrediction",
+                HttpMethod.POST,
+                requestEntity,
+                String.class
+            );
+
+            // Return the response from the external API
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("{\"error\": \"Failed to fetch yield prediction: " + e.getMessage() + "\"}");
+        }
+    }
 	
 	
 	@GetMapping("/getManualSensorDetails")

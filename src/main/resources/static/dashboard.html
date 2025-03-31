@@ -11,7 +11,59 @@
 	var flowReductionValue = 1;
 	var originalValues = {};
 
-	
+
+
+async function getYieldPrediction(payload) {
+    const apiUrl = "/yieldPrediction";
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload) // Convert JavaScript object to JSON
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+
+        const data = await response.json(); // Parse JSON response
+        return data;
+
+    } catch (error) {
+        console.error("Error fetching yield prediction:", error);
+        return { error: "Failed to fetch yield prediction" };
+    }
+}
+//TO DO!! -> this  is fixed for the demo as it will look for yield with specific label Yield Tunnel 45 
+	async function getMatchingHistoricYield(rdfTimestamp) {
+    try {
+        // Fetch data from /getManualObservationsData
+        const response = await fetch(`/getManualObservationsData?label=${encodeURIComponent("Yield Tunnel 45")}`);
+        const data = await response.json();
+
+        // Convert rdfTimestamp to Date object
+        let rdfDate = new Date(rdfTimestamp);
+
+        // Iterate through results and check if timestamp falls within an interval
+        for (let obj of data) {
+            let startDate = new Date(obj.beginning);
+            let endDate = new Date(obj.end);
+
+            // Check if rdfTimestamp falls within the interval
+            if (rdfDate >= startDate && rdfDate <= endDate) {
+                return obj.result;
+            }
+        }
+
+        return null; // Return null if no match is found
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return null;
+    }
+}
 		
 // Function to initialize and store original values
 function storeOriginalValues() {
@@ -80,7 +132,154 @@ function updateDynamicTableCells() {
     }
 }
 
+function convertToRDFTimestamp(dateString) {
+    // Parse the input date string
+    let date = new Date(dateString);
 
+    // Get the timezone offset in minutes and convert to hours and minutes
+    let offsetMinutes = -date.getTimezoneOffset(); // getTimezoneOffset() returns the opposite sign
+    let offsetHours = Math.floor(offsetMinutes / 60);
+    let offsetRemainder = offsetMinutes % 60;
+
+    // Format offset as +01:00 or -05:30
+    let offsetSign = offsetHours >= 0 ? "+" : "-";
+    let formattedOffset = `${offsetSign}${String(Math.abs(offsetHours)).padStart(2, "0")}:${String(Math.abs(offsetRemainder)).padStart(2, "0")}`;
+
+    // Convert date to ISO string (without 'Z' since we handle offset manually)
+    let isoString = date.toISOString().split("Z")[0]; // Remove 'Z' (UTC indication)
+
+    // Append the timezone offset
+    return `${isoString}${formattedOffset}`;
+}// Helper function to parse dates correctly
+    function parseDate(dateStr) {
+        return new Date(dateStr);
+    }
+
+async function mapToModelStructure(data) {
+    // Group data into weekly intervals
+    let groupedData = {};
+
+    data.forEach(entry => {
+        let date = new Date(entry.date);
+
+        // Adjust to start week on Monday
+        let weekStart = new Date(date);
+        weekStart.setDate(date.getDate() - (date.getDay() === 0 ? 6 : date.getDay() - 1));
+
+        let weekKey = weekStart.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+
+        if (!groupedData[weekKey]) {
+            groupedData[weekKey] = {};
+        }
+
+        let propertyKey = entry.property; // Use property as key
+        if (!groupedData[weekKey][propertyKey]) {
+            groupedData[weekKey][propertyKey] = {
+                propertyLabel: entry.propertyLabel,
+                property: entry.property,
+                values: [],
+                isWaterFlow: /urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow/i.test(entry.property) // Check if it's cumulative
+            };
+        }
+
+        groupedData[weekKey][propertyKey].values.push(parseFloat(entry.dailyAvg));
+    });
+
+    // Aggregate the data and map to model structure
+    let features = [];
+
+    for (let weekStart of Object.keys(groupedData)) {
+        let measurements = {
+            water_usage: 0,
+            soil_moisture: 0,
+            temperature_internal: 0,
+            humidity_internal: 0,
+            soil_temperature: 0,
+            par: 0,
+            temperature_external: 0,
+            humidity_external: 0
+        };
+
+        Object.keys(groupedData[weekStart]).forEach(property => {
+            let propertyData = groupedData[weekStart][property];
+            let aggregatedValue;
+
+            if (propertyData.isWaterFlow) {
+                // Sum for Water Flow properties
+                aggregatedValue = propertyData.values.reduce((sum, val) => sum + val, 0);
+                measurements.water_usage += aggregatedValue;
+            } else {
+                // Average for other properties
+                aggregatedValue = propertyData.values.reduce((sum, val) => sum + val, 0) / propertyData.values.length;
+
+                if (property.includes("Property:SoilMoisture")) measurements.soil_moisture = aggregatedValue;
+                if (property.includes("Property:InsideTemperature")) measurements.temperature_internal = aggregatedValue;
+                if (property.includes("Property:InsideHumidity")) measurements.humidity_internal = aggregatedValue;
+                if (property.includes("Property:SoilTemperature")) measurements.soil_temperature = aggregatedValue;
+                if (property.includes("Property:InsideLight")) measurements.par = aggregatedValue;
+                if (property.includes("Property:OutsideTemperature")) measurements.temperature_external = aggregatedValue;
+                if (property.includes("Property:OutsideHumidity")) measurements.humidity_external = aggregatedValue;
+            }
+        });
+
+         const yieldValue = await getMatchingHistoricYield(weekStart);
+         measurements.yield_value=yieldValue
+        // Push into features array
+        features.push({
+            timestamp: weekStart,
+            tunnel_type: "Seaton", // Default tunnel type
+            measurements: measurements,
+           
+        });
+    }
+
+    // Build final output structure
+    let result = {
+        model_type: "sensor",
+        features: features
+    };
+
+    return JSON.stringify(result, null, 2); // Pretty print JSON output
+}
+
+
+
+
+
+async function updateYieldPrediction (foi, end) {
+	  
+	  let start = new Date(end);
+	  
+        start.setDate(start.getDate() - 19);
+        console.log (start)
+	  const response = await fetch(`/getDailySensorDataAverageForTimeRange?foi=${encodeURIComponent(foi)}&min=${encodeURIComponent(convertToRDFTimestamp(start))}&max=${encodeURIComponent(end)}`);
+      const data = await response.json();
+
+        if (!data || data.length === 0) {
+            console.warn("No data returned.");
+            return;
+        }
+        
+      console.log ("yield request preparation")
+      console.log (data)
+      // Run the function
+      mapToModelStructure(data).then((structuredData) => {
+    console.log("Structured Data:", structuredData);
+
+    // Ensure `structuredData` is an object, not a string
+    if (typeof structuredData === "string") {
+        structuredData = JSON.parse(structuredData); // Convert string to object
+    }
+
+    // Call getYieldPrediction with the corrected JSON object
+    getYieldPrediction(structuredData).then((responseData) => {
+        console.log("Prediction Response:", responseData.prediction.predicted_yield);
+        document.getElementById("predicted_yield").value = responseData.prediction.predicted_yield.toFixed(1);
+    });
+});
+      
+
+}
 
 async function fetchDailyAverage(tunnelFOI, minTime, maxTime, isPrediction) {
     const tableBody = document.getElementById("tableBody");
@@ -99,6 +298,11 @@ async function fetchDailyAverage(tunnelFOI, minTime, maxTime, isPrediction) {
         // Group data by date
         let groupedData = {};
         let counter = 0;
+        
+        console.log("Data retrieved")
+        
+        console.log(data)
+        
         data.forEach(entry => {
 			
             let date = entry.date;
@@ -107,6 +311,8 @@ async function fetchDailyAverage(tunnelFOI, minTime, maxTime, isPrediction) {
             }
             groupedData[date][entry.property] =  parseFloat(entry.dailyAvg).toFixed(1);
         });
+                console.log("Grouped data")
+
 console.log(groupedData);
         // Iterate through grouped data and create table rows
         Object.keys(groupedData).forEach(date => {
@@ -114,6 +320,18 @@ console.log(groupedData);
             let row = document.createElement("tr");
 
             // Convert ISO Date to Human-readable format (e.g., Tue, 01 Jun)
+           if (counter==2) {
+			   if (!isPrediction) {
+            getMatchingHistoricYield(date).then(result => {
+   if (!isNaN(result) && result !== null && result !== undefined) {
+        document.getElementById('actualYield').value = Number(result).toFixed(1);
+    } }).catch(error => {
+    console.error("Error fetching historic yield:", error);
+});  }
+else {
+        document.getElementById('actualYield').value = "Not available";
+    }
+}
             let dateObject = new Date(date);
             let dayName = dateObject.toLocaleDateString("en-US", { weekday: "short" });
             let formattedDate = `${dayName}, ${dateObject.getDate()} ${dateObject.toLocaleString('en-US', { month: 'short' })}`;
@@ -131,9 +349,18 @@ console.log(groupedData);
             //reset cached value
             totalWaterFlowForSelectedWeek =0;
             console.log(groupedData);
+            
+            
+            
             observedProperties.forEach(observedProperty => {
                 let cell = document.createElement("td");
-                let value = groupedData[date][observedProperty] || "--"; // Default if missing data
+                let valueRaw = groupedData[date][observedProperty];
+               //temporary fix until sensor prediction API implemented
+                if (isPrediction && valueRaw ) {
+					valueRaw = (valueRaw * 0.95).toFixed(1)
+				}
+                
+                let value = valueRaw || "--"; // Default if missing data
                 
                 if (observedProperty=="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:TableWaterflow") {
 					totalWaterFlowForSelectedWeek =totalWaterFlowForSelectedWeek+ value;
@@ -141,7 +368,7 @@ console.log(groupedData);
                 
                 
                 if (isPrediction) {
-					if (observedProperty=="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideTemperature"||sensorType=="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideHumidity")
+					if (observedProperty=="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideTemperature"||observedProperty=="urn:ngsi-ld:AgriFarm:Example%20Farm:AgriParcel:Tunnel%2025:Property:OutsideHumidity")
 					{
 						cell.classList.add("yellow");
 						}
@@ -380,9 +607,9 @@ document.addEventListener("DOMContentLoaded", populateTunnelDropdown);
                     <th>Outside Humidity (%)</th>
                     <th>Inside Temperature (°C)</th>
                     <th>Inside Humidity (%)</th>
-                    <th>Soil Moisture (kPa)</th>
+                    <th>Soil Moisture (%)</th>
                     <th>Soil Temperature (°C)</th>
-                    <th>PAR (µmol)</th>
+                    <th>PAR (µmol m-2s-1)</th>
                     <th>Water Flow (L)</th>
                 </tr>
             </thead>
@@ -396,16 +623,16 @@ document.addEventListener("DOMContentLoaded", populateTunnelDropdown);
         <div class="legend-box"><span class="legend-color yellow"></span> Weather Forecast</div>
         <div class="legend-box"><span class="legend-color orange"></span> Predicted Internal Sensor Data</div>
         <div class="legend-box"><span class="legend-color green"></span>  Actual Sensor Data</div>
-        <div class="legend-box"><span class="legend-color brown"></span>  Alered by User</div>
+        <div class="legend-box"><span class="legend-color brown"></span>  Altered by User</div>
        
 
         <div class="input-group">
             <label>Predicted Class 1 yield (kg/m)</label>
-            <input type="text" value="0" readonly>
+            <input id="predicted_yield" type="text" value="0" readonly>
         </div>
         <div class="input-group">
             <label>Actual Class 1 yield (kg/m)</label>
-            <input type="text" value="0" readonly>
+            <input type="text" id="actualYield"  value="0" readonly>
         </div>
         
         <div class="input-group">
@@ -451,6 +678,8 @@ document.getElementById("timeranges").addEventListener("change", function () {
 
     if (selectedFOI && selectedTimeRange.length === 2) {
         fetchDailyAverage(selectedFOI, selectedTimeRange[0], selectedTimeRange[1],isPrediction);
+        
+        updateYieldPrediction (selectedFOI,selectedTimeRange[1])
       
     }
 });
